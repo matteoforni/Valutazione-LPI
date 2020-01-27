@@ -32,4 +32,8 @@
 
 ##### L'admin deve gestire gli utenti (aggiungere, eliminare, modificare) dei docenti?
 
-##### I docenti potranno venire aggiunti dall'admin o si registreranno (se si registrano cosa sono i campi richiesti)? 
+* Sì è opportuno farlo
+
+##### I docenti potranno venire aggiunti dall'admin o si registreranno (se si registrano cosa sono i campi richiesti)?
+
+* È meglio se si registrano, con mail di conferma. Per i campi facciamo quelli del formulario, nome, cognome, telefono, email

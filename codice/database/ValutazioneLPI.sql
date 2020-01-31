@@ -66,18 +66,13 @@ create table contains(
     foreign key(id_form) references form(id)
 );
 
+create user 'valutazionelpi'@'localhost' identified by 'ValutazioneLPI&2020';
+GRANT SELECT, INSERT, UPDATE, DELETE ON valutazionelpi.* TO 'valutazionelpi'@'localhost';
+flush privileges;
 
+insert into role(name) values ("teacher");
+insert into role(name) values ("admin");
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+insert into user(name, surname, email, phone, password, confirmed, id_role) values("Matteo", "Forni", "matteo.forni@samtrevano.ch", "0799119368", "ASDnasdjan9awd&8fhea9", 1, 1);
+insert into user(name, surname, email, phone, password, confirmed, id_role) values("Admin", "User", "admin.user@samtrevano.ch", "0001112233", "ASDnaa54vfsan9awd&8fhea9", 1, 2);
+insert into user(name, surname, email, phone, password, confirmed, id_role) values("Andrea", "Alberini", "andrea.alberini@samtrevano.ch", "1110004466", "ASDnasdjfhea9SDnasdj", 0, 1);

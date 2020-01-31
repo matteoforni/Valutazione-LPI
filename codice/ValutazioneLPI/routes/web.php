@@ -12,5 +12,9 @@
 */
 
 $router->get('/', function () use ($router) {
-    return $router->app->version();
+    return view('login/index');
+});
+
+$router->group(['prefix' => 'login'], function () use ($router) {
+    $router->get('user/{id}', 'LoginController@getUser');
 });

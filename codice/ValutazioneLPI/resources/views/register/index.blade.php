@@ -43,6 +43,11 @@
             <button class="btn btn-info my-4 btn-block">Registrati</button>
         </form>
     </div>
+    <div class="col-md-3 my-5">
+        <div class="errors text-danger">
+
+        </div>
+    </div>
 </div>
 <script>
     $("#registerForm").submit(function( event ) {
@@ -62,10 +67,17 @@
             complete: function(response){
                 if(response["status"] == 201){
                     window.location = "{{ url('login') }}";
+                }else if(response["status"] == 422){
+                    var errors = [];
+                    for(key in response["responseJSON"]) {
+                        errors.push(response["responseJSON"][key]);
+                    }
+                    for(i = 0; i < errors.length; i++){
+                        $(".errors").append("<h6>" + errors[i] + "</h6>");
+                    }
                 }
             }
         });
     });
-
 </script>
 @endsection

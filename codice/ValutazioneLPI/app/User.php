@@ -13,6 +13,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     use Authenticatable, Authorizable;
 
     /**
+     * Disable default timestamps (created_at, deleted_at, updated_at).
+     */
+    public $timestamps = false; 
+
+    /**
      * The name of the table.
      */
     protected $table = 'user';
@@ -23,7 +28,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $fillable = [
-        'name', 'surname', 'email', 'phone', 'confirmed', 'role'
+        'name', 'surname', 'email', 'phone', 'password', 'confirmed', 'id_role'
     ];
 
     /**

@@ -16,5 +16,11 @@ $router->get('/', function () use ($router) {
 });
 
 $router->group(['prefix' => 'login'], function () use ($router) {
+    $router->get('/', 'LoginController@home');
     $router->get('user/{id}', 'LoginController@getUser');
+});
+
+$router->group(['prefix' => 'register'], function () use ($router) {
+    $router->get('/', 'RegisterController@home');
+    $router->post('/register', 'RegisterController@register');
 });

@@ -36,9 +36,9 @@ create table justification(
 create table form(
 	id int primary key auto_increment,
     title varchar(255) not null,
-    created timestamp not null,
-    modified timestamp,
-    deleted timestamp,
+    created datetime not null,
+    modified datetime,
+    deleted datetime,
     student_name varchar(100) not null,
     student_surname varchar(100) not null,
     student_email varchar(100) not null,
@@ -76,3 +76,5 @@ insert into role(name) values ("admin");
 insert into user(name, surname, email, phone, password, confirmed, id_role) values("Matteo", "Forni", "matteo.forni@samtrevano.ch", "0799119368", "ASDnasdjan9awd&8fhea9", 1, 1);
 insert into user(name, surname, email, phone, password, confirmed, id_role) values("Admin", "User", "admin.user@samtrevano.ch", "0001112233", "ASDnaa54vfsan9awd&8fhea9", 1, 2);
 insert into user(name, surname, email, phone, password, confirmed, id_role) values("Andrea", "Alberini", "andrea.alberini@samtrevano.ch", "1110004466", "ASDnasdjfhea9SDnasdj", 0, 1);
+
+select * from user;

@@ -10,5 +10,9 @@ class LoginController extends Controller
     {
         return response()->json(User::find($id));
     }
+
+    public function home(){
+        return view("login/index");
+    }
 }
 ?>

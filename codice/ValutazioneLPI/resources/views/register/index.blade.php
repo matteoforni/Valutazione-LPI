@@ -5,7 +5,7 @@
 @section('content')
 <div class="row">
     <div class="col-md-6 offset-3">
-        <form id="registerForm" class="text-center border border-light p-5 mt-5">
+        <form id="registerForm" class="text-center border border-light p-5 mt-3">
             <p class="h4 mb-4">Registrati</p>
 
             <div class="form-row mb-4">
@@ -31,6 +31,8 @@
                 Inserire una password di almeno 8 caratteri
             </small>
 
+            <input type="password" id="repassword" name="repassword" class="form-control" placeholder="Ripeti la password">
+
             <!-- Register -->
             <p class="mt-3">Possiedi già un account?
                 <a href="{{ url("login") }}">Accedi</a>
@@ -50,14 +52,19 @@
     </div>
 </div>
 <script>
+    //All'evento di submit del form eseguo la richiesta al server con AJAX
     $("#registerForm").submit(function( event ) {
+        //Blocco l'evento di default del form (aggiunta del URL get)
         event.preventDefault();
+        //Ottengo i dati dal form
         var jsonData = $(this).serializeArray();
+        //Formatto i dati del form nel formato necessario per eseguire la richiesta
         var form = {};
         for(var index in jsonData) {
             var json = jsonData[index];
             form[json.name] = json.value;
         }
+        //Eseguo la richiesta post al controller register con metodo register
         $.ajax({
             type: "post",
             url: "{{ url('register/register') }}",
@@ -65,13 +72,18 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",            
             complete: function(response){
+                //Se il server ritorna il codice di successo rimando all'utente alla pagina di login
                 if(response["status"] == 201){
                     window.location = "{{ url('login') }}";
-                }else if(response["status"] == 422){
+
+                //Se il server ritorna un errore stampo gli errori     
+                }else{
+                    //Formatto gli errori
                     var errors = [];
                     for(key in response["responseJSON"]) {
                         errors.push(response["responseJSON"][key]);
                     }
+                    //Stampo gli errori
                     for(i = 0; i < errors.length; i++){
                         $(".errors").append("<h6>" + errors[i] + "</h6>");
                     }

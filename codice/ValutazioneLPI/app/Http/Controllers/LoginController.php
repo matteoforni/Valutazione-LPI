@@ -10,15 +10,11 @@ use Config\Config;
 
 class LoginController extends Controller
 {
-    public function getUser($id)
-    {
-        return response()->json(User::find($id));
-    }
-
-    public function home(){
-        return view("login/index");
-    }
-
+    /**
+     * Funzione che consente di autenticare un utente
+     * @param Request request La richiesta effettuata
+     * @return Response La risposta JSON
+     */
     public function authenticate(Request $request){
         //Personalizzo i messaggi di errore.
         $messages = [
@@ -57,6 +53,11 @@ class LoginController extends Controller
         return response()->json(['error' => 'Email o password sbagliate'], 400);
     }
 
+    /**
+     * Funzione che consente di generare un token JWT
+     * @param User user L'utente alla quale assegnare il token
+     * @return string Il token codificato
+     */
     protected function jwt(User $user) {
         //Imposto i dati del token
         $payload = [
@@ -70,6 +71,7 @@ class LoginController extends Controller
         return JWT::encode($payload, env('APP_KEY'), 'HS256');
     } 
 
+    //FUNZIONE DI TEST PER IL MIDDLEWARE
     public function users(){
         echo "users";
         return response()->json(User::all());

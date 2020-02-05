@@ -35,7 +35,7 @@
 
             <!-- Register -->
             <p class="mt-3">Possiedi già un account?
-                <a href="{{ url("login") }}">Accedi</a>
+                <a href="{{ url("") }}">Accedi</a>
             </p>
             
             <input type="number" hidden name="confirmed" value="0">

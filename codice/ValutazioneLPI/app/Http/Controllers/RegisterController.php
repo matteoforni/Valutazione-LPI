@@ -17,6 +17,7 @@ class RegisterController extends Controller
     /**
      * Funzione che consente di registrare un utente.
      * @param Request request La richiesta generata dall'utente.
+     * @return Response La risposta JSON
      */
     public function register(Request $request)
     {

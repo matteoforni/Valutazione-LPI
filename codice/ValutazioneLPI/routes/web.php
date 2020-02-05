@@ -1,30 +1,32 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Application Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register all of the routes for an application.
-| It is a breeze. Simply tell Lumen the URIs it should respond to
-| and give it the Closure to call when that URI is requested.
-|
-*/
-
+/**
+ * Route che mostra la pagina di login quando si apre la root del sito
+ */
 $router->get('/', function () use ($router) {
     return view('login/index');
 });
 
+/**
+ * Gruppo di route che gestisce le chiamate alla pagina di login
+ */
 $router->group(['prefix' => 'login'], function () use ($router) {
-    $router->get('/', 'LoginController@home');
+    //route che richiama il metodo authenticate quando si chiama URL/login/authenticate
     $router->post('/authenticate', 'LoginController@authenticate');
 });
 
+/**
+ * Gruppo di route che gestisce le chiamate alla pagina di registrazione
+ */
 $router->group(['prefix' => 'register'], function () use ($router) {
+    //route che mostra la pagina di registrazione chiamando URL/register
     $router->get('/', 'RegisterController@home');
+
+    //route che richiama il metodo register quando si chiama URL/register/register
     $router->post('/register', 'RegisterController@register');
 });
 
+//ROUTE DI TEST DEL MIDDLEWARE
 $router->group(['middleware' => 'jwt.auth', 'prefix' => 'auth'], function() use ($router) {
     $router->get('/', 'LoginController@users');
 });

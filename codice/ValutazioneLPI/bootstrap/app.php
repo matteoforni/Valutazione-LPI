@@ -64,6 +64,9 @@ $app->singleton(
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
 ]);
+$app->routeMiddleware([
+    'jwt.auth' => App\Http\Middleware\JwtMiddleware::class,
+]);
 
 /*
 |--------------------------------------------------------------------------
@@ -96,5 +99,7 @@ $app->router->group([
 ], function ($router) {
     require __DIR__.'/../routes/web.php';
 });
+
+$app->configure('app');
 
 return $app;

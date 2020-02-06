@@ -64,17 +64,12 @@ class LoginController extends Controller
             'iss' => env('ISS'), //Emittente del token
             'sub' => $user->id, //Soggetto del token
             'iat' => time(), //Data e orario dell'emissione
-            'exp' => time() + 60*60 //Data e orario dello scadere del token
+            'exp' => time() + 60*60, //Data e orario dello scadere del token
+            'id_role' => $user->id_role
         ];
         
         //Genero il token crittografato con la chiave generata contenente i dati
         return JWT::encode($payload, env('APP_KEY'), 'HS256');
     } 
-
-    //FUNZIONE DI TEST PER IL MIDDLEWARE
-    public function users(){
-        echo "users";
-        return response()->json(User::all());
-    }
 }
 ?>

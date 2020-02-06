@@ -26,7 +26,10 @@ $router->group(['prefix' => 'register'], function () use ($router) {
     $router->post('/register', 'RegisterController@register');
 });
 
-//ROUTE DI TEST DEL MIDDLEWARE
-$router->group(['middleware' => 'jwt.auth', 'prefix' => 'auth'], function() use ($router) {
-    $router->get('/', 'LoginController@users');
+/**
+ * Gruppo di route che gestisce le chiamate della pagina admin
+ */
+$router->group(['middleware' => 'jwt.auth', 'prefix' => 'admin'], function() use ($router) {
+    //route che mostra la pagina di amministrazione chiamando URL/admin
+    $router->get('/', 'AdminController@home');
 });

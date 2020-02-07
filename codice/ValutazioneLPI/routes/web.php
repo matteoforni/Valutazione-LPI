@@ -27,6 +27,19 @@ $router->group(['prefix' => 'register'], function () use ($router) {
 });
 
 /**
+ * 
+ */
+$router->group(['middleware' => 'jwt.auth', 'prefix' => 'login'], function() use ($router) {
+    //route che mostra la pagina dopo il login
+    $router->get('/login', 'LoginController@login');
+});
+
+$router->group(['middleware' => 'jwt.auth', 'prefix' => 'teacher'], function() use ($router) {
+    //route che mostra la pagina dopo il login
+    $router->get('/', 'TeacherController@home');
+});
+
+/**
  * Gruppo di route che gestisce le chiamate della pagina admin
  */
 $router->group(['middleware' => 'jwt.auth', 'prefix' => 'admin'], function() use ($router) {

@@ -14,7 +14,7 @@ class JwtMiddleware{
     {
         //Prendo il token dagli header della richiesta
         $token = $request->header('Authorization');
- 
+
         //Se il token non è settato ritorno l'errore
         if(!$token) {
             return response()->json(['error' => 'Token non impostato'], 401);

@@ -13,7 +13,6 @@
         <!-- jQuery -->
         <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
         <!-- Cookies JS -->
-        <!--<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>-->
         <script src="/resources/CookieJS/js.cookie.min.js"></script>
         <!-- Validazione Frontend -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.79/jquery.form-validator.min.js" integrity="sha256-H7bYoAw738qgns17P+7wWt77AfnEh7yCJMQGUCNcxQA=" crossorigin="anonymous"></script>
@@ -53,7 +52,7 @@
                 Valutazione LPI - 2020
             </div>
           
-          </footer>
+        </footer>
         @show
 
         <!-- Bootstrap tooltips -->

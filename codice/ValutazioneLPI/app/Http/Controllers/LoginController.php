@@ -71,5 +71,22 @@ class LoginController extends Controller
         //Genero il token crittografato con la chiave generata contenente i dati
         return JWT::encode($payload, env('APP_KEY'), 'HS256');
     } 
+
+    /**
+     * Funzione che rimanda l'utente alla pagina seguente il login in base ai suoi privilegi
+     * @param Request request La richiesta del client
+     * @return string Il token codificato
+     */
+    public function login(Request $request){
+        $path = "";
+        //Verifico che l'utente sia un admin
+        if($request->all()['id_role'] == 2){
+            //Se è ammministratore gli mostro la pagina
+            return view('admin/index');
+        }elseif($request->all()['id_role'] == 1){
+            //Se non lo è ritorno la pagina per i docenti
+            return view('teacher/index');
+        }
+    }
 }
 ?>

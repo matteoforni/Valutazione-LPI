@@ -60,7 +60,7 @@
                 //Se il server ritorna il codice di successo salvo il token JWT ritornato nei cookies
                 if(response["status"] == 200){
                     Cookies.set('token', response["responseJSON"]["token"], { expires: 1 });
-
+                    next();
                 //Se il server ritorna un errore stampo gli errori    
                 }else{
                     //Formatto gli errori
@@ -100,5 +100,23 @@
             this.setCustomValidity("");
         };
     });
+
+    function next(){
+        $.ajax({
+            type: "get",
+            url: "{{ url('login/login') }}",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json", 
+            credentials: 'include',
+            headers: {
+                'Authorization': 'Bearer ' + Cookies.get('token'),
+            },
+            complete: function(response){
+                if(response["status"] == 200){
+                    document.write = response["responseText"];
+                }
+            }
+        });
+    }
 </script>
 @endsection

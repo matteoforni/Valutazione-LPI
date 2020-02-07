@@ -32,4 +32,10 @@ $router->group(['prefix' => 'register'], function () use ($router) {
 $router->group(['middleware' => 'jwt.auth', 'prefix' => 'admin'], function() use ($router) {
     //route che mostra la pagina di amministrazione chiamando URL/admin
     $router->get('/', 'AdminController@home');
+    
+    //route che ritorna tutti gli utenti chiamando URL/admin/users
+    $router->get('/users', 'AdminController@getUsers');
+
+    //route che ritorna l'utente con l'id passato
+    $router->get('/user/{id}', 'AdminController@getUser');
 });

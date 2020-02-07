@@ -11,19 +11,19 @@
             <div class="form-row">
                 <div class="col">
                     <!-- First name -->
-                    <input type="text" id="name" name="name" class="form-control mb-4" placeholder="Nome" minlength="2" pattern="[A-Za-zÀ-ÖØ-öø-ÿ]+" required>
+                    <input type="text" id="name" name="name" class="form-control mb-4" placeholder="Nome" minlength="2" pattern="[ A-Za-zÀ-ÖØ-öø-ÿ]+" required>
                 </div>
                 <div class="col">
                     <!-- Last name -->
-                    <input type="text" id="surname" name="surname" class="mb-4 form-control" placeholder="Cognome" minlength="2" pattern="[A-Za-zÀ-ÖØ-öø-ÿ]+" required>
+                    <input type="text" id="surname" name="surname" class="mb-4 form-control" placeholder="Cognome" minlength="2" pattern="[ A-Za-zÀ-ÖØ-öø-ÿ]+" required>
                 </div>
-            </div>
+            </div> 
 
             <!-- E-mail -->
             <input type="email" id="email" name="email" class="form-control mb-4" placeholder="E-mail" required>
 
             <!-- Phone number -->
-            <input type="text" id="phone" name="phone" class="form-control mb-4" placeholder="Numero di telefono" pattern="/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/" required>
+            <input type="text" id="phone" name="phone" class="form-control mb-4" placeholder="Numero di telefono" pattern="^(0|0041|\+41)?[1-9\s][0-9\s]{1,12}$" required>
 
             <!-- Password -->
             <input type="password" id="password" name="password" class="form-control" placeholder="Password" aria-describedby="passwordHelpBlock" minlength="8" required>

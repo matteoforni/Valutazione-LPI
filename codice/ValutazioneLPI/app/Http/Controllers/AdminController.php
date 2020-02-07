@@ -20,5 +20,40 @@ class AdminController extends Controller
         }
        
     }
+
+    /**
+     * Funzione che ritorna tutti gli utenti contenuti nel database
+     * @param Request request La richiesta eseguita
+     * @return La risposta in JSON
+     */
+    public function getUsers(Request $request){
+        //Verifico che l'utente sia un admin
+        if($request->all()['id_role'] == 2){
+            //Se è amministratore ritorno tutti gli utenti
+            return response()->json(User::all());
+        }else{
+            //Se non lo è ritorno l'errore
+            return response()->json(['Unauthorized' => 'Non hai i permessi necessari per accedere'], 401);
+        }
+        
+    }
+
+    /**
+     * Funzione che ritorna l'utente con l'id passato come parametro
+     * @param int id L'id dell'utente
+     * @param Request request La richiesta eseguita
+     * @return La risposta in JSON
+     */
+    public function getUser($id, Request $request){
+        //Verifico che l'utente sia un admin
+        if($request->all()['id_role'] == 2){
+            //Se è amministratore ritorno tutti gli utenti
+            return response()->json(User::find($id));
+        }else{
+            //Se non lo è ritorno l'errore
+            return response()->json(['Unauthorized' => 'Non hai i permessi necessari per accedere'], 401);
+        }
+        
+    }
 }
 ?>

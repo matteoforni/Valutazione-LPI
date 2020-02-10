@@ -17,6 +17,8 @@
         <script src="/resources/CookieJS/js.cookie.min.js"></script>
         <!-- Validazione Frontend -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.79/jquery.form-validator.min.js" integrity="sha256-H7bYoAw738qgns17P+7wWt77AfnEh7yCJMQGUCNcxQA=" crossorigin="anonymous"></script>
+        <!-- Datatables -->
+        <script type="text/javascript" src="/resources/MDB/js/addons/datatables.min.js"></script>
 
 </head>
     </head>
@@ -28,9 +30,6 @@
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <span class="navbar-text white-text justify-content-end">
-                    @yield('name') - @yield('surname')
-                </span>
             </nav>
         </header>
         @show
@@ -40,7 +39,7 @@
         </div>
 
         @section('footer')
-        <footer class="page-footer light-blue lighten-2 fixed-bottom">
+        <footer class="page-footer light-blue lighten-2">
 
             <div class="footer-copyright text-center py-3 text-white">
                 Valutazione LPI - 2020
@@ -55,7 +54,5 @@
         <script type="text/javascript" src="/resources/MDB/js/bootstrap.min.js"></script>
         <!-- MDB core JavaScript -->
         <script type="text/javascript" src="/resources/MDB/js/mdb.min.js"></script>
-        <!-- Datatables -->
-        <script type="text/javascript" src="/resources/MDB/js/addons/datatables.min.js"></script>
     </body>
 </html>

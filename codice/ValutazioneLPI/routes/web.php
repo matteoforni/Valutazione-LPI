@@ -52,6 +52,9 @@ $router->group(['middleware' => 'jwt.auth', 'prefix' => 'admin'], function() use
     //route che ritorna l'utente con l'id passato
     $router->get('/user/{id}', 'AdminController@getUser');
 
+    //route che consente di eliminare un utente
+    $router->delete('/user/delete/{id}', 'AdminController@deleteUser');
+
     //route che ritorna tutte le motivazioni chiamando URL/admin/forms
     $router->get('/justifications', 'AdminController@getJustifications');
 

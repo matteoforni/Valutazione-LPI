@@ -14,7 +14,10 @@ class JwtMiddleware{
     {
         //Prendo il token dagli header della richiesta
         $token = $request->header('Authorization');
+
+        //Verifico che sia stato impostato
         if(!$token){
+            //Verifico se è nell'URL
             $token = $request->get('token');
         }else{
             //Rimuovo la stringa 'Bearer' iniziale

@@ -14,14 +14,17 @@ class JwtMiddleware{
     {
         //Prendo il token dagli header della richiesta
         $token = $request->header('Authorization');
+        if(!$token){
+            $token = $request->get('token');
+        }else{
+            //Rimuovo la stringa 'Bearer' iniziale
+            $token = explode(" ", $token)[1];
+        }        
 
         //Se il token non è settato ritorno l'errore
         if(!$token) {
             return response()->json(['error' => 'Token non impostato'], 401);
         }
-
-        //Rimuovo la stringa 'Bearer' iniziale
-        $token = explode(" ", $token)[1];
 
         try {
             //Decodifico il token
@@ -29,6 +32,7 @@ class JwtMiddleware{
 
             //Aggiungo alla richiesta il tipo di ruolo così da riutilizzarlo in seguito
             $request->request->add(['id_role' => $credentials->id_role]);
+            $request->request->add(['id' => $credentials->sub]);
         } catch(ExpiredException $e) {
             //Se è scaduto ritorno l'errore
             return response()->json(['error' => 'Il token è scaduto'], 400);

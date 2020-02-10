@@ -31,6 +31,23 @@
                 if(response["status"] == 200){
                     var table = JSONToHTML('justifications', response["responseJSON"]);
                     $(".justifications-table").append(table);  
+                    $("#justifications").DataTable({
+                        "searching": true,
+                        "ordering": false,
+                        "bLengthChange": false,
+                        "info" : false,
+                        "iDisplayLength": 5,
+                        "oLanguage": {
+                            "sEmptyTable": "Nessuna motivazione da mostrare",
+                            "sSearch": "Cerca motivazioni",
+                            "oPaginate": {
+                                "sFirst": "Prima pagina",
+                                "sPrevious": "Pagina precedente", 
+                                "sNext": "Prossima pagina", 
+                                "sLast": "Ultima pagina"
+                            }
+                        }
+                    });
                 }          
             }
         });
@@ -47,26 +64,24 @@
                 if(response["status"] == 200){
                     var table = JSONToHTML('users', response["responseJSON"]);
                     $(".users-table").append(table);  
+                    $("#users").DataTable({
+                        "searching": true,
+                        "ordering": false,
+                        "bLengthChange": false,
+                        "info" : false,
+                        "iDisplayLength": 5,
+                        "oLanguage": {
+                            "sEmptyTable": "Nessun utente da mostrare",
+                            "sSearch": "Cerca utenti",
+                            "oPaginate": {
+                                "sFirst": "Prima pagina",
+                                "sPrevious": "Pagina precedente", 
+                                "sNext": "Prossima pagina", 
+                                "sLast": "Ultima pagina"
+                            }
+                        }
+                    });
                 }          
-            }
-        });
-    
-        $("#justifications").DataTable(/*{
-            "searching": true,
-            "bLengthChange": false,
-            "info" : false,
-            "iDisplayLength": 5,
-            "oLanguage": {
-                "sEmptyTable": "Nessuna motivazione da mostrare"
-            }
-        }*/);
-        $("#users").DataTable({
-            "searching": true,
-            "bLengthChange": false,
-            "info" : false,
-            "iDisplayLength": 5,
-            "oLanguage": {
-                "sEmptyTable": "Nessun utente da mostrare"
             }
         });
     });

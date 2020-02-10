@@ -17,9 +17,15 @@
         <script src="/resources/CookieJS/js.cookie.min.js"></script>
         <!-- Validazione Frontend -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.79/jquery.form-validator.min.js" integrity="sha256-H7bYoAw738qgns17P+7wWt77AfnEh7yCJMQGUCNcxQA=" crossorigin="anonymous"></script>
+        <!-- Bootstrap tooltips -->
+        <script type="text/javascript" src="/resources/MDB/js/popper.min.js"></script>
+        <!-- Bootstrap core JavaScript -->
+        <script type="text/javascript" src="/resources/MDB/js/bootstrap.min.js"></script>
+        <!-- MDB core JavaScript -->
+        <script type="text/javascript" src="/resources/MDB/js/mdb.min.js"></script>
         <!-- Datatables -->
         <script type="text/javascript" src="/resources/MDB/js/addons/datatables.min.js"></script>
-
+        <script type="text/javascript" src="/resources/MDB/js/addons/datatables-select.min.js"></script>
 </head>
     </head>
     <body>
@@ -47,12 +53,5 @@
           
         </footer>
         @show
-
-        <!-- Bootstrap tooltips -->
-        <script type="text/javascript" src="/resources/MDB/js/popper.min.js"></script>
-        <!-- Bootstrap core JavaScript -->
-        <script type="text/javascript" src="/resources/MDB/js/bootstrap.min.js"></script>
-        <!-- MDB core JavaScript -->
-        <script type="text/javascript" src="/resources/MDB/js/mdb.min.js"></script>
     </body>
 </html>

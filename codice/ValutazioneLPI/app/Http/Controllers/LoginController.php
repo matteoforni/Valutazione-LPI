@@ -7,6 +7,7 @@ use Firebase\JWT\ExpiredException;
 use Illuminate\Support\Facades\Validator;
 use Firebase\JWT\JWT;
 use Config\Config;
+use Illuminate\Http\RedirectResponse;
 
 class LoginController extends Controller
 {
@@ -78,14 +79,14 @@ class LoginController extends Controller
      * @return string Il token codificato
      */
     public function login(Request $request){
-        $path = "";
+        $user = User::find($request->all()['id']);
         //Verifico che l'utente sia un admin
         if($request->all()['id_role'] == 2){
             //Se è ammministratore gli mostro la pagina
-            return view('admin/index');
+            return redirect('admin?token=' . $request->get('token'));
         }elseif($request->all()['id_role'] == 1){
             //Se non lo è ritorno la pagina per i docenti
-            return view('teacher/index');
+            return redirect('teacher?token=' . $request->get('token'));
         }
     }
 }

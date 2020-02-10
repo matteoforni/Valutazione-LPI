@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use App\Justification;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -93,7 +94,7 @@ class AdminController extends Controller
     public function deleteUser($id, Request $request){
         //Verifico che l'utente sia un admin
         if($request->all()['id_role'] == 2){
-            //Se è amministratore ritorno tutti gli utenti
+            //Se è amministratore cerco l'utente e lo elimino
             User::findOrFail($id)->delete();
             return response('Deleted Successfully', 200);
         }else{
@@ -102,17 +103,46 @@ class AdminController extends Controller
         }    
     }
 
-    public function updateUser($request, $id){
-        $this->validate($request, [
-            'name' => 'required|min:2|max:50',
-            'surname' => 'required',
-            'nationality' => 'required'
-        ]);
-        
-        $author = User::findOrFail($id);
-        $author->update($request->all());
+    /**
+     * Funzione che consente di modificare un utente
+     * @param int id L'id dell'utente
+     * @param Request request La richiesta eseguita
+     * @return La risposta in JSON 
+     */
+    public function updateUser($id, Request $request){
+        //Personalizzo i messaggi di errore.
+        $messages = [
+            'required' => "Il campo :attribute deve essere specificato",
+            'min' => "Il campo :attribute deve essere di almeno :min caratteri",
+            'max' => "Il campo :attribute deve essere di massimo :max caratteri",
+            'email' => "Il campo :attribute deve essere un indirizzo email valido",
+            'numeric' => "Il campo :attribute deve essere di tipo numerico",
+            'same' => "Il campo :attribute deve valere 0",
+            'unique' => "L':attribute inserita è già in utilizzo",
+        ];
 
-        return response()->json($author, 200);
+        //Eseguo la validazione dei dati.
+        $validation = Validator::make($request->all(), [
+            'name' => ['required','min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/'],
+            'surname' => ['required','min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/'],
+            'phone' => ['required','min:9','regex:/^(0|0041|\+41)?[1-9\s][0-9\s]{1,12}$/'],
+            'confirmed' => 'required|in:0,1|numeric',
+            'id_role' => 'required|numeric'
+        ], $messages);
+        
+        //Verifico che la valutazione sia andata a buon fine.
+        if($validation->fails()){
+            //Se fallisce ritorno gli errori.
+            return response()->json($validation->errors(), '422');
+        }
+        
+        //Cerco l'utente
+        $user = User::findOrFail($id);
+        //Eseguo la modifica
+        $user->update($request->all());
+
+        //Ritorno l'utente
+        return response()->json($user, 200);
     }
 
     /**
@@ -133,8 +163,32 @@ class AdminController extends Controller
         }    
     }
 
-    public function updateJustification($id){
+    public function updateJustification($id, Request $request){
+        //Personalizzo i messaggi di errore.
+        $messages = [
+            'required' => "Il campo :attribute deve essere specificato",
+            'exists' => "Il punto scelto non esiste"
+        ];
+
+        //Eseguo la validazione dei dati.
+        $validation = Validator::make($request->all(), [
+            'text' => 'required',
+            'id_point' => 'required|exists:point,code'
+        ], $messages);
         
+        //Verifico che la valutazione sia andata a buon fine.
+        if($validation->fails()){
+            //Se fallisce ritorno gli errori.
+            return response()->json($validation->errors(), '422');
+        }
+        
+        //Cerco la motivazione
+        $justification = Justification::findOrFail($id);
+        //Eseguo la modifica
+        $justification->update($request->all());
+
+        //Ritorno la motivazione
+        return response()->json($justification, 200);
     }
 }
 ?>

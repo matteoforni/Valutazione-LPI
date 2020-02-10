@@ -55,9 +55,18 @@ $router->group(['middleware' => 'jwt.auth', 'prefix' => 'admin'], function() use
     //route che consente di eliminare un utente
     $router->delete('/user/delete/{id}', 'AdminController@deleteUser');
 
+    //route che consente di aggiornare un utente
+    $router->put('/user/update/{id}', 'AdminController@updateUser');
+
     //route che ritorna tutte le motivazioni chiamando URL/admin/forms
     $router->get('/justifications', 'AdminController@getJustifications');
 
     //route che ritorna la motivazione con l'id passato
     $router->get('/justification/{id}', 'AdminController@getJustification');
+
+    //route che consente di eliminare un utente
+    $router->delete('/justification/delete/{id}', 'AdminController@deleteJustification');
+
+    //route che consente di aggiornare un utente
+    $router->put('/justification/update/{id}', 'AdminController@updateJustification');
 });

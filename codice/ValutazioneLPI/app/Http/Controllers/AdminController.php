@@ -163,6 +163,12 @@ class AdminController extends Controller
         }    
     }
 
+    /**
+     * Funzione che consente di modificare una motivazione
+     * @param int id L'id della motivazione
+     * @param Request request La richiesta eseguita
+     * @return La risposta in JSON 
+     */
     public function updateJustification($id, Request $request){
         //Personalizzo i messaggi di errore.
         $messages = [

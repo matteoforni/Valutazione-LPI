@@ -64,9 +64,9 @@ $router->group(['middleware' => 'jwt.auth', 'prefix' => 'admin'], function() use
     //route che ritorna la motivazione con l'id passato
     $router->get('/justification/{id}', 'AdminController@getJustification');
 
-    //route che consente di eliminare un utente
+    //route che consente di eliminare una motivazione
     $router->delete('/justification/delete/{id}', 'AdminController@deleteJustification');
 
-    //route che consente di aggiornare un utente
+    //route che consente di aggiornare una motivazione
     $router->put('/justification/update/{id}', 'AdminController@updateJustification');
 });

@@ -60,7 +60,7 @@ class RegisterController extends Controller
         }
         
         $options = array(
-            'cost' => 12,
+            'cost' => env('COST'),
         );
 
         $request['password'] = password_hash($request['password'],PASSWORD_BCRYPT, $options);

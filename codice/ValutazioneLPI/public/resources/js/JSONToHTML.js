@@ -21,15 +21,15 @@ function JSONToHTML(id, data){
         table += "</tr></thead><tbody>";
         for(var i in data){
             let count = 0;
-            table += "<tr>";
+            table += "<tr id='" + data[i].id + "'>";
             for(var j in data[i]){
                 if(keys[count] != 'password'){
                     table += "<td>" + data[i][keys[count]] + "</td>";
                 }
                 count++;
             }
-            table += "<td><a href=''>Modifica</a></td>";
-            table += "<td><a href=''>Elimina</a></td>";
+            table += "<td><a href='' class='updateField" + id + "'>Modifica</a></td>";
+            table += "<td><a class='deleteField" + id + "'>Elimina</a></td>";
             table += "</tr>";
         }
     }

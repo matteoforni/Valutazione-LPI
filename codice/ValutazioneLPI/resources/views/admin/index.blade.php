@@ -73,72 +73,8 @@
 <script src="/resources/js/JSONToHTML.js"></script>
 <script>
     $(document).ready(function(){
-        $.ajax({
-            type: "get",
-            url: "{{ url('admin/justifications') }}",
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",     
-            headers: {
-                'Authorization':'Bearer ' + Cookies.get('token'),
-            },       
-            complete: function(response){
-                //Se il server ritorna il codice di successo salvo il token JWT ritornato nei cookies
-                if(response["status"] == 200){
-                    var table = JSONToHTML('justifications', response["responseJSON"]);
-                    $(".justifications-table").append(table);  
-                    $("#justifications").DataTable({
-                        "searching": true,
-                        "ordering": false,
-                        "bLengthChange": false,
-                        "info" : false,
-                        "iDisplayLength": 5,
-                        "oLanguage": {
-                            "sEmptyTable": "Nessuna motivazione da mostrare",
-                            "sSearch": "Cerca motivazioni",
-                            "oPaginate": {
-                                "sFirst": "Prima pagina",
-                                "sPrevious": "Pagina precedente", 
-                                "sNext": "Prossima pagina", 
-                                "sLast": "Ultima pagina"
-                            }
-                        }
-                    });
-                }          
-            }
-        });
-        $.ajax({
-            type: "get",
-            url: "{{ url('admin/users') }}",
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",     
-            headers: {
-                'Authorization':'Bearer ' + Cookies.get('token'),
-            },       
-            complete: function(response){
-                //Se il server ritorna il codice di successo salvo il token JWT ritornato nei cookies
-                if(response["status"] == 200){
-                    var table = JSONToHTML('users', response["responseJSON"]);
-                    $(".users-table").append(table);  
-                    $("#users").DataTable({
-                        "searching": true,
-                        "ordering": false,
-                        "bLengthChange": false,
-                        "info" : false,
-                        "iDisplayLength": 5,
-                        "oLanguage": {
-                            "sEmptyTable": "Nessun utente da mostrare",
-                            "sSearch": "Cerca utenti",
-                            "oPaginate": {
-                                "sFirst": "Prima pagina",
-                                "sPrevious": "Pagina precedente", 
-                                "sNext": "Prossima pagina", 
-                                "sLast": "Ultima pagina"
-                            }
-                        }
-                    });
-                }          
-            }
-        });
+        createJustificationTable();
+        createUserTable();
     });
 
     $("#registerForm").submit(function( event ) {
@@ -219,5 +155,133 @@
             this.setCustomValidity("");
         };
     });
+
+    /**
+     * Funzione che consente di creare la tabella delle motivazioni
+     */ 
+    function createJustificationTable(){
+        //Richiedo i dati per riempire la tabella
+        $.ajax({
+            type: "get",
+            url: "{{ url('admin/justifications') }}",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",     
+            headers: {
+                'Authorization':'Bearer ' + Cookies.get('token'),
+            },       
+            complete: function(response){
+                //Se il server ritorna il codice di successo salvo il token JWT ritornato nei cookies
+                if(response["status"] == 200){
+                    var table = JSONToHTML('Justification', response["responseJSON"]);
+                    $(".justifications-table").html(table);  
+                    $("#justifications").DataTable({
+                        "searching": true,
+                        "ordering": false,
+                        "bLengthChange": false,
+                        "info" : false,
+                        "iDisplayLength": 5,
+                        "oLanguage": {
+                            "sEmptyTable": "Nessuna motivazione da mostrare",
+                            "sSearch": "Cerca motivazioni",
+                            "oPaginate": {
+                                "sFirst": "Prima pagina",
+                                "sPrevious": "Pagina precedente", 
+                                "sNext": "Prossima pagina", 
+                                "sLast": "Ultima pagina"
+                            }
+                        }
+                    });
+                    //Trovo tutti i link che servono all'eliminazione delle motivazioni
+                    var deleteLinks = $(".deleteFieldJustification");
+                    $.each(deleteLinks, function(){
+                        //Ad ogniuno di loro collego un evento onClick
+                        $(this).click(function() {
+                             //Genero il link che andranno a richiamare
+                            var link = "{{ url('admin/justification/delete/') }}";
+                            link += "/" + $(this).parents().eq(1).attr("id");
+                            //Eseguo la richiesta
+                            $.ajax({
+                                type: "delete", 
+                                url: link,
+                                contentType: "application/json; charset=utf-8",
+                                dataType: "json",   
+                                headers: {
+                                    'Authorization':'Bearer ' + Cookies.get('token'),
+                                },
+                                //Se è finita con successo richiamo la stessa funzione così da aggiornare la pagina
+                                complete: function() {
+                                    createJustificationTable()
+                                }
+                            });
+                        });
+                    });   
+                }       
+            }
+        });
+    }
+
+    /**
+     * Funzione che consente di creare la tabella degli utenti 
+     */
+    function createUserTable(){
+        //Richiedo i dati per riempire la tabella
+        $.ajax({
+            type: "get",
+            url: "{{ url('admin/users') }}",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",     
+            headers: {
+                'Authorization':'Bearer ' + Cookies.get('token'),
+            },       
+            complete: function(response){
+                //Se il server ritorna il codice di successo salvo il token JWT ritornato nei cookies
+                if(response["status"] == 200){
+                    var table = JSONToHTML('User', response["responseJSON"]);
+                    $(".users-table").html(table);  
+                    $("#users").DataTable({
+                        "searching": true,
+                        "ordering": false,
+                        "bLengthChange": false,
+                        "info" : false,
+                        "iDisplayLength": 5,
+                        "oLanguage": {
+                            "sEmptyTable": "Nessun utente da mostrare",
+                            "sSearch": "Cerca utenti",
+                            "oPaginate": {
+                                "sFirst": "Prima pagina",
+                                "sPrevious": "Pagina precedente", 
+                                "sNext": "Prossima pagina", 
+                                "sLast": "Ultima pagina"
+                            }
+                        }
+                    });
+                    //Trovo tutti i link che servono all'eliminazione degli utenti
+                    var deleteLinks = $(".deleteFieldUser");
+                    $.each(deleteLinks, function(){
+                        //Ad ogniuno di loro collego un evento onClick
+                        $(this).click(function() {
+                            //Genero il link che andranno a richiamare
+                            var link = "{{ url('admin/user/delete/') }}";
+                            link += "/" + $(this).parents().eq(1).attr("id");
+                            //Eseguo la richiesta
+                            $.ajax({
+                                type: "delete", 
+                                url: link,
+                                contentType: "application/json; charset=utf-8",
+                                dataType: "json",   
+                                headers: {
+                                    'Authorization':'Bearer ' + Cookies.get('token'),
+                                },
+                                //Se è finita con successo richiamo la stessa funzione così da aggiornare la pagina
+                                complete: function() {
+                                    createUserTable()
+                                }
+                            });
+                        });
+                    });
+                }          
+            }
+        });
+    }
 </script>
 @endsection

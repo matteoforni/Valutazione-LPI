@@ -28,7 +28,7 @@ function JSONToHTML(id, data){
                 }
                 count++;
             }
-            table += "<td><a href='' class='updateField" + id + "'>Modifica</a></td>";
+            table += "<td><a class='updateField" + id + "'>Modifica</a></td>";
             table += "<td><a class='deleteField" + id + "'>Elimina</a></td>";
             table += "</tr>";
         }

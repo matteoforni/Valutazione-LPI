@@ -86,6 +86,53 @@ class AdminController extends Controller
     }
 
     /**
+     * Funzione che consente di aggiungere un utente
+     * @param int id L'id dell'utente
+     * @param Request request La richiesta eseguita
+     * @return La risposta in JSON 
+     */
+    public function addUser($id, Request $request){
+        //Personalizzo i messaggi di errore.
+        $messages = [
+            'required' => "Il campo :attribute deve essere specificato",
+            'min' => "Il campo :attribute deve essere di almeno :min caratteri",
+            'max' => "Il campo :attribute deve essere di massimo :max caratteri",
+            'email' => "Il campo :attribute deve essere un indirizzo email valido",
+            'numeric' => "Il campo :attribute deve essere di tipo numerico",
+            'same' => "Il campo :attribute deve valere 0",
+            'unique' => "L':attribute inserita è già in utilizzo",
+        ];
+
+        //Eseguo la validazione dei dati.
+        $validation = Validator::make($request->all(), [
+            'name' => ['required','min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/'],
+            'surname' => ['required','min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/'],
+            'email' => 'required|email|unique:user',
+            'phone' => ['required','min:9','regex:/^(0|0041|\+41)?[1-9\s][0-9\s]{1,12}$/'],
+            'confirmed' => 'required|in:0,1|numeric',
+            'id_role' => 'required|numeric'
+        ], $messages);
+        
+        //Verifico che la valutazione sia andata a buon fine.
+        if($validation->fails()){
+            //Se fallisce ritorno gli errori.
+            return response()->json($validation->errors(), '422');
+        }
+        
+        $options = array(
+            'cost' => env('COST'),
+        );
+
+        $request['password'] = password_hash($request['password'],PASSWORD_BCRYPT, $options);
+
+        //Se la validazione va a buon fine genero l'errore.
+        $user = User::create($request->all());
+
+        //Ritorno la risposta di successo.
+        return response()->json($user, 201);
+    }
+
+    /**
      * Funzione che consente di eliminare un utente
      * @param int id L'id dell'utente
      * @param Request request La richiesta eseguita

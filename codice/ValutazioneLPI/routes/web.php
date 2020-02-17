@@ -49,6 +49,8 @@ $router->group(['middleware' => 'jwt.auth', 'prefix' => 'admin'], function() use
     //route che ritorna tutti gli utenti chiamando URL/admin/users
     $router->get('/users', 'AdminController@getUsers');
 
+    $router->post('/add', 'AdminController@addUser');
+
     //route che ritorna l'utente con l'id passato
     $router->get('/user/{id}', 'AdminController@getUser');
 

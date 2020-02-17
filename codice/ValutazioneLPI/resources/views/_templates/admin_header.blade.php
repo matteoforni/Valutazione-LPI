@@ -10,6 +10,7 @@
         <link href="/resources/MDB/css/mdb.min.css" rel="stylesheet">
         <link href="/resources/style.css" rel="stylesheet">
         <link href="/resources/MDB/css/addons/datatables.min.css" rel="stylesheet">
+        <link href="/resources/toastr/toastr.css" rel="stylesheet">
 
         <!-- jQuery -->
         <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -26,6 +27,8 @@
         <!-- Datatables -->
         <script type="text/javascript" src="/resources/MDB/js/addons/datatables.min.js"></script>
         <script type="text/javascript" src="/resources/MDB/js/addons/datatables-select.min.js"></script>
+        <!-- Toastr notification library -->
+        <script type="text/javascript" src="/resources/toastr/toastr.js"></script>
 </head>
     </head>
     <body>

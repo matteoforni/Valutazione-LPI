@@ -9,6 +9,9 @@
         <div class="justifications-table table-responsive">
         </div>
     </div>
+    <div class="errors text-danger">
+
+    </div>
     <div class="col-md-12 text-center my-5">
         <h3 class="h3 text-center my-5">Gestione utenti</h3>
         <div class="users-table table-responsive mb-5">
@@ -54,14 +57,9 @@
             <input type="number" hidden name="id_role" value="1">
 
             <div class="text-center">
-                <button class="btn btn-info btn-block">Registrati</button>
+                <button class="btn btn-info btn-block">Registra l'utente</button>
             </div>
         </form>
-        <div class="col-md-3 my-5">
-            <div class="errors text-danger">
-    
-            </div>
-        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Chiudi</button>
@@ -139,12 +137,16 @@
             url: "{{ url('admin/add') }}",
             data: JSON.stringify(form),
             contentType: "application/json; charset=utf-8",
-            dataType: "json",            
+            dataType: "json", 
+            headers: {
+                'Authorization':'Bearer ' + Cookies.get('token'),
+            },            
             complete: function(response){
-                //Se il server ritorna il codice di successo rimando all'utente alla pagina di login
+                //Se il server ritorna il codice di successo ricarico la tabella
                 if(response["status"] == 201){
-                    window.location = "{{ url('') }}";
-
+                    $('#addUserModal').modal('hide');
+                    createUserTable();
+                    toastr.success('Utente aggiunto con successo');
                 //Se il server ritorna un errore stampo gli errori     
                 }else{
                     //Formatto gli errori
@@ -219,7 +221,7 @@
                 if(response["status"] == 200){
                     var table = JSONToHTML('Justification', response["responseJSON"]);
                     $(".justifications-table").html(table);  
-                    $("#justifications").DataTable({
+                    $("#Justification").DataTable({
                         "searching": true,
                         "ordering": false,
                         "bLengthChange": false,
@@ -246,7 +248,7 @@
                             var id = $(this).parents().eq(1).attr("id");
                             $("#justificationMessage").append(id);
                         });
-                    });   
+                    });  
                 }       
             }
         });
@@ -270,7 +272,7 @@
                 if(response["status"] == 200){
                     var table = JSONToHTML('User', response["responseJSON"]);
                     $(".users-table").html(table);  
-                    $("#users").DataTable({
+                    $("#User").DataTable({
                         "searching": true,
                         "ordering": false,
                         "bLengthChange": false,
@@ -319,8 +321,12 @@ function deleteJustification(){
         },
         //Se è finita con successo richiamo la stessa funzione così da aggiornare la pagina
         complete: function() {
-            createJustificationTable()
-        }
+            createJustificationTable();
+            toastr.success('Motivazione eliminata con successo');
+        },
+        error: function() {
+            toastr.error('Impossibile eliminare la motivazione');
+        },
     });
 }
 
@@ -340,8 +346,12 @@ function deleteUser(){
         },
         //Se è finita con successo richiamo la stessa funzione così da aggiornare la pagina
         complete: function() {
-            createUserTable()
-        }
+            createUserTable();
+            toastr.success('Utente eliminato con successo');
+        },
+        error: function() {
+            toastr.error("Impossibile eliminare l'utente");
+        },
     });
 }
 </script>

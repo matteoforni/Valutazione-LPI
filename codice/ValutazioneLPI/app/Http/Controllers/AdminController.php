@@ -91,7 +91,7 @@ class AdminController extends Controller
      * @param Request request La richiesta eseguita
      * @return La risposta in JSON 
      */
-    public function addUser($id, Request $request){
+    public function addUser(Request $request){
         //Personalizzo i messaggi di errore.
         $messages = [
             'required' => "Il campo :attribute deve essere specificato",

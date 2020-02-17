@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\Point;
 use App\Justification;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
@@ -14,8 +15,9 @@ class AdminController extends Controller
     public function home(Request $request){
         //Verifico che l'utente sia un admin
         if($request->all()['id_role'] == 2){
+            $points = Point::all();
             //Se è ammministratore gli mostro la pagina
-            return view('admin/index');
+            return view('admin/index')->with('points', $points);
         }else{
             //Se non lo è ritorno l'errore
             return response()->json(['Unauthorized' => 'Non hai i permessi necessari per accedere'], 401);
@@ -87,7 +89,6 @@ class AdminController extends Controller
 
     /**
      * Funzione che consente di aggiungere un utente
-     * @param int id L'id dell'utente
      * @param Request request La richiesta eseguita
      * @return La risposta in JSON 
      */
@@ -190,6 +191,37 @@ class AdminController extends Controller
 
         //Ritorno l'utente
         return response()->json($user, 200);
+    }
+
+/**
+     * Funzione che consente di aggiungere una motivazione
+     * @param Request request La richiesta eseguita
+     * @return La risposta in JSON 
+     */
+    public function addJustification(Request $request){
+        //Personalizzo i messaggi di errore.
+        $messages = [
+            'required' => "Il campo :attribute deve essere specificato",
+            'unique' => "L':attribute inserita è già in utilizzo",
+        ];
+
+        //Eseguo la validazione dei dati.
+        $validation = Validator::make($request->all(), [
+            'text' => 'required',
+            'id_point' => 'required|exists:point,code',
+        ], $messages);
+        
+        //Verifico che la valutazione sia andata a buon fine.
+        if($validation->fails()){
+            //Se fallisce ritorno gli errori.
+            return response()->json($validation->errors(), '422');
+        }
+
+        //Se la validazione va a buon fine genero l'errore.
+        $justification = Justification::create($request->all());
+
+        //Ritorno la risposta di successo.
+        return response()->json($justification, 201);
     }
 
     /**

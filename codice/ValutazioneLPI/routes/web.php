@@ -49,7 +49,8 @@ $router->group(['middleware' => 'jwt.auth', 'prefix' => 'admin'], function() use
     //route che ritorna tutti gli utenti chiamando URL/admin/users
     $router->get('/users', 'AdminController@getUsers');
 
-    $router->post('/add', 'AdminController@addUser');
+    //route di aggiunta degli utenti
+    $router->post('/user/add', 'AdminController@addUser');
 
     //route che ritorna l'utente con l'id passato
     $router->get('/user/{id}', 'AdminController@getUser');
@@ -65,6 +66,9 @@ $router->group(['middleware' => 'jwt.auth', 'prefix' => 'admin'], function() use
 
     //route che ritorna la motivazione con l'id passato
     $router->get('/justification/{id}', 'AdminController@getJustification');
+
+    //route di aggiunta degli utenti
+    $router->post('/justification/add', 'AdminController@addJustification');
 
     //route che consente di eliminare una motivazione
     $router->delete('/justification/delete/{id}', 'AdminController@deleteJustification');

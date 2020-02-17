@@ -70,13 +70,13 @@
 </div>
 
 <!-- MODALE DI AGGIUNTA DI UNA MOTIVAZIONE -->
-<div class="modal fade" id="addJustificationModal" tabindex="-1" role="dialog" aria-labelledby="addUserTitle"
+<div class="modal fade" id="addJustificationModal" tabindex="-1" role="dialog" aria-labelledby="addJustificationTitle"
   aria-hidden="true">
 
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title w-100" id="addUserTitle">Aggiungi motivazione</h4>
+        <h4 class="modal-title w-100" id="addJustificationTitle">Aggiungi motivazione</h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -90,7 +90,7 @@
                 <label for="textarea-char-counter">Inserisci il testo</label>
             </div>
 
-            <select id="pointSelect" name="id_point" class="browser-default custom-select">
+            <select id="pointSelect" name="id_point" class="point-select browser-default custom-select">
                 <option selected disabled>Seleziona un punto</option>
             </select>
             <p id="pointText" class="mt-3"></p>
@@ -107,6 +107,45 @@
   </div>
 </div>
 
+<!-- MODALE DI MODIFICA DI UNA MOTIVAZIONE -->
+<div class="modal fade" id="updateJustificationModal" tabindex="-1" role="dialog" aria-labelledby="updateJustificationTitle"
+  aria-hidden="true">
+
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title w-100" id="addUserTitle">Modifica motivazione</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="updateJustificationForm" class="text-center border border-light p-5 mt-3 m-5">
+            <p class="h4 mb-4">Modifica la motivazione</p>
+
+            <div class="md-form">
+                <textarea id="textUpdate" class="form-control md-textarea" name="text" maxlength="1000" length="1000" rows="4"></textarea>
+                <label for="textarea-char-counter">Inserisci il testo</label>
+            </div>
+
+            <select id="pointUpdateSelect" name="id_point" class="point-select browser-default custom-select">
+                <option selected disabled>Seleziona un punto</option>
+            </select>
+            <p id="pointText" class="mt-3"></p>
+
+            <div class="text-center">
+                <button class="btn btn-info btn-block">Modifica la motivazione</button>
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Chiudi</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALE DI ELIMINAZIONE DI UNA MOTIVAZIONE -->
 <div class="modal fade" id="deleteJustificationModal" tabindex="-1" role="dialog" aria-labelledby="deleteJustificationTitle"
   aria-hidden="true">
   <div class="modal-dialog modal-md .modal-dialog-centered" role="document">
@@ -118,7 +157,7 @@
         </button>
       </div>
       <div class="modal-body">
-            <p id="justificationMessage">Sei sicuro di voler eliminare la motivazione: </p>
+            <p id="justificationMessage"></p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger btn-sm" onclick="deleteJustification()">Elimina</button>
@@ -128,6 +167,7 @@
   </div>
 </div>
 
+<!-- MODALE DI ELIMINAZIONE DI UN UTENTE -->
 <div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="deleteTitle"
   aria-hidden="true">
 
@@ -140,7 +180,7 @@
         </button>
       </div>
       <div class="modal-body">
-            <p id="userMessage">Sei sicuro di voler eliminare l'utente: </p>
+            <p id="userMessage"></p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger btn-sm" onclick="deleteUser()">Elimina</button>
@@ -174,7 +214,7 @@
             var option = new Option(points[i]['code'], points[i]['code']);
             $(option).html(points[i]['code']);
             //La aggiungo alla select
-            $("#pointSelect").append(option);
+            $(".point-select").append(option);
         }
     });
 
@@ -189,7 +229,7 @@
             var json = jsonData[index];
             form[json.name] = json.value;
         }
-        //Eseguo la richiesta post al controller register con metodo register
+        //Eseguo la richiesta post al controller admin con metodo add
         $.ajax({
             type: "post",
             url: "{{ url('admin/user/add') }}",
@@ -232,7 +272,7 @@
             var json = jsonData[index];
             form[json.name] = json.value;
         }
-        //Eseguo la richiesta post al controller register con metodo register
+        //Eseguo la richiesta post al controller admin con metodo add
         $.ajax({
             type: "post",
             url: "{{ url('admin/justification/add') }}",
@@ -347,17 +387,13 @@
                             }
                         }
                     });
-                    //Trovo tutti i link che servono all'eliminazione delle motivazioni
-                    var deleteLinks = $(".deleteFieldJustification");
-                    $.each(deleteLinks, function(){
-                        $(this).attr('data-toggle', 'modal');
-                        $(this).attr('data-target', '#deleteJustificationModal');
-                        $(this).click(function(){
-                            deleteLink = $(this);
-                            var id = $(this).parents().eq(1).attr("id");
-                            $("#justificationMessage").append(id);
-                        });
-                    });  
+                    
+                    setJustificationLinks();
+
+                    //Reimposto i links quando si cambia pagina nella tabella   
+                    $('#Justification').on('page.dt', function () {
+                        setJustificationLinks();
+                    });
                 }       
             }
         });
@@ -398,70 +434,146 @@
                             }
                         }
                     });
-                    //Trovo tutti i link che servono all'eliminazione degli utenti
-                    var deleteLinks = $(".deleteFieldUser");
-                    $.each(deleteLinks, function(){
-                        $(this).attr('data-toggle', 'modal');
-                        $(this).attr('data-target', '#deleteUserModal');
-                        $(this).click(function(){
-                            deleteLink = $(this);
-                            var id = $(this).parents().eq(1).attr("id");
-                            $("#userMessage").append(id);
-                        });
+                    
+                    setUserLinks();
+
+                    //Reimposto i links quando si cambia pagina nella tabella
+                    $('#Users').on('page.dt', function () {
+                        setUserLinks();
                     });
                 }          
             }
         });
     }
 
-function deleteJustification(){
-    $('#deleteJustificationModal').modal('hide');
-    //Genero il link che andranno a richiamare
-    var link = "{{ url('admin/justification/delete/') }}";
-    link += "/" + $(deleteLink).parents().eq(1).attr("id");
-    //Eseguo la richiesta
-    $.ajax({
-        type: "delete", 
-        url: link,
-        contentType: "application/json; charset=utf-8",
-        dataType: "json",   
-        headers: {
-            'Authorization':'Bearer ' + Cookies.get('token'),
-        },
-        //Se è finita con successo richiamo la stessa funzione così da aggiornare la pagina
-        complete: function() {
-            createJustificationTable();
-            toastr.success('Motivazione eliminata con successo');
-        },
-        error: function() {
-            toastr.error('Impossibile eliminare la motivazione');
-        },
-    });
-}
+    /**
+     * Funzone che consente di eseguire la richiesta che elimina la motivazione selezionata
+     */ 
+    function deleteJustification(){
+        $('#deleteJustificationModal').modal('hide');
+        //Genero il link che andranno a richiamare
+        var link = "{{ url('admin/justification/delete/') }}";
+        link += "/" + $(deleteLink).parents().eq(1).attr("id");
+        //Eseguo la richiesta
+        $.ajax({
+            type: "delete", 
+            url: link,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",   
+            headers: {
+                'Authorization':'Bearer ' + Cookies.get('token'),
+            },
+            //Se è finita con successo richiamo la stessa funzione così da aggiornare la pagina
+            complete: function(response) {
+                if(response["status"] == 200){
+                    createJustificationTable();
+                    toastr.success('Motivazione eliminata con successo');
+                }else{
+                    toastr.error('Impossibile eliminare la motivazione');
+                }
+            }
+        });
+    }
 
-function deleteUser(){
-    $('#deleteUserModal').modal('hide');
-    //Genero il link che andranno a richiamare
-    var link = "{{ url('admin/user/delete/') }}";
-    link += "/" + $(deleteLink).parents().eq(1).attr("id");
-    //Eseguo la richiesta
-    $.ajax({
-        type: "delete", 
-        url: link,
-        contentType: "application/json; charset=utf-8",
-        dataType: "json",   
-        headers: {
-            'Authorization':'Bearer ' + Cookies.get('token'),
-        },
-        //Se è finita con successo richiamo la stessa funzione così da aggiornare la pagina
-        complete: function() {
-            createUserTable();
-            toastr.success('Utente eliminato con successo');
-        },
-        error: function() {
-            toastr.error("Impossibile eliminare l'utente");
-        },
-    });
-}
+    /**
+     * Funzone che consente di eseguire la richiesta che elimina l'utente selezionato
+     */
+    function deleteUser(){
+        $('#deleteUserModal').modal('hide');
+        //Genero il link che andranno a richiamare
+        var link = "{{ url('admin/user/delete/') }}";
+        link += "/" + $(deleteLink).parents().eq(1).attr("id");
+        //Eseguo la richiesta
+        $.ajax({
+            type: "delete", 
+            url: link,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",   
+            headers: {
+                'Authorization':'Bearer ' + Cookies.get('token'),
+            },
+            //Se è finita con successo richiamo la stessa funzione così da aggiornare la pagina
+            complete: function(response) {
+                if(response["status"] == 200){
+                    createUserTable();
+                    toastr.success('Utente eliminato con successo');
+                }else{
+                    toastr.error("Impossibile eliminare l'utente");
+                }
+            }
+        });
+    }
+
+    /**
+    * Funzione che richiede la motivazione con l'id passato
+    * @param id L'id della motivavzione da cercare
+    */
+    function getJustification(id){
+        var link = "{{ url('admin/justification') }}";
+        link += "/" + id;
+        $.ajax({
+            type: "get", 
+            url: link,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",   
+            headers: {
+                'Authorization':'Bearer ' + Cookies.get('token'),
+            },
+            //Se è finita con successo richiamo la stessa funzione così da aggiornare la pagina
+            complete: function(response) {
+                if(response["status"] == 200){
+                    $('#textUpdate').html(response['responseJSON']['text']);
+                    $('#pointUpdateSelect').val(response['responseJSON']['id_point']);
+                }else{
+                    $('#updateJustificationModal').modal('hide');
+                    toastr.error("Impossibile caricare la motivazione");
+                }
+            }
+        });
+    }
+    
+    /**
+    * Funzione che imposta i link di eliminazione degli utenti
+    */
+    function setUserLinks(){
+        //Trovo tutti i link che servono all'eliminazione degli utenti
+        var deleteLinks = $(".deleteFieldUser");
+        $.each(deleteLinks, function(){
+            $(this).attr('data-toggle', 'modal');
+            $(this).attr('data-target', '#deleteUserModal');
+            $(this).click(function(){
+                deleteLink = $(this);
+                var id = $(this).parents().eq(1).attr("id");
+                $("#userMessage").text("Sei sicuro di voler eliminare l'utente: " + id);
+            });
+        });
+    }
+
+    /**
+    * Funzione che imposta i link delle motivazioni
+    */
+    function setJustificationLinks(){
+        //Trovo tutti i link che servono all'eliminazione delle motivazioni
+        var deleteLinks = $(".deleteFieldJustification");
+        $.each(deleteLinks, function(){
+            $(this).attr('data-toggle', 'modal');
+            $(this).attr('data-target', '#deleteJustificationModal');
+            $(this).click(function(){
+                deleteLink = $(this);
+                var id = $(this).parents().eq(1).attr("id");
+                $("#justificationMessage").text("Sicuro di voler eliminare la motivazione: " + id);
+            });
+        });
+
+        var updateLinks = $(".updateFieldJustification");
+        $.each(updateLinks, function() {
+            $(this).attr('data-toggle', 'modal');
+            $(this).attr('data-target', '#updateJustificationModal');
+            $(this).click(function() {
+                var id = $(this).parents().eq(1).attr("id");
+                getJustification(id);
+            });
+        });
+    }
 </script>
 @endsection

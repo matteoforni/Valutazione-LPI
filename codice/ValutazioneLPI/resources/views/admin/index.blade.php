@@ -70,8 +70,53 @@
   </div>
 </div>
 
+<div class="modal fade" id="deleteJustificationModal" tabindex="-1" role="dialog" aria-labelledby="deleteJustificationTitle"
+  aria-hidden="true">
+
+  <div class="modal-dialog modal-md .modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title w-100" id="deleteJustificationTitle">Conferma eliminazione</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+            <p id="justificationMessage">Sei sicuro di voler eliminare la motivazione: </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger btn-sm" onclick="deleteJustification()">Elimina</button>
+        <button type="button" class="btn btn-light btn-sm" data-dismiss="modal">Chiudi</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="deleteTitle"
+  aria-hidden="true">
+
+  <div class="modal-dialog modal-md .modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title w-100" id="deleteTitle">Conferma eliminazione</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+            <p id="userMessage">Sei sicuro di voler eliminare l'utente: </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger btn-sm" onclick="deleteUser()">Elimina</button>
+        <button type="button" class="btn btn-light btn-sm" data-dismiss="modal">Chiudi</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="/resources/js/JSONToHTML.js"></script>
 <script>
+    let deleteLink;
     $(document).ready(function(){
         createJustificationTable();
         createUserTable();
@@ -194,25 +239,12 @@
                     //Trovo tutti i link che servono all'eliminazione delle motivazioni
                     var deleteLinks = $(".deleteFieldJustification");
                     $.each(deleteLinks, function(){
-                        //Ad ogniuno di loro collego un evento onClick
-                        $(this).click(function() {
-                             //Genero il link che andranno a richiamare
-                            var link = "{{ url('admin/justification/delete/') }}";
-                            link += "/" + $(this).parents().eq(1).attr("id");
-                            //Eseguo la richiesta
-                            $.ajax({
-                                type: "delete", 
-                                url: link,
-                                contentType: "application/json; charset=utf-8",
-                                dataType: "json",   
-                                headers: {
-                                    'Authorization':'Bearer ' + Cookies.get('token'),
-                                },
-                                //Se è finita con successo richiamo la stessa funzione così da aggiornare la pagina
-                                complete: function() {
-                                    createJustificationTable()
-                                }
-                            });
+                        $(this).attr('data-toggle', 'modal');
+                        $(this).attr('data-target', '#deleteJustificationModal');
+                        $(this).click(function(){
+                            deleteLink = $(this);
+                            var id = $(this).parents().eq(1).attr("id");
+                            $("#justificationMessage").append(id);
                         });
                     });   
                 }       
@@ -258,30 +290,59 @@
                     //Trovo tutti i link che servono all'eliminazione degli utenti
                     var deleteLinks = $(".deleteFieldUser");
                     $.each(deleteLinks, function(){
-                        //Ad ogniuno di loro collego un evento onClick
-                        $(this).click(function() {
-                            //Genero il link che andranno a richiamare
-                            var link = "{{ url('admin/user/delete/') }}";
-                            link += "/" + $(this).parents().eq(1).attr("id");
-                            //Eseguo la richiesta
-                            $.ajax({
-                                type: "delete", 
-                                url: link,
-                                contentType: "application/json; charset=utf-8",
-                                dataType: "json",   
-                                headers: {
-                                    'Authorization':'Bearer ' + Cookies.get('token'),
-                                },
-                                //Se è finita con successo richiamo la stessa funzione così da aggiornare la pagina
-                                complete: function() {
-                                    createUserTable()
-                                }
-                            });
+                        $(this).attr('data-toggle', 'modal');
+                        $(this).attr('data-target', '#deleteUserModal');
+                        $(this).click(function(){
+                            deleteLink = $(this);
+                            var id = $(this).parents().eq(1).attr("id");
+                            $("#userMessage").append(id);
                         });
                     });
                 }          
             }
         });
     }
+
+function deleteJustification(){
+    $('#deleteJustificationModal').modal('hide');
+    //Genero il link che andranno a richiamare
+    var link = "{{ url('admin/justification/delete/') }}";
+    link += "/" + $(deleteLink).parents().eq(1).attr("id");
+    //Eseguo la richiesta
+    $.ajax({
+        type: "delete", 
+        url: link,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",   
+        headers: {
+            'Authorization':'Bearer ' + Cookies.get('token'),
+        },
+        //Se è finita con successo richiamo la stessa funzione così da aggiornare la pagina
+        complete: function() {
+            createJustificationTable()
+        }
+    });
+}
+
+function deleteUser(){
+    $('#deleteUserModal').modal('hide');
+    //Genero il link che andranno a richiamare
+    var link = "{{ url('admin/user/delete/') }}";
+    link += "/" + $(deleteLink).parents().eq(1).attr("id");
+    //Eseguo la richiesta
+    $.ajax({
+        type: "delete", 
+        url: link,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",   
+        headers: {
+            'Authorization':'Bearer ' + Cookies.get('token'),
+        },
+        //Se è finita con successo richiamo la stessa funzione così da aggiornare la pagina
+        complete: function() {
+            createUserTable()
+        }
+    });
+}
 </script>
 @endsection

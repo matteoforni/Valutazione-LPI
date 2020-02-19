@@ -10,12 +10,13 @@ use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-/**
+    /**
      * Funzione che reindirizza l'utente alla pagina di registrazione.
      */
     public function home(Request $request){
         //Verifico che l'utente sia un admin
         if($request->all()['user_id_role'] == 2){
+            //Carico i punti e ruoli che avrò bisogno nella pagina admin
             $points = Point::all();
             $roles = Role::all();
             //Se è ammministratore gli mostro la pagina
@@ -70,6 +71,11 @@ class AdminController extends Controller
         }    
     }
 
+    /**
+     * Funzione che ritorna tutte le motivazioni
+     * @param Request request La richiesta eseguita
+     * @return La risposta in JSON
+     */
     public function getJustifications(Request $request){
         //Verifico che l'utente sia un admin
         if($request->all()['user_id_role'] == 2){

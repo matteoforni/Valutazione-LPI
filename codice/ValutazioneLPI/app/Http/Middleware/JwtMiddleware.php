@@ -37,7 +37,7 @@ class JwtMiddleware{
             $request->request->add(['user_id_role' => $credentials->id_role]);
             $request->request->add(['id' => $credentials->sub]);
         } catch(ExpiredException $e) {
-            //Se è scaduto ritorno l'errore
+            //Se è scaduto rimando l'utente alla pagina di login
             return view('login/index');
         } catch(Exception $e) {
             print_r($e->getMessage());

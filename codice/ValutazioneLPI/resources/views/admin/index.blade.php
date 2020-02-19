@@ -247,11 +247,24 @@
 
 <script src="/resources/js/JSONToHTML.js"></script>
 <script>
+    /**
+     * L'ultimo link di eliminazione premuto
+     */
     let deleteLink;
+
+    /**
+     * L'ultima motivazione modificata
+     */
     let lastUpdatedJustification;
+
+    /**
+     * L'ultimo utente modificato
+     */
     let lastUpdatedUser;
 
+    //Quando il documento è stato caricato completamente
     $(document).ready(function(){
+        //Creo le tabelle
         createJustificationTable();
         createUserTable();
         //Ottengo dal controller i punti di valutazione
@@ -275,6 +288,7 @@
             $(".point-select").append(option);
         }
 
+        //Ottengo dal controller i punti di valutazione
         var roles = <?php echo $roles ?>;
         //Alla selezione di un ruolo
         $("#roleSelect").change(function() {
@@ -296,6 +310,7 @@
         }
     });
 
+    //Quando viene eseguito il submit nel form di aggiunta di un utente 
     $("#addUserForm").submit(function( event ) {
         //Blocco l'evento di default del form (aggiunta del URL get)
         event.preventDefault();
@@ -339,6 +354,7 @@
         });
     });
 
+    //Quando viene eseguito il submit nel form di aggiunta di una motivazione 
     $("#addJustificationForm").submit(function( event ) {
         //Blocco l'evento di default del form (aggiunta del URL get)
         event.preventDefault();
@@ -382,6 +398,7 @@
         });
     });
 
+    //Quando viene eseguito il submit nel form di modifica di un utente 
     $("#updateUserForm").submit(function( event ) {
         //Blocco l'evento di default del form (aggiunta del URL get)
         event.preventDefault();
@@ -427,6 +444,7 @@
         });
     });
 
+    //Quando viene eseguito il submit nel form di modifica di una motivazione 
     $("#updateJustificationForm").submit(function( event ) {
         //Blocco l'evento di default del form (aggiunta del URL get)
         event.preventDefault();
@@ -690,11 +708,13 @@
             //Se è finita con successo richiamo la stessa funzione così da aggiornare la pagina
             complete: function(response) {
                 if(response["status"] == 200){
+                    //Imposto i valori della motivazione nel form
                     $('#textUpdate').val(response['responseJSON']['text']);
                     $('#pointUpdateSelect').val(response['responseJSON']['id_point']);
                     $('#updateJustificationTitle').html("Modifica motivazione con id: " + response['responseJSON']['id']);  
                     lastUpdatedJustification = response['responseJSON']['id'];
                 }else{
+                    //Chiudo il modale e mostro l'errore
                     $('#updateJustificationModal').modal('hide');
                     toastr.error("Impossibile caricare la motivazione");
                 }
@@ -720,6 +740,7 @@
             //Se è finita con successo richiamo la stessa funzione così da aggiornare la pagina
             complete: function(response) {
                 if(response["status"] == 200){
+                    //Imposto i valori del'utente nel form
                     $('#nameUpdate').val(response['responseJSON']['name']);
                     $('#surnameUpdate').val(response['responseJSON']['surname']);
                     $('#emailUpdate').val(response['responseJSON']['email']);
@@ -728,8 +749,9 @@
                     $('#updateJustificationTitle').html("Modifica motivazione con id: " + response['responseJSON']['id']);  
                     lastUpdatedUser = response['responseJSON']['id'];
                 }else{
+                    //Chiudo il modale e ritorno l'errore
                     $('#updateJustificationModal').modal('hide');
-                    toastr.error("Impossibile caricare la motivazione");
+                    toastr.error("Impossibile caricare l'utente");
                 }
             }
         });
@@ -743,20 +765,25 @@
             //Trovo tutti i link che servono all'eliminazione degli utenti
             var deleteLinks = $(".deleteFieldUser");
             $.each(deleteLinks, function(){
+                //Gli imposto i valori necessari per aprire il modale
                 $(this).attr('data-toggle', 'modal');
                 $(this).attr('data-target', '#deleteUserModal');
                 $(this).click(function(){
+                    //Al click mostro il modale di conferma
                     deleteLink = $(this);
                     var id = $(this).parents().eq(1).attr("id");
                     $("#userMessage").text("Sei sicuro di voler eliminare l'utente: " + id);
                 });
             });
 
+            //Trovo tutti i link che servono alla modifica degli utenti
             var updateLinks = $(".updateFieldUser");
             $.each(updateLinks, function() {
+                //Gli imposto i valori necessari per aprire il modale
                 $(this).attr('data-toggle', 'modal');
                 $(this).attr('data-target', '#updateUserModal');
                 $(this).click(function() {
+                    //Al click ritorno l'utente su cui si ha premuto
                     var id = $(this).parents().eq(1).attr("id");
                     getUser(id);
                 });
@@ -772,20 +799,25 @@
             //Trovo tutti i link che servono all'eliminazione delle motivazioni
             var deleteLinks = $(".deleteFieldJustification");
             $.each(deleteLinks, function(){
+                //Gli imposto i valori necessari per aprire il modale
                 $(this).attr('data-toggle', 'modal');
                 $(this).attr('data-target', '#deleteJustificationModal');
                 $(this).click(function(){
+                    //Al click mostro il modale di conferma
                     deleteLink = $(this);
                     var id = $(this).parents().eq(1).attr("id");
                     $("#justificationMessage").text("Sicuro di voler eliminare la motivazione: " + id);
                 });
             });
         
+            //Trovo tutti i link che servono alla modifica delle motivazioni
             var updateLinks = $(".updateFieldJustification");
             $.each(updateLinks, function() {
+                //Gli imposto i valori necessari per aprire il modale
                 $(this).attr('data-toggle', 'modal');
                 $(this).attr('data-target', '#updateJustificationModal');
                 $(this).click(function() {
+                    //Al click carico la motivazione
                     var id = $(this).parents().eq(1).attr("id");
                     getJustification(id);
                 });

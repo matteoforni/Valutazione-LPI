@@ -57,6 +57,9 @@
             @yield('content')
         </div>
         <script>
+            /**
+             * Funzione che consente di uscire dal proprio account
+             */
             function logout(){
                 Cookies.remove('token');
                 window.location = "{{ url('') }}";

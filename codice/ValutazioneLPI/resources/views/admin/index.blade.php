@@ -6,15 +6,19 @@
 <div class="row">
     <div class="col-md-8 text-center offset-2">
         <h3 class="h3 text-center my-5">Gestione motivazioni</h3>
+        <div class="errors-justification text-danger">
+
+        </div>
         <div class="justifications-table table-responsive mb-5">
         </div>
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addJustificationModal">Aggiungi motivazione</button>
     </div>
-    <div class="errors text-danger">
-
-    </div>
+    
     <div class="col-md-12 text-center my-5">
         <h3 class="h3 text-center my-5">Gestione utenti</h3>
+        <div class="errors-user text-danger">
+
+        </div>
         <div class="users-table table-responsive mb-5">
         </div>
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addUserModal">Aggiungi utente</button>
@@ -54,8 +58,11 @@
             <!-- Phone number -->
             <input type="text" id="phone" name="phone" class="form-control mb-4" placeholder="Numero di telefono" pattern="^(0|0041|\+41)?[1-9\s][0-9\s]{1,12}$" required>
 
+            <select id="roleSelect" name="id_role" class="role-select mb-4 browser-default custom-select">
+                <option selected disabled>Seleziona un ruolo</option>
+            </select>
+
             <input type="number" hidden name="confirmed" value="0">
-            <input type="number" hidden name="id_role" value="1">
 
             <div class="text-center">
                 <button class="btn btn-info btn-block">Registra l'utente</button>
@@ -114,7 +121,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title w-100" id="addUserTitle">Modifica motivazione</h4>
+        <h4 id="updateJustificationTitle" class="modal-title w-100" id="addUserTitle"></h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -125,7 +132,6 @@
 
             <div class="md-form">
                 <textarea id="textUpdate" class="form-control md-textarea" name="text" maxlength="1000" length="1000" rows="4"></textarea>
-                <label for="textarea-char-counter">Inserisci il testo</label>
             </div>
 
             <select id="pointUpdateSelect" name="id_point" class="point-select browser-default custom-select">
@@ -135,6 +141,55 @@
 
             <div class="text-center">
                 <button class="btn btn-info btn-block">Modifica la motivazione</button>
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Chiudi</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALE DI MODIFICA DI UN UTENTE -->
+<div class="modal fade" id="updateUserModal" tabindex="-1" role="dialog" aria-labelledby="updateUserTitle"
+  aria-hidden="true">
+
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title w-100" id="updateUserTitle"></h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="updateUserForm" class="text-center border border-light p-5 mt-3 m-5">
+            <p class="h4 mb-4">Modifica l'utente</p>
+
+            <div class="form-row">
+                <div class="col">
+                    <!-- First name -->
+                    <input type="text" id="nameUpdate" name="name" class="form-control mb-4" placeholder="Nome" minlength="2" pattern="[ A-Za-zÀ-ÖØ-öø-ÿ]+" required>
+                </div>
+                <div class="col">
+                    <!-- Last name -->
+                    <input type="text" id="surnameUpdate" name="surname" class="mb-4 form-control" placeholder="Cognome" minlength="2" pattern="[ A-Za-zÀ-ÖØ-öø-ÿ]+" required>
+                </div>
+            </div> 
+
+            <!-- E-mail -->
+            <input type="email" id="emailUpdate" name="email" class="form-control mb-4" placeholder="E-mail" required disabled>
+
+            <!-- Phone number -->
+            <input type="text" id="phoneUpdate" name="phone" class="form-control mb-4" placeholder="Numero di telefono" pattern="^(0|0041|\+41)?[1-9\s][0-9\s]{1,12}$" required>
+
+            <select id="roleUpdateSelect" name="id_role" class="role-select mb-4 browser-default custom-select">
+                <option selected disabled>Seleziona un ruolo</option>
+            </select>
+
+            <div class="text-center">
+                <button class="btn btn-info btn-block">Modifica l'utente</button>
             </div>
         </form>
       </div>
@@ -193,6 +248,9 @@
 <script src="/resources/js/JSONToHTML.js"></script>
 <script>
     let deleteLink;
+    let lastUpdatedJustification;
+    let lastUpdatedUser;
+
     $(document).ready(function(){
         createJustificationTable();
         createUserTable();
@@ -215,6 +273,26 @@
             $(option).html(points[i]['code']);
             //La aggiungo alla select
             $(".point-select").append(option);
+        }
+
+        var roles = <?php echo $roles ?>;
+        //Alla selezione di un ruolo
+        $("#roleSelect").change(function() {
+            //Trovo il ruolo che contenga il valore selezionato nel select
+            var value = $("#roleSelect option:selected").text();
+            var role = roles.find(function(element) {
+                return element['name'] === value; 
+            }); 
+            //Scrivo il titolo del ruolo
+            $("#roleText").text(role['name']);
+        });
+        //Genero le opzioni del select
+        for(var i = 0; i < roles.length; i++){
+            //Creo l'opzione
+            var option = new Option(roles[i]['name'], roles[i]['id']);
+            $(option).html(roles[i]['name']);
+            //La aggiungo alla select
+            $(".role-select").append(option);
         }
     });
 
@@ -254,7 +332,7 @@
                     }
                     //Stampo gli errori
                     for(i = 0; i < errors.length; i++){
-                        $(".errors").append("<h6>" + errors[i] + "</h6>");
+                        $(".errors-user").append("<h6>" + errors[i] + "</h6>");
                     }
                 }
             }
@@ -297,7 +375,97 @@
                     }
                     //Stampo gli errori
                     for(i = 0; i < errors.length; i++){
-                        $(".errors").append("<h6>" + errors[i] + "</h6>");
+                        $(".errors-justification").append("<h6>" + errors[i] + "</h6>");
+                    }
+                }
+            }
+        });
+    });
+
+    $("#updateUserForm").submit(function( event ) {
+        //Blocco l'evento di default del form (aggiunta del URL get)
+        event.preventDefault();
+        //Ottengo i dati dal form
+        var jsonData = $(this).serializeArray();
+        //Formatto i dati del form nel formato necessario per eseguire la richiesta
+        var form = {};
+        for(var index in jsonData) {
+            var json = jsonData[index];
+            form[json.name] = json.value;
+        }
+        //Eseguo la richiesta post al controller admin con metodo add
+        var link = "{{ url('admin/user/update') }}";
+        link += "/" + lastUpdatedUser;
+        $.ajax({
+            type: "put",
+            url: link,
+            data: JSON.stringify(form),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json", 
+            headers: {
+                'Authorization':'Bearer ' + Cookies.get('token'),
+            },            
+            complete: function(response){
+                $('#updateUserModal').modal('hide');
+                //Se il server ritorna il codice di successo ricarico la tabella
+                if(response["status"] == 200){
+                    createUserTable();
+                    toastr.success('Utente modificato con successo');
+                //Se il server ritorna un errore stampo gli errori     
+                }else{
+                    //Formatto gli errori
+                    var errors = [];
+                    for(key in response["responseJSON"]) {
+                        errors.push(response["responseJSON"][key]);
+                    }
+                    //Stampo gli errori
+                    for(i = 0; i < errors.length; i++){
+                        $(".errors-user").append("<h6>" + errors[i] + "</h6>");
+                    }
+                }
+            }
+        });
+    });
+
+    $("#updateJustificationForm").submit(function( event ) {
+        //Blocco l'evento di default del form (aggiunta del URL get)
+        event.preventDefault();
+        //Ottengo i dati dal form
+        var jsonData = $(this).serializeArray();
+        //Formatto i dati del form nel formato necessario per eseguire la richiesta
+        var form = {};
+        for(var index in jsonData) {
+            var json = jsonData[index];
+            form[json.name] = json.value;
+        }
+        //Eseguo la richiesta post al controller admin con metodo add
+        var link = "{{ url('admin/justification/update') }}";
+        link += "/" + lastUpdatedJustification;
+        $.ajax({
+            type: "put",
+            url: link,
+            data: JSON.stringify(form),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json", 
+            headers: {
+                'Authorization':'Bearer ' + Cookies.get('token'),
+            },            
+            complete: function(response){
+                $('#updateJustificationModal').modal('hide');
+                //Se il server ritorna il codice di successo ricarico la tabella
+                if(response["status"] == 200){
+                    createJustificationTable();
+                    toastr.success('Motivazione modificata con successo');
+                //Se il server ritorna un errore stampo gli errori     
+                }else{
+                    //Formatto gli errori
+                    var errors = [];
+                    for(key in response["responseJSON"]) {
+                        errors.push(response["responseJSON"][key]);
+                    }
+                    //Stampo gli errori
+                    for(i = 0; i < errors.length; i++){
+                        $(".errors-justification").append("<h6>" + errors[i] + "</h6>");
                     }
                 }
             }
@@ -438,7 +606,7 @@
                     setUserLinks();
 
                     //Reimposto i links quando si cambia pagina nella tabella
-                    $('#Users').on('page.dt', function () {
+                    $('#User').on('page.dt', function () {
                         setUserLinks();
                     });
                 }          
@@ -522,8 +690,43 @@
             //Se è finita con successo richiamo la stessa funzione così da aggiornare la pagina
             complete: function(response) {
                 if(response["status"] == 200){
-                    $('#textUpdate').html(response['responseJSON']['text']);
+                    $('#textUpdate').val(response['responseJSON']['text']);
                     $('#pointUpdateSelect').val(response['responseJSON']['id_point']);
+                    $('#updateJustificationTitle').html("Modifica motivazione con id: " + response['responseJSON']['id']);  
+                    lastUpdatedJustification = response['responseJSON']['id'];
+                }else{
+                    $('#updateJustificationModal').modal('hide');
+                    toastr.error("Impossibile caricare la motivazione");
+                }
+            }
+        });
+    }
+
+    /**
+    * Funzione che richiede l'utente con l'id passato
+    * @param id L'id dell'utente da cercare
+    */
+    function getUser(id){
+        var link = "{{ url('admin/user') }}";
+        link += "/" + id;
+        $.ajax({
+            type: "get", 
+            url: link,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",   
+            headers: {
+                'Authorization':'Bearer ' + Cookies.get('token'),
+            },
+            //Se è finita con successo richiamo la stessa funzione così da aggiornare la pagina
+            complete: function(response) {
+                if(response["status"] == 200){
+                    $('#nameUpdate').val(response['responseJSON']['name']);
+                    $('#surnameUpdate').val(response['responseJSON']['surname']);
+                    $('#emailUpdate').val(response['responseJSON']['email']);
+                    $('#phoneUpdate').val(response['responseJSON']['phone']);
+                    $('#roleUpdateSelect').val(response['responseJSON']['id_role']);
+                    $('#updateJustificationTitle').html("Modifica motivazione con id: " + response['responseJSON']['id']);  
+                    lastUpdatedUser = response['responseJSON']['id'];
                 }else{
                     $('#updateJustificationModal').modal('hide');
                     toastr.error("Impossibile caricare la motivazione");
@@ -536,15 +739,27 @@
     * Funzione che imposta i link di eliminazione degli utenti
     */
     function setUserLinks(){
-        //Trovo tutti i link che servono all'eliminazione degli utenti
-        var deleteLinks = $(".deleteFieldUser");
-        $.each(deleteLinks, function(){
-            $(this).attr('data-toggle', 'modal');
-            $(this).attr('data-target', '#deleteUserModal');
-            $(this).click(function(){
-                deleteLink = $(this);
-                var id = $(this).parents().eq(1).attr("id");
-                $("#userMessage").text("Sei sicuro di voler eliminare l'utente: " + id);
+        $("#User").ready(function() {
+            //Trovo tutti i link che servono all'eliminazione degli utenti
+            var deleteLinks = $(".deleteFieldUser");
+            $.each(deleteLinks, function(){
+                $(this).attr('data-toggle', 'modal');
+                $(this).attr('data-target', '#deleteUserModal');
+                $(this).click(function(){
+                    deleteLink = $(this);
+                    var id = $(this).parents().eq(1).attr("id");
+                    $("#userMessage").text("Sei sicuro di voler eliminare l'utente: " + id);
+                });
+            });
+
+            var updateLinks = $(".updateFieldUser");
+            $.each(updateLinks, function() {
+                $(this).attr('data-toggle', 'modal');
+                $(this).attr('data-target', '#updateUserModal');
+                $(this).click(function() {
+                    var id = $(this).parents().eq(1).attr("id");
+                    getUser(id);
+                });
             });
         });
     }
@@ -553,27 +768,30 @@
     * Funzione che imposta i link delle motivazioni
     */
     function setJustificationLinks(){
-        //Trovo tutti i link che servono all'eliminazione delle motivazioni
-        var deleteLinks = $(".deleteFieldJustification");
-        $.each(deleteLinks, function(){
-            $(this).attr('data-toggle', 'modal');
-            $(this).attr('data-target', '#deleteJustificationModal');
-            $(this).click(function(){
-                deleteLink = $(this);
-                var id = $(this).parents().eq(1).attr("id");
-                $("#justificationMessage").text("Sicuro di voler eliminare la motivazione: " + id);
+        $("#Justification").ready(function() {
+            //Trovo tutti i link che servono all'eliminazione delle motivazioni
+            var deleteLinks = $(".deleteFieldJustification");
+            $.each(deleteLinks, function(){
+                $(this).attr('data-toggle', 'modal');
+                $(this).attr('data-target', '#deleteJustificationModal');
+                $(this).click(function(){
+                    deleteLink = $(this);
+                    var id = $(this).parents().eq(1).attr("id");
+                    $("#justificationMessage").text("Sicuro di voler eliminare la motivazione: " + id);
+                });
+            });
+        
+            var updateLinks = $(".updateFieldJustification");
+            $.each(updateLinks, function() {
+                $(this).attr('data-toggle', 'modal');
+                $(this).attr('data-target', '#updateJustificationModal');
+                $(this).click(function() {
+                    var id = $(this).parents().eq(1).attr("id");
+                    getJustification(id);
+                });
             });
         });
-
-        var updateLinks = $(".updateFieldJustification");
-        $.each(updateLinks, function() {
-            $(this).attr('data-toggle', 'modal');
-            $(this).attr('data-target', '#updateJustificationModal');
-            $(this).click(function() {
-                var id = $(this).parents().eq(1).attr("id");
-                getJustification(id);
-            });
-        });
+        
     }
 </script>
 @endsection

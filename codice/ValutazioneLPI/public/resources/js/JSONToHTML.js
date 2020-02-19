@@ -28,8 +28,8 @@ function JSONToHTML(id, data){
                 }
                 count++;
             }
-            table += "<td><a class='updateField" + id + "'>Modifica</a></td>";
-            table += "<td><a class='deleteField" + id + "'>Elimina</a></td>";
+            table += "<td><a class='updateField" + id + "'><i class='far fa-edit'></i></a></td>";
+            table += "<td><a class='deleteField" + id + "'><i class='far fa-trash-alt'></i></a></td>";
             table += "</tr>";
         }
     }

@@ -29,6 +29,9 @@
         <script type="text/javascript" src="/resources/MDB/js/addons/datatables-select.min.js"></script>
         <!-- Toastr notification library -->
         <script type="text/javascript" src="/resources/toastr/toastr.js"></script>
+        <!-- Fontawesome -->
+        <script src="https://kit.fontawesome.com/56cb13ebcf.js" crossorigin="anonymous"></script>
+
 </head>
     </head>
     <body>
@@ -39,6 +42,13 @@
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                <div class="collapse navbar-collapse d-flex justify-content-end" id="navbar">
+                    <ul class="navbar-nav">
+                        <li class="nav-item active">
+                            <a class="nav-link" onclick="logout()">Logout</a>
+                        </li>                       
+                    </ul>
+                </div>
             </nav>
         </header>
         @show
@@ -46,7 +56,12 @@
         <div class="container">
             @yield('content')
         </div>
-
+        <script>
+            function logout(){
+                Cookies.remove('token');
+                window.location = "{{ url('') }}";
+            }
+        </script>
         @section('footer')
         <footer class="page-footer light-blue lighten-2">
 

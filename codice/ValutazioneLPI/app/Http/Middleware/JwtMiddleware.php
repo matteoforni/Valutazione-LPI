@@ -34,11 +34,11 @@ class JwtMiddleware{
             $credentials = JWT::decode($token, env('APP_KEY'), ['HS256']);
 
             //Aggiungo alla richiesta il tipo di ruolo così da riutilizzarlo in seguito
-            $request->request->add(['id_role' => $credentials->id_role]);
+            $request->request->add(['user_id_role' => $credentials->id_role]);
             $request->request->add(['id' => $credentials->sub]);
         } catch(ExpiredException $e) {
             //Se è scaduto ritorno l'errore
-            return response()->json(['error' => 'Il token è scaduto'], 400);
+            return view('login/index');
         } catch(Exception $e) {
             print_r($e->getMessage());
             //Se non riesco a decodificarlo ritorno l'errore

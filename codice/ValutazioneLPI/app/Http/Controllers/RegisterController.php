@@ -59,6 +59,8 @@ class RegisterController extends Controller
             unset($request['repassword']);
         }
         
+        $request['id_role'] = 1;
+
         $options = array(
             'cost' => env('COST'),
         );

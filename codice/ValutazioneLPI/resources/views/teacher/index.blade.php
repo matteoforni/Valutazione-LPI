@@ -1,4 +1,4 @@
-@extends('_templates/admin_header')
+@extends('_templates/teacher_header')
 
 @section('title', 'Docenti')
 

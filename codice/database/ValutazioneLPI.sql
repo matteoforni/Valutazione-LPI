@@ -17,6 +17,7 @@ create table user(
     password varchar(255) not null,
     confirmed tinyint(1) not null,
     id_role int not null,
+    first_login tinyint(1) not null,
     foreign key(id_role) references role(id)
 );
 create table token(
@@ -102,6 +103,6 @@ insert into justification(text, id_point) values ("Diario consegnato in ritardo"
 insert into justification(text, id_point) values ("Presentazione durata troppo poco", "C1");
 insert into justification(text, id_point) values ("Errori con il funzionamento di Powerpoint", "C2");
 
-
+select * from role;
 select * from user;
 update user set id_role=2 where id = 2;

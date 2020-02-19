@@ -41,7 +41,8 @@ class RegisterController extends Controller
             'password' => 'required|min:8',
             'repassword' => 'required|min:8',
             'confirmed' => 'required|in:0,1|numeric',
-            'id_role' => 'required|numeric'
+            'id_role' => 'required|numeric',
+            'first_login' => 'required|numeric',
         ], $messages);
         
         //Verifico che la valutazione sia andata a buon fine.

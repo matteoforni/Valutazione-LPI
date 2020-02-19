@@ -130,7 +130,7 @@ class AdminController extends Controller
                 'email' => 'required|email|unique:user',
                 'phone' => ['required','min:9','regex:/^(0|0041|\+41)?[1-9\s][0-9\s]{1,12}$/'],
                 'confirmed' => 'required|in:0,1|numeric',
-                'id_role' => 'required|numeric'
+                'id_role' => 'required|numeric',
             ], $messages);
             
             //Verifico che la valutazione sia andata a buon fine.
@@ -139,6 +139,9 @@ class AdminController extends Controller
                 return response()->json($validation->errors(), '422');
             }
             
+            //Assegno true al campo che definisce se l'utente si è registrato tramite admin o meno
+            $request->request->add(['first_login' => 1]);
+
             //Imposto una password momentanea
             $options = array(
                 'cost' => env('COST'),
@@ -224,6 +227,7 @@ class AdminController extends Controller
             //Imposto i campi email e confirmed come in precedenza per evitare che qualcuno li modifichi
             $request->request->add(['email' => $user->email]);
             $request->request->add(['confirmed' => $user->confirmed]);
+            $request->request->add(['first_login' => $user->first_login]);
 
             //Eseguo la modifica
             $user->update($request->all());

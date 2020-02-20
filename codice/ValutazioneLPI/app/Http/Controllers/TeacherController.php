@@ -12,9 +12,10 @@ class TeacherController extends Controller
      */
     public function home(Request $request){
         //Verifico che l'utente sia un admin
-        if($request->all()['id_role'] == 1){
+        if($request->all()['user_id_role'] == 1){
+            $user = User::find($request->id);
             //Se è ammministratore gli mostro la pagina
-            return view('teacher/index');
+            return view('teacher/index')->with('user', $user);;
         }else{
             //Se non lo è ritorno l'errore
             return response()->json(['Unauthorized' => 'Non hai i permessi necessari per accedere'], 401);

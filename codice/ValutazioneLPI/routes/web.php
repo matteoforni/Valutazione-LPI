@@ -13,6 +13,7 @@ $router->get('/', function () use ($router) {
 $router->group(['prefix' => 'login'], function () use ($router) {
     //route che richiama il metodo authenticate quando si chiama URL/login/authenticate
     $router->post('/authenticate', 'LoginController@authenticate');
+    $router->get('/confirmation/{param}', 'LoginController@confirmation');
 });
 
 /**

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Firebase\JWT\JWT;
 use Config\Config;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Crypt;
 
 class LoginController extends Controller
 {
@@ -88,6 +89,26 @@ class LoginController extends Controller
             //Se non lo è ritorno la pagina per i docenti
             return redirect('teacher?token=' . $request->get('token'));
         }
+    }
+
+    /**
+     * Funzione che conferma l'email dell'utente
+     * @param L'id dell'utente criptato
+     * @return se va a buon fine la pagina di login altrimenti il messaggio d'errore
+     */
+    public function confirmation($param){
+        $users = User::all();
+
+        $id = Crypt::decrypt($param);
+
+        foreach($users as $user){
+            if($user->id == $id){
+                $user->confirmed = 1;
+                $user->save();
+                return redirect(''); 
+            }
+        }
+        return response()->json('Utente non trovato', 401);
     }
 }
 ?>

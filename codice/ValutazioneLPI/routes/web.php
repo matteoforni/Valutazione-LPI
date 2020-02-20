@@ -28,16 +28,23 @@ $router->group(['prefix' => 'register'], function () use ($router) {
 });
 
 /**
- * 
+ * Route che gestisce le chiamate a termine del login
  */
 $router->group(['middleware' => 'jwt.auth', 'prefix' => 'login'], function() use ($router) {
     //route che mostra la pagina dopo il login
     $router->get('/login', 'LoginController@login');
 });
 
+
+/**
+ * Gruppo di route che gestisce le chiamate della pagina teacher
+ */
 $router->group(['middleware' => 'jwt.auth', 'prefix' => 'teacher'], function() use ($router) {
     //route che mostra la pagina dopo il login
     $router->get('/', 'TeacherController@home');
+
+    //route che ritorna tutti i formulari
+    $router->get('/forms', 'TeacherController@getForms');
 });
 
 /**

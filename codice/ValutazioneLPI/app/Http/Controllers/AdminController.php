@@ -7,6 +7,7 @@ use App\Role;
 use App\Justification;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use App\Mailer;
 
 class AdminController extends Controller
 {
@@ -16,11 +17,12 @@ class AdminController extends Controller
     public function home(Request $request){
         //Verifico che l'utente sia un admin
         if($request->all()['user_id_role'] == 2){
+            $user = User::find($request->id);
             //Carico i punti e ruoli che avrò bisogno nella pagina admin
             $points = Point::all();
             $roles = Role::all();
             //Se è ammministratore gli mostro la pagina
-            return view('admin/index')->with('points', $points)->with('roles', $roles);
+            return view('admin/index')->with('points', $points)->with('roles', $roles)->with('user', $user);
         }else{
             //Se non lo è ritorno l'errore
             return response()->json(['Unauthorized' => 'Non hai i permessi necessari per accedere'], 401);
@@ -154,6 +156,16 @@ class AdminController extends Controller
             //Se la validazione va a buon fine genero l'errore.
             $user = User::create($request->all());
 
+            //Invio l'email di conferma della creazione
+            $body = "<h3>Abbiamo creato un account con la tua email</h3>Per accedere al tuo nuovo account utilizza la seguente password: <br><b>" . $password . "</b>";
+            $subject = "Nuovo account di 'Valutazione LPI'";
+
+            $mailer = new Mailer();
+            if(!$mailer->sendMail($user->email, $body, $subject)){
+                response()->json(["Bad Gateway" => "Impossibile inviare l'email"], 502);
+            }
+            
+
             //Ritorno la risposta di successo.
             return response()->json($user, 201);
         }else{
@@ -231,6 +243,17 @@ class AdminController extends Controller
 
             //Eseguo la modifica
             $user->update($request->all());
+
+            //Invio l'email di conferma della modifica
+            $user['role'] = Role::find($user['id_role'])['name'];
+            $list = "<ul><li>Nome: " . $user->name . "</li><li>Cognome: " . $user->surname . "</li><li>Email: " . $user->email . "</li><li>Telefono: " . $user->phone . "</li><li>Ruolo: " . $user->role . "</li></ul>";
+            $body = "<h3>Abbiamo modificato il tuo account</h3>Abbiamo dovuto effettuare delle modifiche al tuo account, qui sotto troverai i tuoi nuovi dati:<br>" . $list;
+            $subject = "Modifica account di 'Valutazione LPI'";
+
+            $mailer = new Mailer();
+            if(!$mailer->sendMail($user->email, $body, $subject)){
+                response()->json(["Bad Gateway" => "Impossibile inviare l'email"], 502);
+            }
 
             //Ritorno l'utente
             return response()->json($user, 200);

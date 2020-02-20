@@ -308,6 +308,13 @@
             //La aggiungo alla select
             $(".role-select").append(option);
         }
+
+        //Notifico la mancanza di un email verificata
+        var user = <?php echo $user ?>
+
+        if(user['confirmed'] == 0) {
+            toastr.warning('Verifica la tua email');
+        }
     });
 
     //Quando viene eseguito il submit nel form di aggiunta di un utente 
@@ -334,11 +341,14 @@
             },            
             complete: function(response){
                 $('#addUserModal').modal('hide');
+                console.log(response['responseJSON']);
                 //Se il server ritorna il codice di successo ricarico la tabella
                 if(response["status"] == 201){
                     createUserTable();
                     toastr.success('Utente aggiunto con successo');
                 //Se il server ritorna un errore stampo gli errori     
+                }else if(response["status"] == 502){
+                    toastr.success("Impossibile inviare l'email");
                 }else{
                     //Formatto gli errori
                     var errors = [];

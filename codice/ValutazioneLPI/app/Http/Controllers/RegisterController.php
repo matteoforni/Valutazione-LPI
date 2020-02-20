@@ -2,8 +2,11 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\Mailer;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\URL;
 
 class RegisterController extends Controller
 {
@@ -42,7 +45,6 @@ class RegisterController extends Controller
             'repassword' => 'required|min:8',
             'confirmed' => 'required|in:0,1|numeric',
             'id_role' => 'required|numeric',
-            'first_login' => 'required|numeric',
         ], $messages);
         
         //Verifico che la valutazione sia andata a buon fine.
@@ -60,6 +62,8 @@ class RegisterController extends Controller
             unset($request['repassword']);
         }
         
+        $request->request->add(['first_login'=> 0]);
+
         $request['id_role'] = 1;
 
         $options = array(
@@ -70,6 +74,17 @@ class RegisterController extends Controller
 
         //Se la validazione va a buon fine genero l'errore.
         $user = User::create($request->all());
+
+        //Invio l'email di conferma della creazione
+        $link = URL::to('/login/confirmation');
+        $link .= "/" . Crypt::encrypt($user->id);
+        $body = "<h3>Conferma la tua email</h3>Hai creato con successo il tuo account di 'Valutazione LPI', conferma la tua email per completare l'operazione <br><a href='" . $link . "'>Premi qui per confermare l'email</a>";
+        $subject = "Nuovo account di 'Valutazione LPI'";
+
+        $mailer = new Mailer();
+        if(!$mailer->sendMail($user->email, $body, $subject)){
+            response()->json(["Bad Gateway" => "Impossibile inviare l'email"], 502);
+        }
 
         //Ritorno la risposta di successo.
         return response()->json($user, 201);

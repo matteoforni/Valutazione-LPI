@@ -562,7 +562,7 @@
                 'Authorization':'Bearer ' + Cookies.get('token'),
             },       
             complete: function(response){
-                //Se il server ritorna il codice di successo salvo il token JWT ritornato nei cookies
+                //Se il server ritorna il codice di successo genero la tabella
                 if(response["status"] == 200){
                     var table = JSONToHTML('Justification', response["responseJSON"]);
                     $(".justifications-table").html(table);  
@@ -609,7 +609,7 @@
                 'Authorization':'Bearer ' + Cookies.get('token'),
             },       
             complete: function(response){
-                //Se il server ritorna il codice di successo salvo il token JWT ritornato nei cookies
+                //Se il server ritorna il codice di successo genero la tabella
                 if(response["status"] == 200){
                     var table = JSONToHTML('User', response["responseJSON"]);
                     $(".users-table").html(table);  

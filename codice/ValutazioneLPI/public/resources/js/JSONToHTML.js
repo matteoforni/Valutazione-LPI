@@ -12,7 +12,7 @@ function JSONToHTML(id, data){
             keys.push(k);
         } 
         for(var i in keys){
-            if(keys[i] != 'password'){
+            if(keys[i] != 'password' ){
                 table += "<th scope='col' class='font-weight-bold'>" + keys[i].charAt(0).toUpperCase() + keys[i].slice(1) + "</th>";
             }
         }

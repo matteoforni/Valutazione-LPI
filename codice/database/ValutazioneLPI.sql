@@ -103,6 +103,12 @@ insert into justification(text, id_point) values ("Diario consegnato in ritardo"
 insert into justification(text, id_point) values ("Presentazione durata troppo poco", "C1");
 insert into justification(text, id_point) values ("Errori con il funzionamento di Powerpoint", "C2");
 
+/*
+INSERIMENTO DEI FORMULARI DI TEST
+*/
+insert into form(title, created, modified, deleted, student_name, student_surname, student_email, student_phone, teacher_name, teacher_surname, teacher_email, teacher_phone)
+ values ();
+
 select * from role;
 select * from user;
-update user set id_role=2 where id = 2;
+update user set id_role=2 where id = 1;

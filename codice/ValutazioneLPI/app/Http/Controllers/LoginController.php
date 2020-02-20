@@ -99,6 +99,7 @@ class LoginController extends Controller
     public function confirmation($param){
         $users = User::all();
 
+        //Decripto l'id dell'utente
         $id = Crypt::decrypt($param);
 
         foreach($users as $user){

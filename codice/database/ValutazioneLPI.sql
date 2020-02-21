@@ -16,14 +16,11 @@ create table user(
     phone varchar(50) not null unique,
     password varchar(255) not null,
     confirmed tinyint(1) not null,
-    id_role int not null,
+    id_role int,
     first_login tinyint(1) not null,
-    foreign key(id_role) references role(id)
-);
-create table token(
-	id_user int primary key,
-    token varchar(255) not null,
-    foreign key(id_user) references user(id)
+    reset_token varchar(100),
+    confirmation_token varchar(100),
+    foreign key(id_role) references role(id) on delete set null
 );
 create table point(
 	code varchar(10) primary key,
@@ -35,7 +32,7 @@ create table justification(
 	id int primary key auto_increment,
     text longtext not null,
     id_point varchar(10) not null,
-    foreign key(id_point) references point(code)
+    foreign key(id_point) references point(code) on delete cascade
 );
 create table form(
 	id int primary key auto_increment,
@@ -59,8 +56,8 @@ create table form(
     expert2_surname varchar(100),
     expert2_email varchar(100),
     expert2_phone varchar(50),
-    id_user int not null,
-    foreign key(id_user) references user(id)
+    id_user int,
+    foreign key(id_user) references user(id) on delete set null
 );
 create table contains(
 	id_justification int,
@@ -106,9 +103,9 @@ insert into justification(text, id_point) values ("Errori con il funzionamento d
 /*
 INSERIMENTO DEI FORMULARI DI TEST
 */
-insert into form(title, created, modified, deleted, student_name, student_surname, student_email, student_phone, teacher_name, teacher_surname, teacher_email, teacher_phone)
- values ();
+insert into form(title, created, modified, deleted, student_name, student_surname, student_email, student_phone, teacher_name, teacher_surname, teacher_email, teacher_phone, id_user)
+ values ("Gestione grotti", "10.11.2019", "20.12.2019", null, "Matteo", "Forni", "matteo.forni@samtrevano.ch", "0799119368", "Luca", "Peduzzi", "luca.peduzzi@edu.ti.ch", "0790123456", 1);
 
-select * from role;
+select * from form;
 select * from user;
 update user set id_role=2 where id = 1;

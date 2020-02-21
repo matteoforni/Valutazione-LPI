@@ -45,6 +45,11 @@ $router->group(['middleware' => 'jwt.auth', 'prefix' => 'teacher'], function() u
 
     //route che ritorna tutti i formulari
     $router->get('/forms', 'TeacherController@getForms');
+
+    $router->get('/form/add', 'TeacherController@showAddPage');
+
+    //route che consente di elminare un formulario
+    $router->delete('/form/delete/{id}', 'TeacherController@deleteForm');
 });
 
 /**

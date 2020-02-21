@@ -5,9 +5,10 @@
  * @returns La tabella HTML completa
  */
 function JSONToHTML(id, data){
-    let table = "<table id='" + id + "' class='table text-center table-hover table-bordered'><thead><tr>";
+    let table = "<table id='" + id + "' class='table text-center table-hover table-bordered'>";
     var keys = [];
     if(data.length > 0){
+        table += "<thead><tr>";
         for(var k in data[0]){
             keys.push(k);
         } 
@@ -28,11 +29,15 @@ function JSONToHTML(id, data){
                 }
                 count++;
             }
-            table += "<td><a class='updateField" + id + "'><i class='far fa-edit'></i></a></td>";
-            table += "<td><a class='deleteField" + id + "'><i class='far fa-trash-alt'></i></a></td>";
+            if(!data[i][keys[0]]){
+                table += "<td></td><td></td>"
+            }else{
+                table += "<td><a class='updateField" + id + "'><i class='far fa-edit'></i></a></td>";
+                table += "<td><a class='deleteField" + id + "'><i class='far fa-trash-alt'></i></a></td>";
+            }
             table += "</tr>";
         }
     }
-    
+    table += "</table>";
     return table;
 }

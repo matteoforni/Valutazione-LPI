@@ -64,7 +64,7 @@
             }
         </script>
         @section('footer')
-        <footer class="page-footer light-blue lighten-2">
+        <footer class="page-footer light-blue lighten-2 fixed-bottom">
 
             <div class="footer-copyright text-center py-3 text-white">
                 Valutazione LPI - 2020

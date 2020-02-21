@@ -611,7 +611,13 @@
             complete: function(response){
                 //Se il server ritorna il codice di successo genero la tabella
                 if(response["status"] == 200){
-                    var table = JSONToHTML('User', response["responseJSON"]);
+                    var data = [];
+                    for(var item in response["responseJSON"]){
+                        var obj = {'id': response["responseJSON"][item]['id'], 'nome': response["responseJSON"][item]['name'], 'cognome': response["responseJSON"][item]['surname'], 'Email': response["responseJSON"][item]['email'], 'telefono': response["responseJSON"][item]['phone'], 'ruolo': response["responseJSON"][item]['role']};
+                        data.push(obj);
+                    }
+
+                    var table = JSONToHTML('User', data);
                     $(".users-table").html(table);  
                     $("#User").DataTable({
                         "searching": true,

@@ -309,7 +309,6 @@ class AdminController extends Controller
     public function deleteJustification($id, Request $request){
         //Verifico che l'utente sia un admin
         if($request->all()['user_id_role'] == 2){
-            //Se è amministratore ritorno tutti gli utenti
             Justification::findOrFail($id)->delete();
             return response('Deleted Successfully', 200);
         }else{

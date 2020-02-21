@@ -75,9 +75,13 @@ class RegisterController extends Controller
         //Se la validazione va a buon fine genero l'errore.
         $user = User::create($request->all());
 
+        //Imposto il token di conferma
+        $user->confirmation_token = md5(uniqid(rand(), true));
+        $user->save();
+
         //Invio l'email di conferma della creazione
         $link = URL::to('/login/confirmation');
-        $link .= "/" . Crypt::encrypt($user->id);
+        $link .= "/" . Crypt::encrypt($user->confirmation_token);
         $body = "<h3>Conferma la tua email</h3>Hai creato con successo il tuo account di 'Valutazione LPI', conferma la tua email per completare l'operazione <br><a href='" . $link . "'>Premi qui per confermare l'email</a>";
         $subject = "Nuovo account di 'Valutazione LPI'";
 

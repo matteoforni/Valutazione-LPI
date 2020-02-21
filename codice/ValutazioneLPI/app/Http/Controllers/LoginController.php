@@ -96,15 +96,16 @@ class LoginController extends Controller
      * @param L'id dell'utente criptato
      * @return se va a buon fine la pagina di login altrimenti il messaggio d'errore
      */
-    public function confirmation($param){
+    public function confirmation($token){
         $users = User::all();
 
         //Decripto l'id dell'utente
-        $id = Crypt::decrypt($param);
+        $token = Crypt::decrypt($token);
 
         foreach($users as $user){
-            if($user->id == $id){
+            if($user->confirmation_token == $token){
                 $user->confirmed = 1;
+                $user->confirmation_token = null;
                 $user->save();
                 return redirect(''); 
             }

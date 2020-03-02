@@ -44,6 +44,9 @@ $router->group(['prefix' => 'teacher'], function() use ($router) {
 
     //route che consente di mostrare la pagina di aggiunta di un form
     $router->get('/form/show/add', 'TeacherController@showAddPage');
+
+    //route che consente di mostrare la pagina di aggiunta di una motivazione ad un formulario
+    $router->get('/form/add/justification', 'TeacherController@showJustificationPage');
 });
 
 /**
@@ -58,6 +61,9 @@ $router->group(['middleware' => 'jwt.auth', 'prefix' => 'teacher'], function() u
 
     //route che consente l'aggiunta di un formulario
     $router->post('/form/add', 'TeacherController@addForm');
+
+    //route che ritorna tutte le motivazioni
+    $router->get('/justifications', 'TeacherController@getJustifications');
 });
 
 /**

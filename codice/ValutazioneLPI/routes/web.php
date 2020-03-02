@@ -35,19 +35,23 @@ $router->group(['middleware' => 'jwt.auth', 'prefix' => 'login'], function() use
     $router->get('/login', 'LoginController@login');
 });
 
-
 /**
- * Gruppo di route che gestisce le chiamate della pagina teacher
+ * Gruppo di route che gestisce le chiamate della pagina teacher senza middleware
  */
-$router->group(['middleware' => 'jwt.auth', 'prefix' => 'teacher'], function() use ($router) {
+$router->group(['prefix' => 'teacher'], function() use ($router) {
     //route che mostra la pagina dopo il login
     $router->get('/', 'TeacherController@home');
 
-    //route che ritorna tutti i formulari
-    $router->get('/forms', 'TeacherController@getForms');
-
     //route che consente di mostrare la pagina di aggiunta di un form
     $router->get('/form/show/add', 'TeacherController@showAddPage');
+});
+
+/**
+ * Gruppo di route che gestisce le chiamate della pagina teacher con middleware
+ */
+$router->group(['middleware' => 'jwt.auth', 'prefix' => 'teacher'], function() use ($router) {
+    //route che ritorna tutti i formulari
+    $router->get('/forms', 'TeacherController@getForms');
 
     //route che consente di elminare un formulario
     $router->delete('/form/delete/{id}', 'TeacherController@deleteForm');
@@ -57,11 +61,17 @@ $router->group(['middleware' => 'jwt.auth', 'prefix' => 'teacher'], function() u
 });
 
 /**
- * Gruppo di route che gestisce le chiamate della pagina admin
+ * Gruppo di route che gestisce le chiamate della pagina admin senza middleware
  */
-$router->group(['middleware' => 'jwt.auth', 'prefix' => 'admin'], function() use ($router) {
+$router->group(['prefix' => 'admin'], function() use ($router) {
     //route che mostra la pagina di amministrazione chiamando URL/admin
     $router->get('/', 'AdminController@home');
+});
+
+/**
+ * Gruppo di route che gestisce le chiamate della pagina admin con middleware
+ */
+$router->group(['middleware' => 'jwt.auth', 'prefix' => 'admin'], function() use ($router) {
     
     //route che ritorna tutti gli utenti chiamando URL/admin/users
     $router->get('/users', 'AdminController@getUsers');

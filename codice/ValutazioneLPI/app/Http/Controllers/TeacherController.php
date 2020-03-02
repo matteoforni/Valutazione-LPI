@@ -95,9 +95,6 @@ class TeacherController extends Controller
             //Eseguo la validazione dei dati.
             $validation = Validator::make($request->all(), [
                 'title' => 'required|min:1|max:255',
-                'created' => 'required|date',
-                'modified' => 'date|nullable',
-                'deleted' => 'date|nullable',
                 'student_name' => ['required','min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/'],
                 'student_surname' => ['required','min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/'],
                 'student_email' => 'required|email',
@@ -114,7 +111,6 @@ class TeacherController extends Controller
                 'expert2_surname' => ['min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/', 'nullable'],
                 'expert2_email' => 'email|nullable',
                 'expert2_phone' => ['min:9','regex:/^(0|0041|\+41)?[1-9\s][0-9\s]{1,12}$/', 'nullable'],
-                'id_user' => 'required|numeric|exists:user,id',
             ], $messages);
 
              //Verifico che la valutazione sia andata a buon fine.
@@ -122,6 +118,14 @@ class TeacherController extends Controller
                 //Se fallisce ritorno gli errori.
                 return response()->json($validation->errors(), '422');
             }
+
+            //Aggiungo la data di creazione
+            $date=date_create();
+            $request->request->add(['created' => date_format($date,"Y-m-d h:m")]);
+
+            //Aggiungo l'id dell'utente
+            $request->request->add(['id_user' => $request['id']]);
+
             //Se la validazione va a buon fine genero l'errore.
             $form = Form::create($request->all());
 

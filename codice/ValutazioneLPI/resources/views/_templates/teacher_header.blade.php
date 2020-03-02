@@ -42,6 +42,9 @@
                 </button>
                 <div class="collapse navbar-collapse d-flex justify-content-end" id="navbar">
                     <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a id="homeLink" class="nav-link">Pagina iniziale</a>
+                        </li>
                         <li class="nav-item active">
                             <a class="nav-link" onclick="logout()">Logout</a>
                         </li>                       
@@ -55,6 +58,12 @@
             @yield('content')
         </div>
         <script>
+            $(document).ready(function() {
+                var link = "{{ url('teacher') }}";
+                link += "?token=" + Cookies.get('token');                
+                $("#homeLink").attr('href', link);
+            });
+
             /**
              * Funzione che consente di uscire dal proprio account
              */

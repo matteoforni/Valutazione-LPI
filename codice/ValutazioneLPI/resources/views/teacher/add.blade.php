@@ -118,4 +118,194 @@
         </div>
     </div>
 </div>
+<script>
+    //All'evento di submit del form eseguo la richiesta al server con AJAX
+    $("#addFormForm").submit(function( event ) {
+        //Blocco l'evento di default del form (aggiunta del URL get)
+        event.preventDefault();
+        //Ottengo i dati dal form
+        var jsonData = $(this).serializeArray();
+        //Formatto i dati del form nel formato necessario per eseguire la richiesta
+        var form = {};
+        for(var index in jsonData) {
+            var json = jsonData[index];
+            form[json.name] = json.value;
+        }
+        //Eseguo la richiesta post al controller
+        $.ajax({
+            type: "post",
+            url: "{{ url('teacher/form/add') }}",
+            data: JSON.stringify(form),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",      
+            headers: {
+                'Authorization':'Bearer ' + Cookies.get('token'),
+            },       
+            complete: function(response){
+                //Se il server ritorna il codice di successo rimando all'utente alla pagina dei docenti
+                if(response["status"] == 201){
+                    var link = "{{ url('teacher') }}";
+                    link += "?token=" + Cookies.get('token');
+                    window.location = link;
+
+                //Se il server ritorna un errore stampo gli errori     
+                }else{
+                    //Formatto gli errori
+                    var errors = [];
+                    for(key in response["responseJSON"]) {
+                        errors.push(response["responseJSON"][key]);
+                    }
+                    //Stampo gli errori
+                    for(i = 0; i < errors.length; i++){
+                        $(".errors").append("<h6>" + errors[i] + "</h6>");
+                    }
+                }
+            }
+        });
+    });
+
+    //Funzione che aggiunge i messaggi di errore quando i campi sono invalidi
+    $(function(){
+        //Messaggio per il campo titolo
+        $("#title")[0].oninvalid = function () {
+            this.setCustomValidity("Il titolo deve essere di almeno 1 carattere");
+        };
+        //Messaggio per il campo nome
+        $("#student_name")[0].oninvalid = function () {
+            this.setCustomValidity("Il nome deve essere di almeno 2 caratteri e contenere solo lettere");
+        };
+        //Messaggio per il campo cognome
+        $("#student_surname")[0].oninvalid = function () {
+            this.setCustomValidity("Il cognome deve essere di almeno 2 caratteri e contenere solo lettere");
+        };
+        //Messaggio per il campo email
+        $("#student_email")[0].oninvalid = function () {
+            this.setCustomValidity("Inserire un email valida");
+        };
+        //Messaggio per il campo telefono
+        $("#student_phone")[0].oninvalid = function () {
+            this.setCustomValidity("Inserire un numero di telefono valido");
+        };
+        //Messaggio per il campo nome
+        $("#teacher_name")[0].oninvalid = function () {
+            this.setCustomValidity("Il nome deve essere di almeno 2 caratteri e contenere solo lettere");
+        };
+        //Messaggio per il campo cognome
+        $("#teacher_surname")[0].oninvalid = function () {
+            this.setCustomValidity("Il cognome deve essere di almeno 2 caratteri e contenere solo lettere");
+        };
+        //Messaggio per il campo email
+        $("#teacher_email")[0].oninvalid = function () {
+            this.setCustomValidity("Inserire un email valida");
+        };
+        //Messaggio per il campo telefono
+        $("#teacher_phone")[0].oninvalid = function () {
+            this.setCustomValidity("Inserire un numero di telefono valido");
+        };
+        //Messaggio per il campo nome
+        $("#expert1_name")[0].oninvalid = function () {
+            this.setCustomValidity("Il nome deve essere di almeno 2 caratteri e contenere solo lettere");
+        };
+        //Messaggio per il campo cognome
+        $("#expert1_surname")[0].oninvalid = function () {
+            this.setCustomValidity("Il cognome deve essere di almeno 2 caratteri e contenere solo lettere");
+        };
+        //Messaggio per il campo email
+        $("#expert1_email")[0].oninvalid = function () {
+            this.setCustomValidity("Inserire un email valida");
+        };
+        //Messaggio per il campo telefono
+        $("#expert1_phone")[0].oninvalid = function () {
+            this.setCustomValidity("Inserire un numero di telefono valido");
+        };
+        //Messaggio per il campo nome
+        $("#expert2_name")[0].oninvalid = function () {
+            this.setCustomValidity("Il nome deve essere di almeno 2 caratteri e contenere solo lettere");
+        };
+        //Messaggio per il campo cognome
+        $("#expert2_surname")[0].oninvalid = function () {
+            this.setCustomValidity("Il cognome deve essere di almeno 2 caratteri e contenere solo lettere");
+        };
+        //Messaggio per il campo email
+        $("#expert2_email")[0].oninvalid = function () {
+            this.setCustomValidity("Inserire un email valida");
+        };
+        //Messaggio per il campo telefono
+        $("#expert2_phone")[0].oninvalid = function () {
+            this.setCustomValidity("Inserire un numero di telefono valido");
+        };
+    });
+
+    //Funzione che rimuove i messaggi di errore dai campi
+    $(function(){
+        //Messaggio per il campo titolo
+        $("#title")[0].oninput = function () {
+            this.setCustomValidity("");
+        };
+        //Messaggio per il campo nome
+        $("#student_name")[0].oninput = function () {
+            this.setCustomValidity("");
+        };
+        //Messaggio per il campo cognome
+        $("#student_surname")[0].oninput = function () {
+            this.setCustomValidity("");
+        };
+        //Messaggio per il campo email
+        $("#student_email")[0].oninput = function () {
+            this.setCustomValidity("");
+        };
+        //Messaggio per il campo telefono
+        $("#student_phone")[0].oninput = function () {
+            this.setCustomValidity("");
+        };
+        //Messaggio per il campo nome
+        $("#teacher_name")[0].oninput = function () {
+            this.setCustomValidity("");
+        };
+        //Messaggio per il campo cognome
+        $("#teacher_surname")[0].oninput = function () {
+            this.setCustomValidity("");
+        };
+        //Messaggio per il campo email
+        $("#teacher_email")[0].oninput = function () {
+            this.setCustomValidity("");
+        };
+        //Messaggio per il campo telefono
+        $("#teacher_phone")[0].oninput = function () {
+            this.setCustomValidity("");
+        };
+        //Messaggio per il campo nome
+        $("#expert1_name")[0].oninput = function () {
+            this.setCustomValidity("");
+        };
+        //Messaggio per il campo cognome
+        $("#expert1_surname")[0].oninput = function () {
+            this.setCustomValidity("");
+        };
+        //Messaggio per il campo email
+        $("#expert1_email")[0].oninput = function () {
+            this.setCustomValidity("");
+        };
+        //Messaggio per il campo telefono
+        $("#expert1_phone")[0].oninput = function () {
+            this.setCustomValidity("");
+        };
+        //Messaggio per il campo nome
+        $("#expert2_name")[0].oninput = function () {
+            this.setCustomValidity("");
+        };
+        //Messaggio per il campo cognome
+        $("#expert2_surname")[0].oninput = function () {
+            this.setCustomValidity("");
+        };
+        //Messaggio per il campo email
+        $("#expert2_email")[0].oninput = function () {
+            this.setCustomValidity("");
+        };
+        //Messaggio per il campo telefono
+        $("#expert2_phone")[0].oninput = function () {
+            this.setCustomValidity("");
+        };
+    });
+</script>
 @endsection

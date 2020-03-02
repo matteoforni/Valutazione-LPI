@@ -90,6 +90,15 @@ insert into point(code, title, description, type) values ("B2", "Svolgimento del
 insert into point(code, title, description, type) values ("C1", "Gestione del tempo, struttura", "La struttura e il contenuto della presentazione si limitano ai principali aspetti del LPI (compito, svolgimento, risultati). Il tempo concesso per la presentazione deve essere rispettato.", 0);
 insert into point(code, title, description, type) values ("C2", "Presentazione: utilizzo dei media, aspetti tecnici", "La presentazione e la dimostrazione del progetto è supporatta dastrumenti tecnici (da soli o in combinazione). Il o la candidato/a deve saperli utilizzare correttamente e in modo adeguato.", 0);
 
+insert into point(code, title, description, type) values ("159", "Analisi del problema (programmazione)", "Il o la candidato/a è capace di analizzare il problema?", 1);
+insert into point(code, title, description, type) values ("162", "Progettazione (Architettura del programma)", "Il concetto segue le attuali regole dell’architettura software correnti o è modularizzato/strutturato?", 1);
+insert into point(code, title, description, type) values ("165", "Implementazione della soluzione (programmazione)", "Il candidato è in grado d’implementare le soluzioni proposte?", 1);
+insert into point(code, title, description, type) values ("121", "Ergonomia del programma (programmazione)", "L'applicazione è facile da usare (user-friendly)? L'ergonomia richiesta dall'utente è implementata?", 1);
+insert into point(code, title, description, type) values ("166", "Stile di codifica e leggibilità del codice", "Il codice è scritto in modo leggibile, ben organizzato e la nomenclatura è stata scelta opportunamente?", 1);
+insert into point(code, title, description, type) values ("164", "Codifica: Trattamento degli errori", "Gestione degli errori: gli eventuali errori sono identificati e gestiti tramite i mezzi adeguati?", 1);
+insert into point(code, title, description, type) values ("128", "Identificazione delle entità necessarie conformemente al problema dato", "È disponibile un modello E-R (entità-relazione) che permette di rappresentare il il problema per comprenderlo facilmente?", 1);
+insert into point(code, title, description, type) values ("135", "Documentazione DB e tabelle", "Il database è sufficientemente documentato, cioè vengono descritte le funzioni, le transazioni, le definizioni delle tabelle, le relazioni e le strategie di accesso.", 1);
+
 /*
 INSERIMENTO DELLE MOTIVAZIONI DI TEST
 */
@@ -106,6 +115,6 @@ INSERIMENTO DEI FORMULARI DI TEST
 insert into form(title, created, modified, deleted, student_name, student_surname, student_email, student_phone, teacher_name, teacher_surname, teacher_email, teacher_phone, id_user)
  values ("Gestione grotti", "10.11.2019", "20.12.2019", null, "Matteo", "Forni", "matteo.forni@samtrevano.ch", "0799119368", "Luca", "Peduzzi", "luca.peduzzi@edu.ti.ch", "0790123456", 1);
 
-select * from form;
+select * from point;
 select * from user;
 update user set id_role=2 where id = 1;

@@ -12,30 +12,15 @@ class TeacherController extends Controller
     /**
      * Funzione che reindirizza l'utente alla pagina dei docenti.
      */
-    public function home(Request $request){
-        //Verifico che l'utente sia un admin
-        if($request->all()['user_id_role'] == env('TEACHER')){
-            $user = User::find($request->id);
-            //Se è docente gli mostro la pagina
-            return view('teacher/index')->with('user', $user);;
-        }else{
-            //Se non lo è ritorno l'errore
-            return response()->json(['Unauthorized' => 'Non hai i permessi necessari per accedere'], 401);
-        }
+    public function home(){    
+        return view('teacher/index');
     }
 
     /**
      * Funzione che reindirizza l'utente alla pagina di aggiunta di un formulario
      */
     public function showAddPage(Request $request){
-        //Verifico che l'utente sia un admin
-        if($request->all()['user_id_role'] == env('TEACHER')){
-            //Se è docente gli mostro la pagina
-            return view('teacher/add');
-        }else{
-            //Se non lo è ritorno l'errore
-            return response()->json(['Unauthorized' => 'Non hai i permessi necessari per accedere'], 401);
-        }
+        return view('teacher/add');
     }
 
     /**

@@ -14,20 +14,12 @@ class AdminController extends Controller
     /**
      * Funzione che reindirizza l'utente alla pagina di registrazione.
      */
-    public function home(Request $request){
-        //Verifico che l'utente sia un admin
-        if($request->all()['user_id_role'] == env('ADMIN')){
-            $user = User::find($request->id);
-            //Carico i punti e ruoli che avrò bisogno nella pagina admin
-            $points = Point::all();
-            $roles = Role::all();
-            //Se è ammministratore gli mostro la pagina
-            return view('admin/index')->with('points', $points)->with('roles', $roles)->with('user', $user);
-        }else{
-            //Se non lo è ritorno l'errore
-            return response()->json(['Unauthorized' => 'Non hai i permessi necessari per accedere'], 401);
-        }
-       
+    public function home(){
+        //Carico i punti e ruoli che avrò bisogno nella pagina admin
+        $points = Point::all();
+        $roles = Role::all();
+        //Se è ammministratore gli mostro la pagina
+        return view('admin/index')->with('points', $points)->with('roles', $roles);
     }
 
     /**

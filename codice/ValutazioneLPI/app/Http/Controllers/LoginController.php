@@ -84,10 +84,10 @@ class LoginController extends Controller
         //Verifico che l'utente sia un admin
         if($request->all()['user_id_role'] == env('ADMIN')){
             //Se è ammministratore gli mostro la pagina
-            return redirect('admin?token=' . $request->get('token'));
+            return redirect('admin');
         }elseif($request->all()['user_id_role'] == env('TEACHER')){
             //Se non lo è ritorno la pagina per i docenti
-            return redirect('teacher?token=' . $request->get('token'));
+            return redirect('teacher');
         }
     }
 

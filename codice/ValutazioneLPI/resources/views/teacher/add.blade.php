@@ -144,20 +144,21 @@
             complete: function(response){
                 //Se il server ritorna il codice di successo rimando all'utente alla pagina dei docenti
                 if(response["status"] == 201){
-                    var link = "{{ url('teacher') }}";
-                    link += "?token=" + Cookies.get('token');
-                    window.location = link;
 
-                //Se il server ritorna un errore stampo gli errori     
                 }else{
-                    //Formatto gli errori
-                    var errors = [];
-                    for(key in response["responseJSON"]) {
-                        errors.push(response["responseJSON"][key]);
-                    }
-                    //Stampo gli errori
-                    for(i = 0; i < errors.length; i++){
-                        $(".errors").append("<h6>" + errors[i] + "</h6>");
+                    if(response["status"] == 401){
+                        window.location = "{{ url('') }}";
+                    }else{
+                        //Se il server ritorna un errore stampo gli errori    
+                        //Formatto gli errori
+                        var errors = [];
+                        for(key in response["responseJSON"]) {
+                            errors.push(response["responseJSON"][key]);
+                        }
+                        //Stampo gli errori
+                        for(i = 0; i < errors.length; i++){
+                            $(".errors").append("<h6>" + errors[i] + "</h6>");
+                        }
                     }
                 }
             }

@@ -41,13 +41,6 @@
 <script src="/resources/js/JSONToHTML.js"></script>
 <script>
     $(document).ready(function(){
-        //Notifico la mancanza di un email verificata
-        var user = <?php echo $user ?>
-
-        if(user['confirmed'] == 0) {
-            toastr.warning('Verifica la tua email');
-        }
-
         createFormsTable();
     });
 
@@ -103,7 +96,9 @@
                     $('#Form').on('page.dt', function () {
                         setFormLinks();
                     });
-                }       
+                }else if(response["status"] = 401){
+                    window.location = "url('')";
+                }    
             }
         });
     }
@@ -162,9 +157,7 @@
     * Funzione che rimanda l'utente alla pagina di aggiunta
     */
     function addForm(){
-        var link = "{{ url('teacher/form/show/add') }}";
-        link += "/?token=" + Cookies.get('token');
-        window.location = link;
+        window.location = "{{url('teacher/form/show/add')}}";
     }
 </script>
 @endsection

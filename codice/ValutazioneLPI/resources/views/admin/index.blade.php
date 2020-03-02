@@ -308,13 +308,6 @@
             //La aggiungo alla select
             $(".role-select").append(option);
         }
-
-        //Notifico la mancanza di un email verificata
-        var user = <?php echo $user ?>
-
-        if(user['confirmed'] == 0) {
-            toastr.warning('Verifica la tua email');
-        }
     });
 
     //Quando viene eseguito il submit nel form di aggiunta di un utente 
@@ -590,6 +583,8 @@
                     $('#Justification').on('page.dt', function () {
                         setJustificationLinks();
                     });
+                }else if(response["status"] = 401){
+                    window.location = "url('')";
                 }       
             }
         });
@@ -643,7 +638,9 @@
                     $('#User').on('page.dt', function () {
                         setUserLinks();
                     });
-                }          
+                }else if(response["status"] = 401){
+                    window.location = "url('')";
+                }            
             }
         });
     }

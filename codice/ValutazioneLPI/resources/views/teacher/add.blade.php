@@ -111,7 +111,16 @@
                 <select id="pointSelect" name="id_point" class="point-select browser-default custom-select">
                     <option selected disabled>Seleziona un punto</option>
                 </select>
-                <p id="pointText" class="mt-3"></p>
+                <!-- CONTENGONO LE SCELTE FATTE -->
+                <div class="row">
+                    <div class="col-md-1 border m-auto"></div>
+                    <div class="col-md-1 border m-auto"></div>
+                    <div class="col-md-1 border m-auto"></div>
+                    <div class="col-md-1 border m-auto"></div>
+                    <div class="col-md-1 border m-auto"></div>
+                    <div class="col-md-1 border m-auto"></div>
+                    <div class="col-md-1 border m-auto"></div>
+                </div>
             </div>
 
             <p class="text-left">I riquadri contrassegnati da un <b class="text-danger">*</b> sono richiesti</p>

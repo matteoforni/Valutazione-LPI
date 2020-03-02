@@ -5,6 +5,7 @@ use App\User;
 use App\Justification;
 use App\Form;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class TeacherController extends Controller
 {
@@ -75,7 +76,41 @@ class TeacherController extends Controller
     public function addForm(Request $request){
         //Verifico che l'utente sia un admin
         if($request->all()['user_id_role'] == env('TEACHER')){
-            
+            //Personalizzo i messaggi di errore.
+            $messages = [
+                'required' => "Il campo :attribute deve essere specificato",
+                'min' => "Il campo :attribute deve essere di almeno :min caratteri",
+                'max' => "Il campo :attribute deve essere di massimo :max caratteri",
+                'email' => "Il campo :attribute deve essere un indirizzo email valido",
+                'numeric' => "Il campo :attribute deve essere di tipo numerico",
+                'same' => "Il campo :attribute deve valere 0",
+                'unique' => "L':attribute inserita è già in utilizzo",
+            ];
+
+            //Eseguo la validazione dei dati.
+            $validation = Validator::make($request->all(), [
+                'title' => 'required|min:1|max:255',
+                'created' => 'required|date',
+                'modified' => 'date',
+                'deleted' => 'date',
+                'student_name' => ['required','min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/'],
+                'student_surname' => ['required','min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/'],
+                'student_email' => 'required|email',
+                'student_phone' => ['required','min:9','regex:/^(0|0041|\+41)?[1-9\s][0-9\s]{1,12}$/'],
+                'teacher_name' => ['required','min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/'],
+                'teacher_surname' => ['required','min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/'],
+                'teacher_email' => 'email',
+                'teacher_phone' => ['min:9','regex:/^(0|0041|\+41)?[1-9\s][0-9\s]{1,12}$/'],
+                'expert1_name' => ['min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/'],
+                'expert1_surname' => ['min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/'],
+                'expert1_email' => 'email',
+                'expert1_phone' => ['min:9','regex:/^(0|0041|\+41)?[1-9\s][0-9\s]{1,12}$/'],
+                'expert2_name' => ['min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/'],
+                'expert2_surname' => ['min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/'],
+                'expert2_email' => 'email',
+                'expert2_phone' => ['min:9','regex:/^(0|0041|\+41)?[1-9\s][0-9\s]{1,12}$/'],
+                'id_user' => 'required|numeric|exists:user,id',
+            ], $messages);
         }
     }
 }

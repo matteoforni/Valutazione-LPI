@@ -158,6 +158,9 @@
         });
     }
 
+    /**
+    * Funzione che rimanda l'utente alla pagina di aggiunta
+    */
     function addForm(){
         var link = "{{ url('teacher/form/add') }}";
         link += "/?token=" + Cookies.get('token');

@@ -73,6 +73,11 @@ class TeacherController extends Controller
         }    
     }
 
+    /**
+     * Funzione che consente l'aggiunta di un formulario
+     * @param Request request La richiesta eseguita 
+     * @return La risposta in JSON
+     */
     public function addForm(Request $request){
         //Verifico che l'utente sia un admin
         if($request->all()['user_id_role'] == env('TEACHER')){
@@ -91,26 +96,40 @@ class TeacherController extends Controller
             $validation = Validator::make($request->all(), [
                 'title' => 'required|min:1|max:255',
                 'created' => 'required|date',
-                'modified' => 'date',
-                'deleted' => 'date',
+                'modified' => 'date|nullable',
+                'deleted' => 'date|nullable',
                 'student_name' => ['required','min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/'],
                 'student_surname' => ['required','min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/'],
                 'student_email' => 'required|email',
                 'student_phone' => ['required','min:9','regex:/^(0|0041|\+41)?[1-9\s][0-9\s]{1,12}$/'],
                 'teacher_name' => ['required','min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/'],
                 'teacher_surname' => ['required','min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/'],
-                'teacher_email' => 'email',
+                'teacher_email' => 'required|email',
                 'teacher_phone' => ['min:9','regex:/^(0|0041|\+41)?[1-9\s][0-9\s]{1,12}$/'],
-                'expert1_name' => ['min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/'],
-                'expert1_surname' => ['min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/'],
-                'expert1_email' => 'email',
-                'expert1_phone' => ['min:9','regex:/^(0|0041|\+41)?[1-9\s][0-9\s]{1,12}$/'],
-                'expert2_name' => ['min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/'],
-                'expert2_surname' => ['min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/'],
-                'expert2_email' => 'email',
-                'expert2_phone' => ['min:9','regex:/^(0|0041|\+41)?[1-9\s][0-9\s]{1,12}$/'],
+                'expert1_name' => ['min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/', 'nullable'],
+                'expert1_surname' => ['min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/', 'nullable'],
+                'expert1_email' => 'email|nullable',
+                'expert1_phone' => ['min:9','regex:/^(0|0041|\+41)?[1-9\s][0-9\s]{1,12}$/', 'nullable'],
+                'expert2_name' => ['min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/', 'nullable'],
+                'expert2_surname' => ['min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/', 'nullable'],
+                'expert2_email' => 'email|nullable',
+                'expert2_phone' => ['min:9','regex:/^(0|0041|\+41)?[1-9\s][0-9\s]{1,12}$/', 'nullable'],
                 'id_user' => 'required|numeric|exists:user,id',
             ], $messages);
+
+             //Verifico che la valutazione sia andata a buon fine.
+             if($validation->fails()){
+                //Se fallisce ritorno gli errori.
+                return response()->json($validation->errors(), '422');
+            }
+            //Se la validazione va a buon fine genero l'errore.
+            $form = Form::create($request->all());
+
+            //Ritorno la risposta di successo.
+            return response()->json($form, 201);
+        }else{
+            //Se non lo è ritorno l'errore
+            return response()->json(['Unauthorized' => 'Non hai i permessi necessari per accedere'], 401);
         }
     }
 }

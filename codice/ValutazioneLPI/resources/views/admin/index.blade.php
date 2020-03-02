@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="row">
-    <div class="col-md-8 text-center offset-2">
+    <div class="col-md-8 text-center offset-md-2">
         <h3 class="h3 text-center my-5">Gestione motivazioni</h3>
         <div class="errors-justification text-danger">
 
@@ -557,7 +557,7 @@
             complete: function(response){
                 //Se il server ritorna il codice di successo genero la tabella
                 if(response["status"] == 200){
-                    var table = JSONToHTML('Justification', response["responseJSON"]);
+                    var table = JSONToHTML('Justification', response["responseJSON"], true);
                     $(".justifications-table").html(table);  
                     $("#Justification").DataTable({
                         "searching": true,
@@ -584,7 +584,7 @@
                         setJustificationLinks();
                     });
                 }else if(response["status"] = 401){
-                    window.location = "url('')";
+                    window.location = "{{ url('') }}";
                 }       
             }
         });
@@ -612,7 +612,7 @@
                         data.push(obj);
                     }
 
-                    var table = JSONToHTML('User', data);
+                    var table = JSONToHTML('User', data, true);
                     $(".users-table").html(table);  
                     $("#User").DataTable({
                         "searching": true,
@@ -639,7 +639,7 @@
                         setUserLinks();
                     });
                 }else if(response["status"] = 401){
-                    window.location = "url('')";
+                    window.location = "{{ url('') }}";
                 }            
             }
         });

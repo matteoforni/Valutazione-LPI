@@ -4,7 +4,7 @@
  * @param {array} data I dati da utilizzare per creare la tabella
  * @returns La tabella HTML completa
  */
-function JSONToHTML(id, data){
+function JSONToHTML(id, data, controls){
     let table = "<table id='" + id + "' class='table text-center table-hover table-bordered'>";
     var keys = [];
     if(data.length > 0){
@@ -17,8 +17,11 @@ function JSONToHTML(id, data){
                 table += "<th scope='col' class='font-weight-bold'>" + keys[i].charAt(0).toUpperCase() + keys[i].slice(1) + "</th>";
             }
         }
-        table += "<th scope='col' class='font-weight-bold'>Modifica</th>";
-        table += "<th scope='col' class='font-weight-bold'>Elimina</th>";
+        if(controls){
+            table += "<th scope='col' class='font-weight-bold'>Modifica</th>";
+            table += "<th scope='col' class='font-weight-bold'>Elimina</th>";
+        }
+        
         table += "</tr></thead><tbody>";
         for(var i in data){
             let count = 0;
@@ -32,8 +35,10 @@ function JSONToHTML(id, data){
             if(!data[i][keys[0]]){
                 table += "<td></td><td></td>"
             }else{
-                table += "<td><a class='updateField" + id + "'><i class='far fa-edit'></i></a></td>";
-                table += "<td><a class='deleteField" + id + "'><i class='far fa-trash-alt'></i></a></td>";
+                if(controls){
+                    table += "<td><a class='updateField" + id + "'><i class='far fa-edit'></i></a></td>";
+                    table += "<td><a class='deleteField" + id + "'><i class='far fa-trash-alt'></i></a></td>";
+                }
             }
             table += "</tr>";
         }

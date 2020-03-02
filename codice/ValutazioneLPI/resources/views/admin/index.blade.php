@@ -38,7 +38,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form id="addUserForm" class="text-center border border-light p-5 mt-3 m-5">
+        <form id="addUserForm" class="text-center border border-light p-5 mt-3 m-5 md-form">
             <p class="h4 mb-4">Aggiungi un utente</p>
 
             <div class="form-row">
@@ -89,7 +89,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form id="addJustificationForm" class="text-center border border-light p-5 mt-3 m-5">
+        <form id="addJustificationForm" class="text-center border border-light p-5 mt-3 m-5 md-form">
             <p class="h4 mb-4">Aggiungi una motivazione</p>
 
             <div class="md-form">
@@ -127,7 +127,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form id="updateJustificationForm" class="text-center border border-light p-5 mt-3 m-5">
+        <form id="updateJustificationForm" class="text-center border border-light p-5 mt-3 m-5 md-form">
             <p class="h4 mb-4">Modifica la motivazione</p>
 
             <div class="md-form">
@@ -164,7 +164,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form id="updateUserForm" class="text-center border border-light p-5 mt-3 m-5">
+        <form id="updateUserForm" class="text-center border border-light p-5 mt-3 m-5 md-form">
             <p class="h4 mb-4">Modifica l'utente</p>
 
             <div class="form-row">

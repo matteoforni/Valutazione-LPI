@@ -5,7 +5,7 @@
 @section('content')
 <div class="row">
     <div class="col-md-6 offset-3">
-        <form id="loginForm" class="text-center border border-light p-5 mt-5">
+        <form id="loginForm" class="text-center border border-light p-5 mt-5 md-form">
             <p class="h4 mb-4">Accedi al tuo account</p>
 
             <!-- Email -->

@@ -13,7 +13,7 @@ class TeacherController extends Controller
      */
     public function home(Request $request){
         //Verifico che l'utente sia un admin
-        if($request->all()['user_id_role'] == 1){
+        if($request->all()['user_id_role'] == env('TEACHER')){
             $user = User::find($request->id);
             //Se è docente gli mostro la pagina
             return view('teacher/index')->with('user', $user);;
@@ -28,7 +28,7 @@ class TeacherController extends Controller
      */
     public function showAddPage(Request $request){
         //Verifico che l'utente sia un admin
-        if($request->all()['user_id_role'] == 1){
+        if($request->all()['user_id_role'] == env('TEACHER')){
             //Se è docente gli mostro la pagina
             return view('teacher/add');
         }else{
@@ -44,7 +44,7 @@ class TeacherController extends Controller
      */
     public function getForms(Request $request){
         //Verifico che l'utente sia un admin
-        if($request->all()['user_id_role'] == 1){
+        if($request->all()['user_id_role'] == env('TEACHER')){
             //Se è amministratore ritorno tutti i formulari
             $forms = response()->json(Form::all());
             return $forms;
@@ -63,12 +63,19 @@ class TeacherController extends Controller
      */
     public function deleteForm($id, Request $request){
         //Verifico che l'utente sia un admin
-        if($request->all()['user_id_role'] == 1){
+        if($request->all()['user_id_role'] == env('TEACHER')){
             Form::findOrFail($id)->delete();
             return response('Deleted Successfully', 200);
         }else{
             //Se non lo è ritorno l'errore
             return response()->json(['Unauthorized' => 'Non hai i permessi necessari per accedere'], 401);
         }    
+    }
+
+    public function addForm(Request $request){
+        //Verifico che l'utente sia un admin
+        if($request->all()['user_id_role'] == env('TEACHER')){
+            
+        }
     }
 }

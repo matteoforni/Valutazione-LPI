@@ -82,10 +82,10 @@ class LoginController extends Controller
     public function login(Request $request){
         $user = User::find($request->all()['id']);
         //Verifico che l'utente sia un admin
-        if($request->all()['user_id_role'] == 2){
+        if($request->all()['user_id_role'] == env('ADMIN')){
             //Se è ammministratore gli mostro la pagina
             return redirect('admin?token=' . $request->get('token'));
-        }elseif($request->all()['user_id_role'] == 1){
+        }elseif($request->all()['user_id_role'] == env('TEACHER')){
             //Se non lo è ritorno la pagina per i docenti
             return redirect('teacher?token=' . $request->get('token'));
         }

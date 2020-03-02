@@ -16,7 +16,7 @@ class AdminController extends Controller
      */
     public function home(Request $request){
         //Verifico che l'utente sia un admin
-        if($request->all()['user_id_role'] == 2){
+        if($request->all()['user_id_role'] == env('ADMIN')){
             $user = User::find($request->id);
             //Carico i punti e ruoli che avrò bisogno nella pagina admin
             $points = Point::all();
@@ -37,7 +37,7 @@ class AdminController extends Controller
      */
     public function getUsers(Request $request){
         //Verifico che l'utente sia un admin
-        if($request->all()['user_id_role'] == 2){
+        if($request->all()['user_id_role'] == env('ADMIN')){
             $users = User::all();
             //Imposto il nome del ruolo e non il suo id
             foreach($users as $user){
@@ -61,7 +61,7 @@ class AdminController extends Controller
      */
     public function getUser($id, Request $request){
         //Verifico che l'utente sia un admin
-        if($request->all()['user_id_role'] == 2){
+        if($request->all()['user_id_role'] == env('ADMIN')){
             $user = User::find($id);
             //Imposto il nome del ruolo e non il suo id
             $user['role'] = Role::find($user['id_role'])['name'];
@@ -80,7 +80,7 @@ class AdminController extends Controller
      */
     public function getJustifications(Request $request){
         //Verifico che l'utente sia un admin
-        if($request->all()['user_id_role'] == 2){
+        if($request->all()['user_id_role'] == env('ADMIN')){
             //Se è amministratore ritorno tutti i form
             return response()->json(Justification::all());
         }else{
@@ -97,7 +97,7 @@ class AdminController extends Controller
      */
     public function getJustification($id, Request $request){
         //Verifico che l'utente sia un admin
-        if($request->all()['user_id_role'] == 2){
+        if($request->all()['user_id_role'] == env('ADMIN')){
             //Se è amministratore ritorno tutti gli utenti
             return response()->json(Justification::find($id));
         }else{
@@ -113,7 +113,7 @@ class AdminController extends Controller
      */
     public function addUser(Request $request){
         //Verifico che l'utente sia un admin
-        if($request->all()['user_id_role'] == 2){
+        if($request->all()['user_id_role'] == env('ADMIN')){
             //Personalizzo i messaggi di errore.
             $messages = [
                 'required' => "Il campo :attribute deve essere specificato",
@@ -182,7 +182,7 @@ class AdminController extends Controller
      */
     public function deleteUser($id, Request $request){
         //Verifico che l'utente sia un admin
-        if($request->all()['user_id_role'] == 2){
+        if($request->all()['user_id_role'] == env('ADMIN')){
             $users = User::all();
             //Verifico che vi sia sempre almeno un'admin
             foreach($users as $user){
@@ -207,7 +207,7 @@ class AdminController extends Controller
      */
     public function updateUser($id, Request $request){
         //Verifico che l'utente sia un admin
-        if($request->all()['user_id_role'] == 2){
+        if($request->all()['user_id_role'] == env('ADMIN')){
             //Personalizzo i messaggi di errore.
             $messages = [
                 'required' => "Il campo :attribute deve essere specificato",
@@ -270,7 +270,7 @@ class AdminController extends Controller
      */
     public function addJustification(Request $request){
         //Verifico che l'utente sia un admin
-        if($request->all()['user_id_role'] == 2){
+        if($request->all()['user_id_role'] == env('ADMIN')){
             //Personalizzo i messaggi di errore.
             $messages = [
                 'required' => "Il campo :attribute deve essere specificato",
@@ -308,7 +308,7 @@ class AdminController extends Controller
      */
     public function deleteJustification($id, Request $request){
         //Verifico che l'utente sia un admin
-        if($request->all()['user_id_role'] == 2){
+        if($request->all()['user_id_role'] == env('ADMIN')){
             Justification::findOrFail($id)->delete();
             return response('Deleted Successfully', 200);
         }else{
@@ -325,7 +325,7 @@ class AdminController extends Controller
      */
     public function updateJustification($id, Request $request){
         //Verifico che l'utente sia un admin
-        if($request->all()['user_id_role'] == 2){
+        if($request->all()['user_id_role'] == env('ADMIN')){
             //Personalizzo i messaggi di errore.
             $messages = [
                 'required' => "Il campo :attribute deve essere specificato",

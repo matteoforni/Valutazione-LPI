@@ -4,14 +4,14 @@
 
 @section('content')
 <div class="row">
-    <div class="col-md-10 text-center offset-1">
+    <div class="col-md-10 text-center offset-md-1">
         <h3 class="h3 text-center my-5">Storico dei formulari</h3>
         <div class="errors-forms text-danger">
 
         </div>
         <div class="forms-table table-responsive mb-5">
         </div>
-        <button type="button" class="btn btn-primary" onclick="addForm()">Aggiungi formulario</button>
+        <button type="button" class="btn btn-primary mb-5" onclick="addForm()">Aggiungi formulario</button>
     </div>
 </div>
 
@@ -70,7 +70,7 @@
                         data.push({'id': '', 'titolo': '', 'creato': '', 'Email allievo': '', 'Email docente': ''});
                     }
 
-                    var table = JSONToHTML('Form', data);
+                    var table = JSONToHTML('Form', data, true);
                     $(".forms-table").html(table);  
                     $("#Form").DataTable({
                         "searching": true,
@@ -97,7 +97,7 @@
                         setFormLinks();
                     });
                 }else if(response["status"] = 401){
-                    window.location = "url('')";
+                    window.location = "{{ url('') }}";
                 }    
             }
         });

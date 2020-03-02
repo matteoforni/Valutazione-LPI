@@ -6,6 +6,7 @@ use App\Justification;
 use App\Form;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Point;
 
 class TeacherController extends Controller
 {
@@ -19,8 +20,33 @@ class TeacherController extends Controller
     /**
      * Funzione che reindirizza l'utente alla pagina di aggiunta di un formulario
      */
-    public function showAddPage(Request $request){
-        return view('teacher/add');
+    public function showAddPage(){
+        $points = Point::where('type', '1');
+    
+        return view('teacher/add')->with('points', $points->get());
+    }
+
+    /**
+     * Funzione che reindirizza l'utente alla pagina di aggiunta di una motiazione ad un formulario
+     */
+    public function showJustificationPage(){
+        return view('teacher/justification');
+    }
+
+    /**
+     * Funzione che ritorna tutte le motivazioni
+     * @param Request request La richiesta eseguita
+     * @return La risposta in JSON
+     */
+    public function getJustifications(Request $request){
+        //Verifico che l'utente sia un admin
+        if($request->all()['user_id_role'] == env('TEACHER')){
+            //Se è amministratore ritorno tutti i form
+            return response()->json(Justification::all());
+        }else{
+            //Se non lo è ritorno l'errore
+            return response()->json(['Unauthorized' => 'Non hai i permessi necessari per accedere'], 401);
+        }  
     }
 
     /**

@@ -106,6 +106,14 @@
                 </div>
             </div>
 
+            <div class="col-md-12 border border-light my-3 py-3">
+                <p class="text-center my-3">Punti di valutazione specifici</p>
+                <select id="pointSelect" name="id_point" class="point-select browser-default custom-select">
+                    <option selected disabled>Seleziona un punto</option>
+                </select>
+                <p id="pointText" class="mt-3"></p>
+            </div>
+
             <p class="text-left">I riquadri contrassegnati da un <b class="text-danger">*</b> sono richiesti</p>
 
             <!-- Sign up button -->
@@ -119,6 +127,31 @@
     </div>
 </div>
 <script>
+    $(document).ready(function(){
+        //Ottengo dal controller i punti di valutazione
+        var points = <?php echo $points ?>;
+        console.log(points);
+
+        //Genero le opzioni del select
+        for(var i = 0; i < points.length; i++){
+            //Creo l'opzione
+            var option = new Option(points[i]['code'], points[i]['code']);
+            $(option).html(points[i]['title']);
+            //La aggiungo alla select
+            $(".point-select").append(option);
+        }
+
+        //Alla selezione di un punto
+        $("#pointSelect").change(function() {
+            //Trovo il punto che contenga il valore selezionato nel select
+            var value = this.value;
+            var point = points.find(function(element) {
+                return element['code'] === value; 
+            }); 
+            //Scrivo il titolo del punto
+            $("#pointText").text(point['title']);
+        });
+    });
     //All'evento di submit del form eseguo la richiesta al server con AJAX
     $("#addFormForm").submit(function( event ) {
         //Blocco l'evento di default del form (aggiunta del URL get)
@@ -144,7 +177,8 @@
             complete: function(response){
                 //Se il server ritorna il codice di successo rimando all'utente alla pagina dei docenti
                 if(response["status"] == 201){
-
+                    console.log("{{ url('teacher/form/add/justification') }}");
+                    window.location = "{{ url('teacher/form/add/justification') }}";
                 }else{
                     if(response["status"] == 401){
                         window.location = "{{ url('') }}";

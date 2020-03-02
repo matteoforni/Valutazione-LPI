@@ -58,10 +58,8 @@
             @yield('content')
         </div>
         <script>
-            $(document).ready(function() {
-                var link = "{{ url('teacher') }}";
-                link += "?token=" + Cookies.get('token');                
-                $("#homeLink").attr('href', link);
+            $(document).ready(function() {          
+                $("#homeLink").attr('href', "{{ url('teacher') }}");
             });
 
             /**
@@ -73,7 +71,7 @@
             }
         </script>
         @section('footer')
-        <footer class="page-footer light-blue lighten-2 fixed-bottom">
+        <footer class="mt-5 page-footer light-blue lighten-2 fixed-bottom">
 
             <div class="footer-copyright text-center py-3 text-white">
                 Valutazione LPI - 2020

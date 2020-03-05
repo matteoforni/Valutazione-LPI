@@ -109,17 +109,32 @@
             <div class="col-md-12 border border-light my-3 py-3">
                 <p class="text-center my-3">Punti di valutazione specifici</p>
                 <select id="pointSelect" name="id_point" class="point-select browser-default custom-select">
-                    <option selected disabled>Seleziona un punto</option>
+                    <option selected disabled value="default">Seleziona un punto</option>
                 </select>
+                <button type="button" class="btn btn-sm btn-info btn-block" onclick="addPoint()">Seleziona</button>
                 <!-- CONTENGONO LE SCELTE FATTE -->
-                <div class="row">
-                    <div class="col-md-1 border m-auto"></div>
-                    <div class="col-md-1 border m-auto"></div>
-                    <div class="col-md-1 border m-auto"></div>
-                    <div class="col-md-1 border m-auto"></div>
-                    <div class="col-md-1 border m-auto"></div>
-                    <div class="col-md-1 border m-auto"></div>
-                    <div class="col-md-1 border m-auto"></div>
+                <div id="pointsSelected" class="row mt-2">
+                    <div id="0" class="col-md-1 m-auto">
+                        <i class='far fa-trash-alt' style='display:none' onclick="deleteSelection(this)"></i>
+                    </div>
+                    <div id="1" class="col-md-1 m-auto">
+                        <i class='far fa-trash-alt' style='display:none' onclick="deleteSelection(this)"></i>
+                    </div>
+                    <div id="2" class="col-md-1 m-auto">
+                        <i class='far fa-trash-alt' style='display:none' onclick="deleteSelection(this)"></i>
+                    </div>
+                    <div id="3" class="col-md-1 m-auto">
+                        <i class='far fa-trash-alt' style='display:none' onclick="deleteSelection(this)"></i>
+                    </div>
+                    <div id="4" class="col-md-1 m-auto">
+                        <i class='far fa-trash-alt' style='display:none' onclick="deleteSelection(this)"></i>
+                    </div>
+                    <div id="5" class="col-md-1 m-auto">
+                        <i class='far fa-trash-alt' style='display:none' onclick="deleteSelection(this)"></i>
+                    </div>
+                    <div id="6" class="col-md-1 m-auto">
+                        <i class='far fa-trash-alt' style='display:none' onclick="deleteSelection(this)"></i>
+                    </div>
                 </div>
             </div>
 
@@ -139,7 +154,6 @@
     $(document).ready(function(){
         //Ottengo dal controller i punti di valutazione
         var points = <?php echo $points ?>;
-        console.log(points);
 
         //Genero le opzioni del select
         for(var i = 0; i < points.length; i++){
@@ -149,17 +163,6 @@
             //La aggiungo alla select
             $(".point-select").append(option);
         }
-
-        //Alla selezione di un punto
-        $("#pointSelect").change(function() {
-            //Trovo il punto che contenga il valore selezionato nel select
-            var value = this.value;
-            var point = points.find(function(element) {
-                return element['code'] === value; 
-            }); 
-            //Scrivo il titolo del punto
-            $("#pointText").text(point['title']);
-        });
     });
     //All'evento di submit del form eseguo la richiesta al server con AJAX
     $("#addFormForm").submit(function( event ) {
@@ -351,5 +354,81 @@
             this.setCustomValidity("");
         };
     });
+
+    /*
+    * Array contenente le posizioni libere dove inserire le scelte
+    */
+    let empty = Array(0,1,2,3,4,5,6);
+
+    /**
+     * Funzione che aggiunge alla lista di selezioni il punto appena scelto
+     */
+    function addPoint(){
+        //Seleziono il punto e verifico che non sia quello di default
+        var point = $("#pointSelect option:selected");
+        if($(point).val() != "default"){ 
+            //Riordino l'array e ottengo la prima casella libera
+            empty.sort();
+            var div = $("#pointsSelected").children().eq(empty[0]);
+            empty.splice(0,1);
+            
+            //Aggiungo il testo al div
+            $(div).append("<p>" + point.val() + "</p>");
+
+            var divs = $("#pointsSelected").children();
+
+            //Disabilito il punto appena selezionato
+            $(point).attr('disabled', 'disabled');
+            
+            //All'hover della lista di selezioni
+            $("#pointsSelected").mouseenter(function(){
+                //Mostro il tasto di eliminazione solo per i div già riempiti
+                for(var i = 0; i < $("#pointsSelected").children().length; i++){
+                    if($("#pointsSelected").children().eq(i).children().length > 1){
+                        $("#pointsSelected").children().eq(i).children().eq(0).fadeIn(0);
+                    }
+                }
+            });
+
+            //Alla rimozione del mouse da sopra la lista di selezioni
+            $("#pointsSelected").mouseleave(function(){
+                //Nascondo i tasti di eliminazione
+                for(var i = 0; i < $("#pointsSelected").children().length; i++){
+                    if($("#pointsSelected").children().eq(i).children().length > 1){
+                        $("#pointsSelected").children().eq(i).children().eq(0).fadeOut(0);
+                    }
+                }
+            });
+
+            $("#pointSelect").val("default");
+
+            //Se si hanno inserito tutti i punti disabilito la selezione 
+            if(empty.length == 0){
+                $("#pointSelect").attr('disabled', 'disabled');
+            }
+        }
+    }
+
+    /**
+     * Funzione che rimuove dalla lista di selezioni il punto scelto
+     */
+    function deleteSelection(element){
+        //Seleziono il div da cui rimuovere il testo e lo rimuovo
+        var div = $(element).parent();
+        var text = $(div).children().eq(1);
+        text.remove();
+
+        //Riabilito la selezione dell'opzione appena rimossa
+        $("#pointSelect option[value='"+ text.text() + "']").removeAttr('disabled');
+
+        //Nascondo il bottone di eliminazione
+        $(element).fadeOut(0);
+
+        //Riabilito la selezione
+        $("#pointSelect").removeAttr('disabled');
+        
+        //Notifico che vi è un posto libero nella lista
+        empty.push($(div).attr('id'));
+    }
 </script>
 @endsection

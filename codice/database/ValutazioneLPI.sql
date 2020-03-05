@@ -63,16 +63,17 @@ create table contains(
 	id_justification int,
     id_form int,
     primary key(id_justification, id_form),
-    foreign key(id_justification) references justification(id),
-    foreign key(id_form) references form(id)
+    foreign key(id_justification) references justification(id) on delete cascade,
+    foreign key(id_form) references form(id) on delete cascade
 );
 
-/*
-CREAZIONE DELL'UTENTE UTILIZZATO DAL PROGRAMMA
-*/
-create user 'valutazionelpi'@'localhost' identified by 'ValutazioneLPI&2020';
-GRANT SELECT, INSERT, UPDATE, DELETE ON valutazionelpi.* TO 'valutazionelpi'@'localhost';
-flush privileges;
+create table has(
+	id_form int,
+    id_point varchar(10),
+    primary key(id_point, id_form),
+    foreign key(id_point) references point(code) on delete cascade,
+    foreign key(id_form) references form(id) on delete cascade
+);
 
 /*
 INSERIMENTO DEI RUOLI
@@ -115,6 +116,15 @@ INSERIMENTO DEI FORMULARI DI TEST
 insert into form(title, created, modified, deleted, student_name, student_surname, student_email, student_phone, teacher_name, teacher_surname, teacher_email, teacher_phone, id_user)
  values ("Gestione grotti", "10.11.2019", "20.12.2019", null, "Matteo", "Forni", "matteo.forni@samtrevano.ch", "0799119368", "Luca", "Peduzzi", "luca.peduzzi@edu.ti.ch", "0790123456", 1);
 
+/*
+CREAZIONE DELL'UTENTE UTILIZZATO DAL PROGRAMMA
+*/
+create user 'valutazionelpi'@'localhost' identified by 'ValutazioneLPI&2020';
+GRANT SELECT, INSERT, UPDATE, DELETE ON valutazionelpi.* TO 'valutazionelpi'@'localhost';
+flush privileges;
+
 select * from point;
 select * from user;
 update user set id_role=2 where id = 1;
+select * from `point` where `type` = 1;
+

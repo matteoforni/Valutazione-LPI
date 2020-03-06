@@ -109,12 +109,25 @@ insert into justification(text, id_point) values ("Descritto con poca precisione
 insert into justification(text, id_point) values ("Diario consegnato in ritardo", "B2");
 insert into justification(text, id_point) values ("Presentazione durata troppo poco", "C1");
 insert into justification(text, id_point) values ("Errori con il funzionamento di Powerpoint", "C2");
+insert into justification(text, id_point) values ("jhfaskjvfkasdf", "135");
+insert into justification(text, id_point) values ("Ejahsdasbdasd", "159");
+insert into justification(text, id_point) values ("jhbsdahsdbagshdvazgsdzascd", "164");
 
 /*
 INSERIMENTO DEI FORMULARI DI TEST
 */
 insert into form(title, created, modified, deleted, student_name, student_surname, student_email, student_phone, teacher_name, teacher_surname, teacher_email, teacher_phone, id_user)
  values ("Gestione grotti", "10.11.2019", "20.12.2019", null, "Matteo", "Forni", "matteo.forni@samtrevano.ch", "0799119368", "Luca", "Peduzzi", "luca.peduzzi@edu.ti.ch", "0790123456", 1);
+
+/*
+INSERIMENTO DELLE MOTIVAZIONI COLLEGATE AI FORMULARI DI TEST
+*/
+insert into contains(id_form, id_justification) values (2,7);
+insert into contains(id_form, id_justification) values (3,1);
+insert into contains(id_form, id_justification) values (2,5);
+insert into contains(id_form, id_justification) values (3,6);
+insert into contains(id_form, id_justification) values (2,4);
+insert into contains(id_form, id_justification) values (3,3);
 
 /*
 CREAZIONE DELL'UTENTE UTILIZZATO DAL PROGRAMMA
@@ -124,7 +137,8 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON valutazionelpi.* TO 'valutazionelpi'@'lo
 flush privileges;
 
 select * from point;
-select * from user;
+select * from justification;
 update user set id_role=2 where id = 1;
 select * from `point` where `type` = 1;
 
+select justification.* from point inner join justification on point.code = justification.id_point inner join has on has.id_point = point.code where has.id_form=4 and point.type = 1 union select justification.* from point right join justification on point.code = justification.id_point where point.type = 0;

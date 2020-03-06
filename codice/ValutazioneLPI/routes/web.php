@@ -46,7 +46,7 @@ $router->group(['prefix' => 'teacher'], function() use ($router) {
     $router->get('/form/show/add', 'TeacherController@showAddPage');
 
     //route che consente di mostrare la pagina di aggiunta di una motivazione ad un formulario
-    $router->get('/form/add/justification', 'TeacherController@showJustificationPage');
+    $router->get('/form/add/justification/{id}', 'TeacherController@showJustificationPage');
 });
 
 /**

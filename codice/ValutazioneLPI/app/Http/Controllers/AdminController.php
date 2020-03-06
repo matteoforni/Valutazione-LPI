@@ -267,6 +267,7 @@ class AdminController extends Controller
             $messages = [
                 'required' => "Il campo :attribute deve essere specificato",
                 'unique' => "L':attribute inserita è già in utilizzo",
+                'exists' => "Il campo :attribute deve già esistere",
             ];
 
             //Eseguo la validazione dei dati.

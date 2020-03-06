@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Justification;
 use App\Form;
+use App\Has;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Point;
+use Illuminate\Support\Facades\DB;
 
 class TeacherController extends Controller
 {
@@ -101,6 +103,7 @@ class TeacherController extends Controller
                 'numeric' => "Il campo :attribute deve essere di tipo numerico",
                 'same' => "Il campo :attribute deve valere 0",
                 'unique' => "L':attribute inserita è già in utilizzo",
+                'exists' => "Il campo :attribute deve già esistere",
             ];
 
             //Eseguo la validazione dei dati.
@@ -122,12 +125,34 @@ class TeacherController extends Controller
                 'expert2_surname' => ['min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/', 'nullable'],
                 'expert2_email' => 'email|nullable',
                 'expert2_phone' => ['min:9','regex:/^(0|0041|\+41)?[1-9\s][0-9\s]{1,12}$/', 'nullable'],
+                'point0' => 'required|min:1|max:255|exists:point,code',
+                'point1' => 'required|min:1|max:255|exists:point,code',
+                'point2' => 'required|min:1|max:255|exists:point,code',
+                'point3' => 'required|min:1|max:255|exists:point,code',
+                'point4' => 'required|min:1|max:255|exists:point,code',
+                'point5' => 'required|min:1|max:255|exists:point,code',
+                'point6' => 'required|min:1|max:255|exists:point,code',
             ], $messages);
 
              //Verifico che la valutazione sia andata a buon fine.
              if($validation->fails()){
                 //Se fallisce ritorno gli errori.
                 return response()->json($validation->errors(), '422');
+            }
+
+            //Salvo i punti tecnici in un array
+            $points = array($request->input('point0'), $request->input('point1'), $request->input('point2'), $request->input('point3'), $request->input('point4'), $request->input('point5'), $request->input('point6'));
+
+            //Verifico se non vi sono duplicati, per ottimizzare verifico solo la prima metà
+            $check = array_unique($points);
+            if($points != $check){
+                return response()->json("Punti specifici duplicati", 422);
+            }
+
+            //Rimuovo i campi specifici dalla richiesta
+            for($i = 0; $i < 7; $i++){
+                $name = "point" . $i;
+                $request->request->remove($name);
             }
 
             //Aggiungo la data di creazione
@@ -139,6 +164,11 @@ class TeacherController extends Controller
 
             //Se la validazione va a buon fine genero l'errore.
             $form = Form::create($request->all());
+
+            //Inserisco i punti specifici scelti nel database
+            foreach ($points as $point) {
+                DB::table('has')->insert(['id_form' => $form->id, 'id_point' => $point]);
+            }
 
             //Ritorno la risposta di successo.
             return response()->json($form, 201);

@@ -370,11 +370,11 @@
             //Riordino l'array e ottengo la prima casella libera
             empty.sort();
             var div = $("#pointsSelected").children().eq(empty[0]);
-            empty.splice(0,1);
             
             //Aggiungo il testo al div
-            $(div).append("<p>" + point.val() + "</p>");
+            $(div).append("<input name='point" + empty[0] + "' class='border-0' value='" + point.val() + "'/>");
 
+            empty.splice(0,1);
             var divs = $("#pointsSelected").children();
 
             //Disabilito il punto appena selezionato

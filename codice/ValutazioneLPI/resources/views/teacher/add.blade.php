@@ -189,8 +189,10 @@
             complete: function(response){
                 //Se il server ritorna il codice di successo rimando all'utente alla pagina dei docenti
                 if(response["status"] == 201){
-                    console.log("{{ url('teacher/form/add/justification') }}");
-                    window.location = "{{ url('teacher/form/add/justification') }}";
+                    var id = response["responseJSON"]['id'];
+                    var link = "{{ url('teacher/form/add/justification') }}";
+                    link += "/" + id;
+                    window.location = link;
                 }else{
                     if(response["status"] == 401){
                         window.location = "{{ url('') }}";

@@ -5,6 +5,7 @@ use App\User;
 use App\Justification;
 use App\Form;
 use App\Has;
+use App\Contains;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Point;
@@ -29,10 +30,26 @@ class TeacherController extends Controller
     }
 
     /**
-     * Funzione che reindirizza l'utente alla pagina di aggiunta di una motiazione ad un formulario
+     * Funzione che reindirizza l'utente alla pagina di aggiunta di una motivazione ad un formulario
      */
-    public function showJustificationPage(){
-        return view('teacher/justification');
+    public function showJustificationPage($id){
+        //Carico il formulario da modificare
+        $form = Form::find($id);
+        
+        //Verifico che esista
+        if(isset($form) && !empty($form)){
+            //Se esiste carico le motivazioni a lui già collegate
+            $justifications = Contains::where('id_form', $id)->get();
+            foreach($justifications as $justification){
+                $justification['justification'] = Justification::find($justification['id_justification'])->text;
+            }
+            //Ritorno la pagina
+            return view('teacher/justification')->with('form', $form)->with('justifications', $justifications);
+        }else{
+            //Se non esiste rimando l'utente alla home
+            $this->home();
+        }
+        
     }
 
     /**
@@ -43,8 +60,9 @@ class TeacherController extends Controller
     public function getJustifications(Request $request){
         //Verifico che l'utente sia un admin
         if($request->all()['user_id_role'] == env('TEACHER')){
-            //Se è amministratore ritorno tutti i form
-            return response()->json(Justification::all());
+            //Se è amministratore ritorno tutte le motivazioni generiche più quelle dei punti specifici scelti
+            $query = DB::select("select justification.* from point inner join justification on point.code = justification.id_point inner join has on has.id_point = point.code where has.id_form=4 and point.type = 1 union select justification.* from point right join justification on point.code = justification.id_point where point.type = 0");
+            return response()->json($query);
         }else{
             //Se non lo è ritorno l'errore
             return response()->json(['Unauthorized' => 'Non hai i permessi necessari per accedere'], 401);
@@ -167,7 +185,10 @@ class TeacherController extends Controller
 
             //Inserisco i punti specifici scelti nel database
             foreach ($points as $point) {
-                DB::table('has')->insert(['id_form' => $form->id, 'id_point' => $point]);
+                $conn = new Has();
+                $conn->id_form = $form->id;
+                $conn->id_point = $point;
+                $conn->save();
             }
 
             //Ritorno la risposta di successo.

@@ -150,6 +150,17 @@
                     $("#formMessage").text("Sei sicuro di voler eliminare il formulario: " + id);
                 });
             });
+
+            //Trovo tutti i link che servono alla modifica dei formulari
+            var deleteLinks = $(".updateFieldForm");
+            $.each(deleteLinks, function(){
+                $(this).click(function(){
+                    var id = $(this).parents().eq(1).attr("id");
+                    var link = "{{ url('teacher/form/add/justification') }}";
+                    link += "/" + id;
+                    window.location = link;
+                });
+            });
         });
     }
 

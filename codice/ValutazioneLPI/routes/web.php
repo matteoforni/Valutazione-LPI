@@ -64,6 +64,12 @@ $router->group(['middleware' => 'jwt.auth', 'prefix' => 'teacher'], function() u
 
     //route che ritorna tutte le motivazioni
     $router->get('/justifications', 'TeacherController@getJustifications');
+
+    //route che ritorna tutte le motivazioni di un formulario
+    $router->get('/form/justifications/{id}', 'TeacherController@getFormJustifications');
+
+    //route che consente l'aggiunte di una motivazione ad un formulario
+    $router->post('/justification/add', 'TeacherController@addJustificationToForm');
 });
 
 /**

@@ -581,7 +581,9 @@
 
                     //Reimposto i links quando si cambia pagina nella tabella   
                     $('#Justification').on('page.dt', function () {
-                        setJustificationLinks();
+                        $('#Justification').ready(function(){
+                            setJustificationLinks();
+                        });
                     });
                 }else if(response["status"] = 401){
                     window.location = "{{ url('') }}";
@@ -636,7 +638,9 @@
 
                     //Reimposto i links quando si cambia pagina nella tabella
                     $('#User').on('page.dt', function () {
-                        setUserLinks();
+                        $('#User').ready(function(){
+                            setUserLinks();
+                        });
                     });
                 }else if(response["status"] = 401){
                     window.location = "{{ url('') }}";

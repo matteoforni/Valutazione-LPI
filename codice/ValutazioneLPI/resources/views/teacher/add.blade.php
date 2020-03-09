@@ -107,7 +107,7 @@
             </div>
 
             <div class="col-md-12 border border-light my-3 py-3">
-                <p class="text-center my-3">Punti di valutazione specifici</p>
+                <p class="text-center my-3">Punti di valutazione specifici <b class="text-danger">*</b></p>
                 <select id="pointSelect" name="id_point" class="point-select browser-default custom-select">
                     <option selected disabled value="default">Seleziona un punto</option>
                 </select>
@@ -419,9 +419,9 @@
         var div = $(element).parent();
         var text = $(div).children().eq(1);
         text.remove();
-
+        console.log(text.val());
         //Riabilito la selezione dell'opzione appena rimossa
-        $("#pointSelect option[value='"+ text.text() + "']").removeAttr('disabled');
+        $("#pointSelect option[value='"+ text.val() + "']").removeAttr('disabled');
 
         //Nascondo il bottone di eliminazione
         $(element).fadeOut(0);

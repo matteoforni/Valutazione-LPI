@@ -38,13 +38,8 @@ class TeacherController extends Controller
         
         //Verifico che esista
         if(isset($form) && !empty($form)){
-            //Se esiste carico le motivazioni a lui già collegate
-            $justifications = Contains::where('id_form', $id)->get();
-            foreach($justifications as $justification){
-                $justification['justification'] = Justification::find($justification['id_justification'])->text;
-            }
             //Ritorno la pagina
-            return view('teacher/justification')->with('form', $form)->with('justifications', $justifications);
+            return view('teacher/justification')->with('form', $form);
         }else{
             //Se non esiste rimando l'utente alla home
             $this->home();
@@ -110,7 +105,7 @@ class TeacherController extends Controller
      * @return La risposta in JSON
      */
     public function addForm(Request $request){
-        //Verifico che l'utente sia un admin
+        //Verifico che l'utente sia un docente
         if($request->all()['user_id_role'] == env('TEACHER')){
             //Personalizzo i messaggi di errore.
             $messages = [
@@ -152,8 +147,8 @@ class TeacherController extends Controller
                 'point6' => 'required|min:1|max:255|exists:point,code',
             ], $messages);
 
-             //Verifico che la valutazione sia andata a buon fine.
-             if($validation->fails()){
+            //Verifico che la valutazione sia andata a buon fine.
+            if($validation->fails()){
                 //Se fallisce ritorno gli errori.
                 return response()->json($validation->errors(), '422');
             }
@@ -193,6 +188,65 @@ class TeacherController extends Controller
 
             //Ritorno la risposta di successo.
             return response()->json($form, 201);
+        }else{
+            //Se non lo è ritorno l'errore
+            return response()->json(['Unauthorized' => 'Non hai i permessi necessari per accedere'], 401);
+        }
+    }
+
+    /**
+     * Funzione che consente l'aggiunta di una motivazione ad un formulario
+     * @param Request request La richiesta eseguita 
+     * @return La risposta in JSON
+     */
+    public function addJustificationToForm(Request $request){
+        if($request->all()['user_id_role'] == env('TEACHER')){
+            //Personalizzo i messaggi di errore.
+            $messages = [
+                'required' => "Il campo :attribute deve essere specificato",
+                'numeric' => "Il campo :attribute deve essere di tipo numerico",
+                'exists' => "Il campo :attribute deve già esistere",
+            ];
+
+            $validation = Validator::make($request->all(), [
+                'id_justification' => 'required|numeric|exists:justification,id',
+                'id_form' => 'required|numeric|exists:form,id',
+            ]);
+
+            //Verifico che la valutazione sia andata a buon fine.
+            if($validation->fails()){
+                //Se fallisce ritorno gli errori.
+                return response()->json($validation->errors(), '422');
+            }
+            //Se la validazione va a buon fine genero l'errore.
+            $contains = Contains::create($request->all());
+
+            //Ritorno la risposta di successo.
+            return response()->json($contains, 201);
+        }else{
+            //Se non lo è ritorno l'errore
+            return response()->json(['Unauthorized' => 'Non hai i permessi necessari per accedere'], 401);
+        }
+    }
+
+    /**
+     * Funzione che ritorna tutte le motivazioni collegate ad un formulario
+     * @param Request request La richiesta eseguita 
+     * @param id L'id del formulario
+     * @return La risposta in JSON
+     */
+    public function getFormJustifications($id, Request $request){
+        if($request->all()['user_id_role'] == env('TEACHER')){
+
+            $justifications = Contains::where('id_form', $id)->get();
+
+            foreach($justifications as $justification){
+                $code = Justification::find($justification->id_justification);
+                $justification['title'] = $code['text'];
+            }
+
+            //Ritorno la risposta di successo.
+            return response()->json($justifications, 200);
         }else{
             //Se non lo è ritorno l'errore
             return response()->json(['Unauthorized' => 'Non hai i permessi necessari per accedere'], 401);

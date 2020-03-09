@@ -38,11 +38,11 @@ class JwtMiddleware{
             $request->request->add(['id' => $credentials->sub]);
         } catch(ExpiredException $e) {
             //Se è scaduto rimando l'utente alla pagina di login
-            return view('login/index');
+            return response()->json(['error' => 'Token scaduto'], 401);
         } catch(Exception $e) {
             print_r($e->getMessage());
             //Se non riesco a decodificarlo ritorno l'errore
-            return response()->json(['error' => 'Impossibile decodificare il token'], 400);
+            return response()->json(['error' => 'Impossibile decodificare il token'], 401);
         }
 
         //Cerco l'utente che ha l'id salvato nel token

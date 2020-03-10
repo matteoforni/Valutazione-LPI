@@ -14,7 +14,9 @@ function JSONToHTML(id, data, controls){
         } 
         for(var i in keys){
             if(keys[i] != 'password' ){
-                table += "<th scope='col' class='font-weight-bold'>" + keys[i].charAt(0).toUpperCase() + keys[i].slice(1) + "</th>";
+                var title = keys[i].charAt(0).toUpperCase() + keys[i].slice(1);
+                title = title.replace('_', ' ');
+                table += "<th scope='col' class='font-weight-bold'>" + title + "</th>";
             }
         }
         if(controls){

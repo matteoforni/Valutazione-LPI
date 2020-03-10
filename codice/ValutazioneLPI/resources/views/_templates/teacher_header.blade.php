@@ -24,7 +24,6 @@
         <script type="text/javascript" src="/resources/MDB/js/mdb.min.js"></script>
         <!-- Datatables -->
         <script type="text/javascript" src="/resources/MDB/js/addons/datatables.min.js"></script>
-        <script type="text/javascript" src="/resources/MDB/js/addons/datatables-select.min.js"></script>
         <!-- Toastr notification library -->
         <script type="text/javascript" src="/resources/toastr/toastr.js"></script>
         <!-- Fontawesome -->

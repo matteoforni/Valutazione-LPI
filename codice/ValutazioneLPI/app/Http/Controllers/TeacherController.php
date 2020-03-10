@@ -52,11 +52,17 @@ class TeacherController extends Controller
      * @param Request request La richiesta eseguita
      * @return La risposta in JSON
      */
-    public function getJustifications(Request $request){
+    public function getJustifications($point = "", $word = "", Request $request){
         //Verifico che l'utente sia un admin
         if($request->all()['user_id_role'] == env('TEACHER')){
             //Se è amministratore ritorno tutte le motivazioni generiche più quelle dei punti specifici scelti
-            $query = DB::select("select justification.* from point inner join justification on point.code = justification.id_point inner join has on has.id_point = point.code where has.id_form=4 and point.type = 1 union select justification.* from point right join justification on point.code = justification.id_point where point.type = 0");
+            $query = DB::select("select justification.* from point inner join justification on 
+            point.code = justification.id_point inner 
+            join has on has.id_point = point.code 
+            where has.id_form=4 and point.type = 1
+            union select justification.* from point 
+            right join justification on point.code = justification.id_point 
+            where point.type = 0");
             return response()->json($query);
         }else{
             //Se non lo è ritorno l'errore
@@ -223,6 +229,21 @@ class TeacherController extends Controller
 
             //Ritorno la risposta di successo.
             return response()->json($contains, 201);
+        }else{
+            //Se non lo è ritorno l'errore
+            return response()->json(['Unauthorized' => 'Non hai i permessi necessari per accedere'], 401);
+        }
+    }
+
+    /**
+     * Funzione che consente la rimozione di una motivazione da un formulario
+     * @param Request request La richiesta eseguita 
+     * @return La risposta in JSON
+     */
+    public function removeJustificationFromForm($id_form, $id_justification, Request $request){
+        if($request->all()['user_id_role'] == env('TEACHER')){
+            Contains::where('id_form', $id_form)->where('id_justification', $id_justification)->delete();
+            return response('Deleted Successfully', 200);
         }else{
             //Se non lo è ritorno l'errore
             return response()->json(['Unauthorized' => 'Non hai i permessi necessari per accedere'], 401);

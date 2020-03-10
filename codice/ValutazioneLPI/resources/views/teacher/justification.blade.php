@@ -7,7 +7,7 @@
     <div class="col-md-8 text-center">
         <h3 class="h3 text-center my-5">Aggiunta di motivazioni al formulario</h3>
         <div class="errors-justification text-danger">
-
+ 
         </div>
         <div class="justifications-table table-responsive mb-5">
         </div>
@@ -41,22 +41,52 @@
   </div>
 </div>
 
+<div class="modal fade" id="removeJustificationModal" tabindex="-1" role="dialog" aria-labelledby="removeTitle"
+  aria-hidden="true">
+
+  <div class="modal-dialog modal-md .modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title w-100" id="removeTitle">Conferma rimozione</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+            <p id="removeJustificationMessage"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger btn-sm" onclick="removeJustification()">Rimuovi</button>
+        <button type="button" class="btn btn-light btn-sm" data-dismiss="modal">Chiudi</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="/resources/js/JSONToHTML.js"></script>
 <script>
-    /*
+    /**
     * Array contenente tutte le righe già selezionate
     */
     let rows = [];
 
-    /*
+    /**
     * Attributo contenente l'ultimo link di aggiunta premuto 
     */
     let addLink; 
-    var first = true;
+
+    /**
+    * Array contenente tutti i dati del formulario che sta venendo modificato
+    */
+    let form = <?php echo $form ?>;
+
+    let removeLink;
 
     $(document).ready(function(){
+        //Genero la tabella contenente le motivazioni
         createJustificationTable();
     });
+
     /**
      * Funzione che consente di creare la tabella delle motivazioni
      */ 
@@ -75,7 +105,8 @@
                 if(response["status"] == 200){
                     var table = JSONToHTML('Justification', response["responseJSON"], false);
                     $(".justifications-table").html(table);  
-                    $("#Justification").DataTable({
+
+                    var table = $("#Justification").DataTable({
                         "searching": true,
                         "ordering": false,
                         "bLengthChange": false,
@@ -93,11 +124,13 @@
                         }
                     });
 
+                    //Genero la tabella contenente le motivazioni già aggiunte
                     createAddedJustifications();
                        
-
+                    //Collego le righe della tabella al modale
                     setLinks();
 
+                    //Al cambio di pagina collego i nuovi dati mostrati al modale
                     $('#Justification').on('page.dt', function () {
                         $("#Justification").ready(function(){
                             setLinks();
@@ -105,16 +138,22 @@
                     });
 
                 }else if(response["status"] = 401){
+                    //Se non si è autorizzati si ritorna al login
                     window.location = "{{ url('') }}";
                 }       
             }
         });
     }
 
+    /**
+    * Funzione che consente di generare la tabella contenente le motivazioni già
+    * collegate al formulario
+    */
     function createAddedJustifications(){
-        var form = <?php echo $form ?>;
+        //Genero il link per la richiesta
         var link = "{{ url('teacher/form/justifications') }}";
         link += "/" + form["id"];
+
         //Richiedo i dati per riempire la tabella
         $.ajax({
             type: "get",
@@ -129,12 +168,15 @@
                 if(response["status"] == 200){
                     var data = [];
                     
+                    //Salvo solo i dati utilizzati
                     for(var item in response["responseJSON"]){
-                        var obj = {'Titolo': response["responseJSON"][item]['title']};
+                        var obj = {'ID': response["responseJSON"][item]['id_justification'], 'Titolo': response["responseJSON"][item]['title']};
                         data.push(obj);
                         rows.push("#" + response["responseJSON"][item]["id_justification"]);
+                        
                     }
 
+                    //Genero la tabella 
                     var table = JSONToHTML('AddedJustification', data, false);
                     $(".addedJustifications-table").html(table);  
                     $("#AddedJustification").DataTable({
@@ -155,26 +197,36 @@
                         }
                     });
 
+                    //Disabilito le righe contenenti motivazioni già scelte
                     disableRows(rows);
+                    setRemoveLinks();
          
+                    //Disabilito le righe quando si cambia pagina della tabella
                     $('#Justification').on('page.dt', function () { 
                         $('#Justification').ready(function(){
                             disableRows(rows);
+                            setRemoveLinks();
                         });
                     });   
 
                 }else if(response["status"] = 401){
+                    //Se non si è autorizzati si ritorna al login
                     window.location = "{{ url('') }}";
                 }       
             }
         });
     }
 
-    function disableRows(rows){
+    /**
+    * Funzione che disabilita le righe contenute nell'array passato
+    */
+    function disableRows(){
         for(var row in rows){
-            $(rows[row]).addClass('text-light');
-            $(rows[row]).removeAttr('data-toggle');
-            $(rows[row]).removeAttr('data-target');
+            if($(rows[row]).length){
+                $(rows[row]).addClass('text-light');
+                $(rows[row]).removeAttr('data-toggle');
+                $(rows[row]).removeAttr('data-target');
+            }
         }
     }
 
@@ -196,17 +248,39 @@
                     $("#justificationMessage").text("Sicuro di voler aggiungere la motivazione: " + id);
                 });
             });
+            disableRows();
         });
     }
 
+    function setRemoveLinks(){
+        $("#AddedJustification").ready(function() {
+            //Trovo tutti i link che servono all'eliminazione delle motivazioni
+            var rows = $("#AddedJustification").children('tbody').children("tr");
+            $.each(rows, function(){
+                //Gli imposto i valori necessari per aprire il modale
+                $(this).attr('data-toggle', 'modal');
+                $(this).attr('data-target', '#removeJustificationModal');
+                $(this).click(function(){
+                    //Al click mostro il modale di conferma
+                    removeLink = $(this);
+                    var id = $(this).children().eq(0).text();
+                    $("#removeJustificationMessage").text("Sicuro di voler togliere la motivazione: " + id);
+                });
+            });
+            disableRows();
+        });
+    }
+
+    /**
+    * Funzione che collega una motivazione ad un formulario
+    */
     function addJustification(){
-        var path = window.location.href;
-        var parts = path.split('/');
-        var idForm = parts[parts.length-1]
-        var data = {'id_form': idForm, 'id_justification' : $(addLink).attr("id")};
+        var data = {'id_form': form["id"], 'id_justification' : $(addLink).attr("id")};
         
+        //Nascondo il modale
         $('#addJustificationModal').modal('hide');
 
+        //Eseguo la richiesta di inserimento
         $.ajax({
             type: "post", 
             url: "{{ url('teacher/justification/add') }}",
@@ -216,15 +290,53 @@
             headers: {
                 'Authorization':'Bearer ' + Cookies.get('token'),
             },
-            //Se è finita con successo richiamo la stessa funzione così da aggiornare la pagina
+            //Se è finita con successo richiamo la stessa funzione così da aggiornare la tabella
             complete: function(response) {
                 if(response["status"] == 201){
                     createJustificationTable();
+                    //Aggiungo la riga all'array di righe disabilitate
                     rows.push("#" + $(addLink).attr("id"));
                     
                     toastr.success('Motivazione aggiunta con successo');
                 }else{
                     toastr.error("Impossibile aggiungere la motivazione");
+                }
+            }
+        });
+    }
+
+    function removeJustification(){
+        //Nascondo il modale
+        $('#removeJustificationModal').modal('hide');
+
+        var link = "{{ url('teacher/justification/remove/') }}";
+        link += "/" + form['id'] + "/" + $(removeLink).children().eq(0).text();
+
+        //Eseguo la richiesta di inserimento
+        $.ajax({
+            type: "delete", 
+            url: link,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json", 
+            headers: {
+                'Authorization':'Bearer ' + Cookies.get('token'),
+            },
+            //Se è finita con successo richiamo la stessa funzione così da aggiornare la tabella
+            complete: function(response) {
+                if(response["status"] == 200){
+                    
+                    var index = rows.indexOf($(removeLink).children().eq(0).text());
+                    if (index > -1) {
+                        rows.splice(index, 1);
+                    }
+
+                    $(removeLink).removeClass('text-light');
+
+                    createJustificationTable();
+                    
+                    toastr.success('Motivazione rimossa con successo');
+                }else{
+                    toastr.error("Impossibile rimuovere la motivazione");
                 }
             }
         });

@@ -70,6 +70,8 @@ $router->group(['middleware' => 'jwt.auth', 'prefix' => 'teacher'], function() u
 
     //route che consente l'aggiunte di una motivazione ad un formulario
     $router->post('/justification/add', 'TeacherController@addJustificationToForm');
+
+    $router->delete('/justification/remove/{id_form}/{id_justification}', 'TeacherController@removeJustificationFromForm');
 });
 
 /**

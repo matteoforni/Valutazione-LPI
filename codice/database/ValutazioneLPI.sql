@@ -136,9 +136,10 @@ create user 'valutazionelpi'@'localhost' identified by 'ValutazioneLPI&2020';
 GRANT SELECT, INSERT, UPDATE, DELETE ON valutazionelpi.* TO 'valutazionelpi'@'localhost';
 flush privileges;
 
-select * from point;
 select * from justification;
+select * from contains;
 update user set id_role=2 where id = 1;
 select * from `point` where `type` = 1;
+delete from contains where id_form=3 and id_justification=2;
 
-select justification.* from point inner join justification on point.code = justification.id_point inner join has on has.id_point = point.code where has.id_form=4 and point.type = 1 union select justification.* from point right join justification on point.code = justification.id_point where point.type = 0;
+select justification.* from point inner join justification on point.code = justification.id_point inner join has on has.id_point = point.code where has.id_form=4 and point.type = 1 and point.code like "%A1%" union select justification.* from point right join justification on point.code = justification.id_point where point.type = 0;

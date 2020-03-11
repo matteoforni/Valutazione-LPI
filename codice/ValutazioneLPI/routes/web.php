@@ -43,7 +43,7 @@ $router->group(['prefix' => 'teacher'], function() use ($router) {
     $router->get('/', 'TeacherController@home');
 
     //route che consente di mostrare la pagina di aggiunta di un form
-    $router->get('/form/show/add', 'TeacherController@showAddPage');
+    $router->get('/form/show/add[/{id}]', 'TeacherController@showAddPage');
 
     //route che consente di mostrare la pagina di aggiunta di una motivazione ad un formulario
     $router->get('/form/add/justification/{id}', 'TeacherController@showJustificationPage');
@@ -63,7 +63,7 @@ $router->group(['middleware' => 'jwt.auth', 'prefix' => 'teacher'], function() u
     $router->post('/form/add', 'TeacherController@addForm');
 
     //route che ritorna tutte le motivazioni
-    $router->get('/justifications', 'TeacherController@getJustifications');
+    $router->get('/justifications/{id}', 'TeacherController@getJustifications');
 
     //route che ritorna tutte le motivazioni di un formulario
     $router->get('/form/justifications/{id}', 'TeacherController@getFormJustifications');
@@ -72,6 +72,8 @@ $router->group(['middleware' => 'jwt.auth', 'prefix' => 'teacher'], function() u
     $router->post('/justification/add', 'TeacherController@addJustificationToForm');
 
     $router->delete('/justification/remove/{id_form}/{id_justification}', 'TeacherController@removeJustificationFromForm');
+
+    $router->put('/form/update/{id}', 'TeacherController@updateForm');
 });
 
 /**

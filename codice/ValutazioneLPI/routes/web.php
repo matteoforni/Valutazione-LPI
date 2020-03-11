@@ -47,6 +47,9 @@ $router->group(['prefix' => 'teacher'], function() use ($router) {
 
     //route che consente di mostrare la pagina di aggiunta di una motivazione ad un formulario
     $router->get('/form/add/justification/{id}', 'TeacherController@showJustificationPage');
+
+    //route che consente di mostrare la pagina con i risultati
+    $router->get('/form/result/{id}', 'TeacherController@showResultPage');
 });
 
 /**
@@ -71,8 +74,10 @@ $router->group(['middleware' => 'jwt.auth', 'prefix' => 'teacher'], function() u
     //route che consente l'aggiunte di una motivazione ad un formulario
     $router->post('/justification/add', 'TeacherController@addJustificationToForm');
 
+    //route che consente di rimuovere una motivazione da un formulario
     $router->delete('/justification/remove/{id_form}/{id_justification}', 'TeacherController@removeJustificationFromForm');
 
+    //route chce consente di aggiornare un formulario
     $router->put('/form/update/{id}', 'TeacherController@updateForm');
 });
 

@@ -23,10 +23,17 @@ class TeacherController extends Controller
     /**
      * Funzione che reindirizza l'utente alla pagina di aggiunta di un formulario
      */
-    public function showAddPage(){
+    public function showAddPage($id = null){
         $points = Point::where('type', '1');
-    
-        return view('teacher/add')->with('points', $points->get());
+        if($id != null){
+            $form = Form::find($id);
+            $has = Has::where('id_form', $id)->get();
+            
+            return view('teacher/add')->with('points', $points->get())->with('form', $form)->with('has', $has);
+        }else{
+            return view('teacher/add')->with('points', $points->get())->with('form', 0)->with('has', 0);
+        }
+        
     }
 
     /**
@@ -52,18 +59,13 @@ class TeacherController extends Controller
      * @param Request request La richiesta eseguita
      * @return La risposta in JSON
      */
-    public function getJustifications($point = "", $word = "", Request $request){
+    public function getJustifications($id, Request $request){
         //Verifico che l'utente sia un admin
         if($request->all()['user_id_role'] == env('TEACHER')){
             //Se è amministratore ritorno tutte le motivazioni generiche più quelle dei punti specifici scelti
-            $query = DB::select("select justification.* from point inner join justification on 
-            point.code = justification.id_point inner 
-            join has on has.id_point = point.code 
-            where has.id_form=4 and point.type = 1
-            union select justification.* from point 
-            right join justification on point.code = justification.id_point 
-            where point.type = 0");
-            return response()->json($query);
+            $query = "select justification.* from point inner join justification on point.code = justification.id_point inner join has on has.id_point = point.code where has.id_form=" . $id . " and point.type = 1 union select justification.* from point right join justification on point.code = justification.id_point where point.type = 0";
+            $result = DB::select($query);
+            return response()->json($result);
         }else{
             //Se non lo è ritorno l'errore
             return response()->json(['Unauthorized' => 'Non hai i permessi necessari per accedere'], 401);
@@ -181,10 +183,103 @@ class TeacherController extends Controller
             //Aggiungo l'id dell'utente
             $request->request->add(['id_user' => $request['id']]);
 
-            //Se la validazione va a buon fine genero l'errore.
+            //Creo il formulario
             $form = Form::create($request->all());
 
             //Inserisco i punti specifici scelti nel database
+            foreach ($points as $point) {
+                $conn = new Has();
+                $conn->id_form = $form->id;
+                $conn->id_point = $point;
+                $conn->save();
+            }
+
+            //Ritorno la risposta di successo.
+            return response()->json($form, 201);
+        }else{
+            //Se non lo è ritorno l'errore
+            return response()->json(['Unauthorized' => 'Non hai i permessi necessari per accedere'], 401);
+        }
+    }
+
+    public function updateForm($id, Request $request){
+        //Verifico che l'utente sia un docente
+        if($request->all()['user_id_role'] == env('TEACHER')){
+            //Personalizzo i messaggi di errore.
+            $messages = [
+                'required' => "Il campo :attribute deve essere specificato",
+                'min' => "Il campo :attribute deve essere di almeno :min caratteri",
+                'max' => "Il campo :attribute deve essere di massimo :max caratteri",
+                'email' => "Il campo :attribute deve essere un indirizzo email valido",
+                'numeric' => "Il campo :attribute deve essere di tipo numerico",
+                'same' => "Il campo :attribute deve valere 0",
+                'unique' => "L':attribute inserita è già in utilizzo",
+                'exists' => "Il campo :attribute deve già esistere",
+            ];
+
+            //Eseguo la validazione dei dati.
+            $validation = Validator::make($request->all(), [
+                'title' => 'required|min:1|max:255',
+                'student_name' => ['required','min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/'],
+                'student_surname' => ['required','min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/'],
+                'student_email' => 'required|email',
+                'student_phone' => ['required','min:9','regex:/^(0|0041|\+41)?[1-9\s][0-9\s]{1,12}$/'],
+                'teacher_name' => ['required','min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/'],
+                'teacher_surname' => ['required','min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/'],
+                'teacher_email' => 'required|email',
+                'teacher_phone' => ['min:9','regex:/^(0|0041|\+41)?[1-9\s][0-9\s]{1,12}$/'],
+                'expert1_name' => ['min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/', 'nullable'],
+                'expert1_surname' => ['min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/', 'nullable'],
+                'expert1_email' => 'email|nullable',
+                'expert1_phone' => ['min:9','regex:/^(0|0041|\+41)?[1-9\s][0-9\s]{1,12}$/', 'nullable'],
+                'expert2_name' => ['min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/', 'nullable'],
+                'expert2_surname' => ['min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/', 'nullable'],
+                'expert2_email' => 'email|nullable',
+                'expert2_phone' => ['min:9','regex:/^(0|0041|\+41)?[1-9\s][0-9\s]{1,12}$/', 'nullable'],
+                'point0' => 'required|min:1|max:255|exists:point,code',
+                'point1' => 'required|min:1|max:255|exists:point,code',
+                'point2' => 'required|min:1|max:255|exists:point,code',
+                'point3' => 'required|min:1|max:255|exists:point,code',
+                'point4' => 'required|min:1|max:255|exists:point,code',
+                'point5' => 'required|min:1|max:255|exists:point,code',
+                'point6' => 'required|min:1|max:255|exists:point,code',
+            ], $messages);
+
+            //Verifico che la valutazione sia andata a buon fine.
+            if($validation->fails()){
+                //Se fallisce ritorno gli errori.
+                return response()->json($validation->errors(), '422');
+            }
+
+            //Salvo i punti tecnici in un array
+            $points = array($request->input('point0'), $request->input('point1'), $request->input('point2'), $request->input('point3'), $request->input('point4'), $request->input('point5'), $request->input('point6'));
+
+            //Verifico se non vi sono duplicati, per ottimizzare verifico solo la prima metà
+            $check = array_unique($points);
+            if($points != $check){
+                return response()->json("Punti specifici duplicati", 422);
+            }
+
+            //Rimuovo i campi specifici dalla richiesta
+            for($i = 0; $i < 7; $i++){
+                $name = "point" . $i;
+                $request->request->remove($name);
+            }
+
+            //Aggiungo la data di creazione
+            $date=date_create();
+            $request->request->add(['modified' => date_format($date,"Y-m-d h:m")]);
+
+            //Aggiungo l'id dell'utente
+            $request->request->add(['id_user' => $request['id']]);
+
+            //Cerco la motivazione
+            $form = Form::findOrFail($id);
+            //Eseguo la modifica
+            $form->update($request->all());
+
+            //Inserisco i punti specifici scelti nel database
+            Has::where('id_form', $form->id)->delete();
             foreach ($points as $point) {
                 $conn = new Has();
                 $conn->id_form = $form->id;

@@ -91,10 +91,14 @@
      * Funzione che consente di creare la tabella delle motivazioni
      */ 
     function createJustificationTable(){
+        //Genero il link per la richiesta
+        var link = "{{ url('teacher/justifications') }}";
+        link += "/" + form["id"];
+
         //Richiedo i dati per riempire la tabella
         $.ajax({
             type: "get",
-            url: "{{ url('teacher/justifications') }}",
+            url: link,
             contentType: "application/json; charset=utf-8",
             dataType: "json",     
             headers: {
@@ -167,7 +171,7 @@
                 //Se il server ritorna il codice di successo genero la tabella
                 if(response["status"] == 200){
                     var data = [];
-                    
+                    rows = [];
                     //Salvo solo i dati utilizzati
                     for(var item in response["responseJSON"]){
                         var obj = {'ID': response["responseJSON"][item]['id_justification'], 'Titolo': response["responseJSON"][item]['title']};
@@ -198,13 +202,13 @@
                     });
 
                     //Disabilito le righe contenenti motivazioni già scelte
-                    disableRows(rows);
+                    disableRows();
                     setRemoveLinks();
          
                     //Disabilito le righe quando si cambia pagina della tabella
                     $('#Justification').on('page.dt', function () { 
                         $('#Justification').ready(function(){
-                            disableRows(rows);
+                            disableRows();
                             setRemoveLinks();
                         });
                     });   
@@ -236,8 +240,8 @@
     function setLinks(){
         $("#Justification").ready(function() {
             //Trovo tutti i link che servono all'eliminazione delle motivazioni
-            var rows = $("#Justification").children('tbody').children("tr");
-            $.each(rows, function(){
+            var links = $("#Justification").children('tbody').children("tr");
+            $.each(links, function(){
                 //Gli imposto i valori necessari per aprire il modale
                 $(this).attr('data-toggle', 'modal');
                 $(this).attr('data-target', '#addJustificationModal');
@@ -255,8 +259,8 @@
     function setRemoveLinks(){
         $("#AddedJustification").ready(function() {
             //Trovo tutti i link che servono all'eliminazione delle motivazioni
-            var rows = $("#AddedJustification").children('tbody').children("tr");
-            $.each(rows, function(){
+            var links = $("#AddedJustification").children('tbody').children("tr");
+            $.each(links, function(){
                 //Gli imposto i valori necessari per aprire il modale
                 $(this).attr('data-toggle', 'modal');
                 $(this).attr('data-target', '#removeJustificationModal');
@@ -294,9 +298,6 @@
             complete: function(response) {
                 if(response["status"] == 201){
                     createJustificationTable();
-                    //Aggiungo la riga all'array di righe disabilitate
-                    rows.push("#" + $(addLink).attr("id"));
-                    
                     toastr.success('Motivazione aggiunta con successo');
                 }else{
                     toastr.error("Impossibile aggiungere la motivazione");
@@ -330,7 +331,7 @@
                         rows.splice(index, 1);
                     }
 
-                    $(removeLink).removeClass('text-light');
+                    rows = [];
 
                     createJustificationTable();
                     

@@ -35,7 +35,7 @@
         @section('header')
         <header>
             <nav class="navbar fixed-top navbar-expand-lg navbar-dark light-blue lighten-2 scrolling-navbar">
-                <a class="navbar-brand" href="#"><strong>Valutazione LPI</strong></a>
+            <a class="navbar-brand" href="{{ url('teacher') }}"><strong>Valutazione LPI</strong></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>

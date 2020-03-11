@@ -6,7 +6,7 @@
 <div class="row">
     <div class="col-md-8 offset-md-2">
         <form id="addFormForm" class="text-center border border-light p-5 mt-3 my-5 md-form">
-            <p class="h4 mb-4">Aggiungi un formulario</p>
+            <p id="pageTitle" class="h4 mb-4"></p>
 
             <input type="text" id="title" name="title" class="form-control mb-4" placeholder="Titolo del progetto" minlength="1" maxlength="255" required>
 
@@ -140,8 +140,7 @@
 
             <p class="text-left">I riquadri contrassegnati da un <b class="text-danger">*</b> sono richiesti</p>
 
-            <!-- Sign up button -->
-            <button class="btn btn-info my-4 btn-block">Aggiungi</button>
+            <button id="finalButton" class="btn btn-info my-4 btn-block"></button>
         </form>
     </div>
     <div class="col-md-3 my-5">
@@ -151,9 +150,23 @@
     </div>
 </div>
 <script>
+    let formContent = 0;
     $(document).ready(function(){
         //Ottengo dal controller i punti di valutazione
         var points = <?php echo $points ?>;
+
+        //Ottengo dal controller il formulario che si sta modificando
+        formContent = <?php echo $form ?>;
+
+        if(formContent != 0){
+            var has = <?php echo $has ?>;
+            fillForm(formContent, has);
+            $('#pageTitle').text("Modifica il formulario");
+            $('#finalButton').text("Modifica");
+        }else{
+            $('#pageTitle').text("Aggiungi un formulario");
+            $('#finalButton').text("Aggiungi");
+        }
 
         //Genero le opzioni del select
         for(var i = 0; i < points.length; i++){
@@ -176,10 +189,20 @@
             var json = jsonData[index];
             form[json.name] = json.value;
         }
+
+        //Verifico se è una modifica o una aggiunta
+        if(formContent != 0){
+            var link = "{{ url('teacher/form/update') }}";
+            link += "/" + formContent['id'];
+            var type = "put";
+        }else{
+            var link = "{{ url('teacher/form/add') }}";
+            var type = "post";
+        }
         //Eseguo la richiesta post al controller
         $.ajax({
-            type: "post",
-            url: "{{ url('teacher/form/add') }}",
+            type: type,
+            url: link,
             data: JSON.stringify(form),
             contentType: "application/json; charset=utf-8",
             dataType: "json",      
@@ -419,7 +442,6 @@
         var div = $(element).parent();
         var text = $(div).children().eq(1);
         text.remove();
-        console.log(text.val());
         //Riabilito la selezione dell'opzione appena rimossa
         $("#pointSelect option[value='"+ text.val() + "']").removeAttr('disabled');
 
@@ -431,6 +453,41 @@
         
         //Notifico che vi è un posto libero nella lista
         empty.push($(div).attr('id'));
+    }
+
+    /**
+    * Funzione che compila i campi se si apre la pagina per modificare un formulario
+    */
+    function fillForm(form, has){
+        $('#title').val(form['title']);
+        $('#student_name').val(form['student_name']);
+        $('#student_surname').val(form['student_surname']);
+        $('#student_email').val(form['student_email']);
+        $('#student_phone').val(form['student_phone']);
+
+        $('#teacher_name').val(form['teacher_name']);
+        $('#teacher_surname').val(form['teacher_surname']);
+        $('#teacher_email').val(form['teacher_email']);
+        $('#teacher_phone').val(form['teacher_phone']);
+
+        $('#expert1_name').val(form['expert1_name']);
+        $('#expert1_surname').val(form['expert1_surname']);
+        $('#expert1_email').val(form['expert1_email']);
+        $('#expert1_phone').val(form['expert1_phone']);
+
+        $('#expert2_name').val(form['expert2_name']);
+        $('#expert2_surname').val(form['expert2_surname']);
+        $('#expert2_email').val(form['expert2_email']);
+        $('#expert2_phone').val(form['expert2_phone']);
+
+        $.each(has, function(i){
+            var value = has[i]['id_point'];
+            $('#pointSelect').ready(function(){
+                $("#pointSelect option[value=" + value + "]").attr('selected', 'selected'); 
+                addPoint();
+            });
+           
+        });
     }
 </script>
 @endsection

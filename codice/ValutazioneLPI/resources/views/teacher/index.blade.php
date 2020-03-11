@@ -62,7 +62,7 @@
                     var data = [];
                     for(var item in response["responseJSON"]){
                         var created = response["responseJSON"][item]['created'].split(" ")[0];
-                        var obj = {'id': response["responseJSON"][item]['id'], 'titolo': response["responseJSON"][item]['title'], 'creato': created, 'Email allievo': response["responseJSON"][item]['student_email'], 'Email docente': response["responseJSON"][item]['teacher_email']};
+                        var obj = {'id': response["responseJSON"][item]['id'], 'titolo': response["responseJSON"][item]['title'], 'creato': created, 'Email allievo': response["responseJSON"][item]['student_email'], 'Email docente': response["responseJSON"][item]['teacher_email'], 'Motivazioni': "<a class='addFieldForm'><i class='far fa-plus-square'></i></a>"};
                         data.push(obj);
                     }
 
@@ -151,12 +151,23 @@
                 });
             });
 
+            //Trovo tutti i link che servono alla modifica delle motivazioni
+            var deleteLinks = $(".addFieldForm");
+            $.each(deleteLinks, function(){
+                $(this).click(function(){
+                    var id = $(this).parents().eq(1).attr("id");
+                    var link = "{{ url('teacher/form/add/justification') }}";
+                    link += "/" + id;
+                    window.location = link;
+                });
+            });
+
             //Trovo tutti i link che servono alla modifica dei formulari
             var deleteLinks = $(".updateFieldForm");
             $.each(deleteLinks, function(){
                 $(this).click(function(){
                     var id = $(this).parents().eq(1).attr("id");
-                    var link = "{{ url('teacher/form/add/justification') }}";
+                    var link = "{{ url('teacher/form/show/add') }}";
                     link += "/" + id;
                     window.location = link;
                 });

@@ -23,17 +23,17 @@
         @section('header')
         <header>
             <nav class="navbar fixed-top navbar-expand-lg navbar-dark light-blue lighten-2 scrolling-navbar">
-                <a class="navbar-brand" href="#"><strong>Valutazione LPI</strong></a>
+            <a class="navbar-brand" href="{{ url('') }}"><strong>Valutazione LPI</strong></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse d-flex justify-content-end" id="navbar">
                     <ul class="navbar-nav">
                         <li class="nav-item active">
-                            <a class="nav-link" href="#">Login <span class="sr-only">(current)</span></a>
+                            <a class="nav-link" href="{{ url('') }}">Login <span class="sr-only">(current)</span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Registrati</a>
+                            <a class="nav-link" href="{{ url('register') }}">Registrati</a>
                         </li>                       
                     </ul>
                 </div>

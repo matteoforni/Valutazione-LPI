@@ -308,6 +308,21 @@
             //La aggiungo alla select
             $(".role-select").append(option);
         }
+
+        //Alla chiusura dei modali di aggiunta cancello i dati
+        $('#addUserModal').on('hidden.bs.modal', function () {
+            $('#name').val('');
+            $('#surname').val('');
+            $('#email').val('');
+            $('#phone').val('');
+            $("#roleSelect").val($("#roleSelect option:first").val());
+        });
+
+        $('#addJustificationModal').on('hidden.bs.modal', function () {
+            $('#text').val('');
+            $('#pointText').text('');
+            $("#pointSelect").val($("#pointSelect option:first").val());
+        });
     });
 
     //Quando viene eseguito il submit nel form di aggiunta di un utente 

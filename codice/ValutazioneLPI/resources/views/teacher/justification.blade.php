@@ -256,6 +256,9 @@
         });
     }
 
+    /**
+    * Funzione che imposta i link per l'eliminazione
+    */
     function setRemoveLinks(){
         $("#AddedJustification").ready(function() {
             //Trovo tutti i link che servono all'eliminazione delle motivazioni
@@ -306,6 +309,9 @@
         });
     }
 
+    /**
+    * Funzione che consente di rimuovere una motivazione dal formulario
+    */
     function removeJustification(){
         //Nascondo il modale
         $('#removeJustificationModal').modal('hide');

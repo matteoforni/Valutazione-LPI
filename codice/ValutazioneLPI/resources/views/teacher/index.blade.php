@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="row">
-    <div class="col-md-10 text-center offset-md-1">
+    <div class="col-md-12 text-center">
         <h3 class="h3 text-center my-5">Storico dei formulari</h3>
         <div class="errors-forms text-danger">
 
@@ -62,7 +62,7 @@
                     var data = [];
                     for(var item in response["responseJSON"]){
                         var created = response["responseJSON"][item]['created'].split(" ")[0];
-                        var obj = {'id': response["responseJSON"][item]['id'], 'titolo': response["responseJSON"][item]['title'], 'creato': created, 'Email allievo': response["responseJSON"][item]['student_email'], 'Email docente': response["responseJSON"][item]['teacher_email'], 'Motivazioni': "<a class='addFieldForm'><i class='far fa-plus-square'></i></a>"};
+                        var obj = {'id': response["responseJSON"][item]['id'], 'titolo': response["responseJSON"][item]['title'], 'creato': created, 'Email allievo': response["responseJSON"][item]['student_email'], 'Email docente': response["responseJSON"][item]['teacher_email'], 'Motivazioni': "<a class='addFieldForm'><i class='far fa-plus-square'></i></a>", 'Risultati': "<a class='resultFieldForm'><i class='far fa-chart-bar'></i></a>"};
                         data.push(obj);
                     }
 
@@ -152,8 +152,8 @@
             });
 
             //Trovo tutti i link che servono alla modifica delle motivazioni
-            var deleteLinks = $(".addFieldForm");
-            $.each(deleteLinks, function(){
+            var addLinks = $(".addFieldForm");
+            $.each(addLinks, function(){
                 $(this).click(function(){
                     var id = $(this).parents().eq(1).attr("id");
                     var link = "{{ url('teacher/form/add/justification') }}";
@@ -163,11 +163,22 @@
             });
 
             //Trovo tutti i link che servono alla modifica dei formulari
-            var deleteLinks = $(".updateFieldForm");
-            $.each(deleteLinks, function(){
+            var updateLinks = $(".updateFieldForm");
+            $.each(updateLinks, function(){
                 $(this).click(function(){
                     var id = $(this).parents().eq(1).attr("id");
                     var link = "{{ url('teacher/form/show/add') }}";
+                    link += "/" + id;
+                    window.location = link;
+                });
+            });
+
+            //Trovo tutti i link che servono alla visualizzazione dei risultati
+            var resultLinks = $(".resultFieldForm");
+            $.each(resultLinks, function(){
+                $(this).click(function(){
+                    var id = $(this).parents().eq(1).attr("id");
+                    var link = "{{ url('teacher/form/result') }}";
                     link += "/" + id;
                     window.location = link;
                 });

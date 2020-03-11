@@ -51,7 +51,10 @@ class TeacherController extends Controller
             //Se non esiste rimando l'utente alla home
             $this->home();
         }
-        
+    }
+
+    public function showResultPage($id){
+        return view('teacher/result');
     }
 
     /**

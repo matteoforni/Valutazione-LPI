@@ -1,6 +1,6 @@
 @extends('_templates/teacher_header')
 
-@section('title', 'Docenti')
+@section('title', 'Aggiunta')
 
 @section('content')
 <div class="row">

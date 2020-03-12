@@ -79,6 +79,8 @@ $router->group(['middleware' => 'jwt.auth', 'prefix' => 'teacher'], function() u
 
     //route chce consente di aggiornare un formulario
     $router->put('/form/update/{id}', 'TeacherController@updateForm');
+
+    $router->get('/form/results/{id}', 'TeacherController@getResults');
 });
 
 /**

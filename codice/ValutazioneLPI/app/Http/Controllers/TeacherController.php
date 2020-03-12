@@ -53,8 +53,21 @@ class TeacherController extends Controller
         }
     }
 
+    /**
+     * Funzione che reindirizza l'utente alla pagina di ricapitolazione di un formulario
+     */
     public function showResultPage($id){
-        return view('teacher/result');
+        //Carico il formulario da modificare
+        $form = Form::find($id);
+
+        //Verifico che esista
+        if(isset($form) && !empty($form)){
+            //Ritorno la pagina
+            return view('teacher/result')->with('form', $form);
+        }else{
+            //Se non esiste rimando l'utente alla home
+            $this->home();
+        }
     }
 
     /**
@@ -366,6 +379,24 @@ class TeacherController extends Controller
 
             //Ritorno la risposta di successo.
             return response()->json($justifications, 200);
+        }else{
+            //Se non lo è ritorno l'errore
+            return response()->json(['Unauthorized' => 'Non hai i permessi necessari per accedere'], 401);
+        }
+    }
+
+    public function getResults($id, Request $request){
+        if($request->all()['user_id_role'] == env('TEACHER')){
+            $query = "select * from contains inner join justification on contains.id_justification = justification.id where justification.id_point like 'A%' and contains.id_form = " . $id;
+            $resultA = DB::select($query);
+            $query = "select * from contains inner join justification on contains.id_justification = justification.id where justification.id_point like 'B%' and contains.id_form = " . $id;
+            $resultB = DB::select($query);
+            $query = "select * from contains inner join justification on contains.id_justification = justification.id where justification.id_point like 'C%' and contains.id_form = " . $id;
+            $resultC = DB::select($query);
+            $query = "select * from contains inner join justification on contains.id_justification = justification.id where justification.id_point NOT REGEXP '[a-zA-Z]' and contains.id_form = " . $id;
+            $resultPoints = DB::select($query);
+            $result = array("A" => $resultA, "B" => $resultB, "C" => $resultC, "points" => $resultPoints);
+            return response()->json($result, 200);
         }else{
             //Se non lo è ritorno l'errore
             return response()->json(['Unauthorized' => 'Non hai i permessi necessari per accedere'], 401);

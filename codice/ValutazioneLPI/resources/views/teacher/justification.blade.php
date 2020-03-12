@@ -80,6 +80,9 @@
     */
     let form = <?php echo $form ?>;
 
+    /**
+    * Attributo contenente l'ultimo link di eliminazione premuto 
+    */
     let removeLink;
 
     $(document).ready(function(){
@@ -135,7 +138,7 @@
                     setLinks();
 
                     //Al cambio di pagina collego i nuovi dati mostrati al modale
-                    $('#Justification').on('page.dt', function () {
+                    $('#Justification').on('page.dt search.dt', function () {
                         $("#Justification").ready(function(){
                             setLinks();
                         });
@@ -206,12 +209,12 @@
                     setRemoveLinks();
          
                     //Disabilito le righe quando si cambia pagina della tabella
-                    $('#Justification').on('page.dt', function () { 
+                    $('#Justification').on('page.dt search.dt', function () { 
                         $('#Justification').ready(function(){
                             disableRows();
                             setRemoveLinks();
                         });
-                    });   
+                    });     
 
                 }else if(response["status"] = 401){
                     //Se non si è autorizzati si ritorna al login

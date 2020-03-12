@@ -595,7 +595,7 @@
                     setJustificationLinks();
 
                     //Reimposto i links quando si cambia pagina nella tabella   
-                    $('#Justification').on('page.dt', function () {
+                    $('#Justification').on('page.dt search.dt', function () {
                         $('#Justification').ready(function(){
                             setJustificationLinks();
                         });
@@ -652,7 +652,7 @@
                     setUserLinks();
 
                     //Reimposto i links quando si cambia pagina nella tabella
-                    $('#User').on('page.dt', function () {
+                    $('#User').on('page.dt search.dt', function () {
                         $('#User').ready(function(){
                             setUserLinks();
                         });

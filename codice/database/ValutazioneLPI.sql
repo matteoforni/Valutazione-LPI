@@ -140,6 +140,10 @@ select * from justification;
 select * from contains;
 update user set id_role=2 where id = 1;
 select * from `point` where `type` = 1;
-delete from contains where id_form=3 and id_justification=2;
+delete from contains where id_form=3 and id_justification=7;
 
-select justification.* from point inner join justification on point.code = justification.id_point inner join has on has.id_point = point.code where has.id_form=4 and point.type = 1 and point.code like "%A1%" union select justification.* from point right join justification on point.code = justification.id_point where point.type = 0;
+select justification.* from point inner join justification on point.code = justification.id_point inner join has on has.id_point = point.code where has.id_form=8 and point.type = 1 union select justification.* from point right join justification on point.code = justification.id_point where point.type = 0;select justification.* from point inner join justification on point.code = justification.id_point inner join has on has.id_point = point.code where has.id_form=8 and point.type = 1 union select justification.* from point right join justification on point.code = justification.id_point where point.type = 0;
+select * from contains inner join justification on contains.id_justification = justification.id where justification.id_point like "A%" and contains.id_form = 7;
+select * from contains inner join justification on contains.id_justification = justification.id where justification.id_point like "B%" and contains.id_form = 7;
+select * from contains inner join justification on contains.id_justification = justification.id where justification.id_point like "C%" and contains.id_form = 7;
+select * from contains inner join justification on contains.id_justification = justification.id where justification.id_point NOT REGEXP '[a-zA-Z]' and contains.id_form = 7;

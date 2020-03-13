@@ -20,6 +20,10 @@ class TeacherController extends Controller
         return view('teacher/index');
     }
 
+    public function showTest(){
+        return view('_testpdf/test');
+    }
+
     /**
      * Funzione che reindirizza l'utente alla pagina di aggiunta di un formulario
      */

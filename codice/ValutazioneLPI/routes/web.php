@@ -50,6 +50,8 @@ $router->group(['prefix' => 'teacher'], function() use ($router) {
 
     //route che consente di mostrare la pagina con i risultati
     $router->get('/form/result/{id}', 'TeacherController@showResultPage');
+
+    $router->get('/pdftest', 'TeacherController@showTest');
 });
 
 /**

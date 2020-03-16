@@ -1,5 +1,4 @@
 <?php
-
 class ValutazionePDF extends TCPDF{
     public function Header() {
         // Position at 15 mm from bottom
@@ -749,8 +748,11 @@ Calcolo della nota finale = Nota A x 0.5 + Nota B x 0.25 + Nota C x 0.25 (nota a
 </table>
 EOF;
 
-$pdf->writeHTML($content);
+$pdf->writeHTML($content, true, 0, true, 0);
+$pdf->lastPage();
 
 //Close and output PDF document
-$pdf->Output('test.pdf', 'D');
+header("Content-Type: application/pdf");
+$pdf->Output();
+exit();
 ?>

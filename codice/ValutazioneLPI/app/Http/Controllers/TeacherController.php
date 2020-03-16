@@ -21,7 +21,7 @@ class TeacherController extends Controller
     }
 
     public function showTest(){
-        return view('_testpdf/test');
+        return view('pdf/createpdf');
     }
 
     /**
@@ -107,7 +107,6 @@ class TeacherController extends Controller
             //Se non lo è ritorno l'errore
             return response()->json(['Unauthorized' => 'Non hai i permessi necessari per accedere'], 401);
         }
-        
     }
 
     /**

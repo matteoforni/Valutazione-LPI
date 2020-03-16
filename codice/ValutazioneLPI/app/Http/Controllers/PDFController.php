@@ -1,29 +1,90 @@
 <?php
-class ValutazionePDF extends TCPDF{
+
+use Illuminate\Http\Request;
+use App\Form;
+use App\Http\Controllers\Controller;
+
+/**
+ * Classe che genera i PDF di valutazione
+ */
+class PDFController extends TCPDF{
+    private $form;    
+    /**
+     * Funzione che consente di generare l'header del PDF
+     */
     public function Header() {
-        // Position at 15 mm from bottom
+        //Mi posiziono a 9 mm dall'inizio del documento
         $this->SetY(9);
-        // Set font
+        //Imposto il font
         $this->SetFont('courier', 'I', 9.5);
-        // Title
+        //Genero l'header
         $this->Cell(0, 9.5, 'Procedura di qualificazione: Informatica/o AFC (Ordinanza 2014) Griglia di valutazione', 0, false, 'C', 0, '', 0, false, 'M', 'M');
     }
 
-    // Page footer
+    /**
+     * Funzione che consente di generare il footer del PDF
+     */
     public function Footer() {
-        // Position at 15 mm from bottom
+        //Mi posiziono a 15 mm dalla fine del documento
         $this->SetY(-15);
-        // Set font
+        //Imposto il font
         $this->SetFont('courier', 'I', 10);
-        // Page number
+        //Genero il footer
         $this->Cell(30, 10, 'Pagina '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
         $this->Cell(215, 10, 'Versione 2.0 (310119) - Ordinanza 2014', 0, false, 'C', 0, '', 0, false, 'T', 'M');
+    }
+
+    public function getForm(){
+        $parts = explode("/", $_SERVER['REQUEST_URI']);
+        $this->form = Form::find(end($parts));
+    }
+
+    public function getStudent(){
+        $student = array("name" => $this->form['student_name'] . " " . $this->form['student_surname'], "phone" => $this->form['student_phone'], "email" => $this->form['student_email']);
+        return $student;
+    }
+
+    public function getTeacher(){
+        $teacher = array("name" => $this->form['teacher_name'] . " " . $this->form['teacher_surname'], "phone" => $this->form['teacher_phone'], "email" => $this->form['teacher_email']);
+        return $teacher;
+    }
+    
+    public function getExpert1(){
+        $expert1 = array("name" => $this->form['expert1_name'] . " " . $this->form['expert1_surname'], "phone" => $this->form['expert1_phone'], "email" => $this->form['expert1_email']);
+        return $expert1;
+    }
+
+    public function getExpert2(){
+        $expert2 = array("name" => $this->form['expert2_name'] . " " . $this->form['expert2_surname'], "phone" => $this->form['expert2_phone'], "email" => $this->form['expert2_email']);
+        return $expert2;
     }
 }
 
 // create new PDF document
-$pdf = new ValutazionePDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+$pdf = new PDFController(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 $pdf->SetMargins("20", "15", "20");
+
+$pdf->getForm();
+
+$student = $pdf->getStudent();
+$student_name = $student['name'];
+$student_phone = $student['phone'];
+$student_email = $student['email'];
+
+$teacher = $pdf->getTeacher();
+$teacher_name = $teacher['name'];
+$teacher_phone = $teacher['phone'];
+$teacher_email = $teacher['email'];
+
+$expert1 = $pdf->getExpert1();
+$expert1_name = $expert1['name'];
+$expert1_phone = $expert1['phone'];
+$expert1_email = $expert1['email'];
+
+$expert2 = $pdf->getExpert1();
+$expert2_name = $expert2['name'];
+$expert2_phone = $expert2['phone'];
+$expert2_email = $expert2['email'];
 
 // add a page
 $pdf->AddPage('P', 'A4');
@@ -42,6 +103,9 @@ th {
 p {
     text-align: justify;
 }
+td {
+    padding: 3px;
+}
 
 </style>
 <br>
@@ -53,24 +117,24 @@ p {
         <th><b> Candidata/o</b></th>
     </tr>
     <tr>
-        <td></td>
-        <td></td>
+        <td>$teacher_name</td>
+        <td>$student_name</td>
     </tr>
     <tr>
         <td><b> Telefono</b></td>
         <td><b> Telefono</b></td>
     </tr>
     <tr>
-        <td></td>
-        <td></td>
+        <td>$teacher_phone</td>
+        <td>$student_phone</td>
     </tr>
     <tr>
         <td><b> Email</b></td>
         <td><b> Email</b></td>
     </tr>
     <tr>
-        <td></td>
-        <td></td>
+        <td>$teacher_email</td>
+        <td>$student_email</td>
     </tr>
 </table>
 <br><br>
@@ -80,24 +144,24 @@ p {
         <th><b> Perito 2</b></th>
     </tr>
     <tr>
-        <td></td>
-        <td></td>
+        <td>$expert1_name</td>
+        <td>$expert2_name</td>
     </tr>
     <tr>
         <td><b> Telefono</b></td>
         <td><b> Telefono</b></td>
     </tr>
     <tr>
-        <td></td>
-        <td></td>
+        <td>$expert1_phone</td>
+        <td>$expert2_phone</td>
     </tr>
     <tr>
         <td><b> Email</b></td>
         <td><b> Email</b></td>
     </tr>
     <tr>
-        <td></td>
-        <td></td>
+        <td>$expert1_email</td>
+        <td>$expert2_email</td>
     </tr>
 </table><br>
 <hr>
@@ -122,7 +186,6 @@ Il superiore professionale e gli esperti valutano le competenze professionali al
 
 Unicamente in caso di disaccordo tra periti e superiore professionale nella valutazione indicare i punti assegnati dai periti in Pt.Pe ed utilizzare il campo note (punto 7). </p>
 EOF;
-    
 $pdf->writeHTML($content);
 
 $pdf->AddPage();

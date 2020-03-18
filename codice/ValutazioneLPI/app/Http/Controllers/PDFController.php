@@ -179,6 +179,10 @@ $pdf->getForm();
 //Ottengo l'allievo
 $student = $pdf->getStudent();
 
+//Imposto il titolo
+$title = "Griglia_Di_Valutazione_" . $student->name;
+$pdf->SetTitle($title);
+
 //Ottengo il docente
 $teacher = $pdf->getTeacher();
 
@@ -959,6 +963,6 @@ $pdf->lastPage();
 //Notifico al browser che invio un PDF
 header("Content-Type: application/pdf");
 //Stampo il PDF e chiudo l'output
-$pdf->Output();
+$pdf->Output($title, "I");
 exit();
 ?>

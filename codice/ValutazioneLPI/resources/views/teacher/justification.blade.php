@@ -209,8 +209,8 @@
                     setRemoveLinks();
          
                     //Disabilito le righe quando si cambia pagina della tabella
-                    $('#Justification').on('page.dt search.dt', function () { 
-                        $('#Justification').ready(function(){
+                    $('#AddedJustification').on('page.dt search.dt', function () { 
+                        $('#AddedJustification').ready(function(){
                             disableRows();
                             setRemoveLinks();
                         });

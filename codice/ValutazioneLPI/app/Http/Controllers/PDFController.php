@@ -2,7 +2,10 @@
 
 use Illuminate\Http\Request;
 use App\Form;
-use App\Http\Controllers\Controller;
+use App\Justification;
+use App\Contains;
+use App\Has;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Classe che genera i PDF di valutazione
@@ -40,23 +43,94 @@ class PDFController extends TCPDF{
     }
 
     public function getStudent(){
-        $student = array("name" => $this->form['student_name'] . " " . $this->form['student_surname'], "phone" => $this->form['student_phone'], "email" => $this->form['student_email']);
+        $student = (object)["name" => $this->form['student_name'] . " " . $this->form['student_surname'], "phone" => $this->form['student_phone'], "email" => $this->form['student_email']];
         return $student;
     }
 
     public function getTeacher(){
-        $teacher = array("name" => $this->form['teacher_name'] . " " . $this->form['teacher_surname'], "phone" => $this->form['teacher_phone'], "email" => $this->form['teacher_email']);
+        $teacher = (object)["name" => $this->form['teacher_name'] . " " . $this->form['teacher_surname'], "phone" => $this->form['teacher_phone'], "email" => $this->form['teacher_email']];
         return $teacher;
     }
     
     public function getExpert1(){
-        $expert1 = array("name" => $this->form['expert1_name'] . " " . $this->form['expert1_surname'], "phone" => $this->form['expert1_phone'], "email" => $this->form['expert1_email']);
+        $expert1 = (object)["name" => $this->form['expert1_name'] . " " . $this->form['expert1_surname'], "phone" => $this->form['expert1_phone'], "email" => $this->form['expert1_email']];
         return $expert1;
     }
 
     public function getExpert2(){
-        $expert2 = array("name" => $this->form['expert2_name'] . " " . $this->form['expert2_surname'], "phone" => $this->form['expert2_phone'], "email" => $this->form['expert2_email']);
+        $expert2 = (object)["name" => $this->form['expert2_name'] . " " . $this->form['expert2_surname'], "phone" => $this->form['expert2_phone'], "email" => $this->form['expert2_email']];
         return $expert2;
+    }
+
+    /**
+     * Funzione che ritorna tutte le motivazioni collegate ad un formulario
+     * @param Request request La richiesta eseguita 
+     * @param id L'id del formulario
+     * @return La risposta in JSON
+     */
+    public function getFormJustifications(){
+        $contains = Contains::where('id_form', $this->form['id'])->get();
+        $points = Has::where('id_form', $this->form['id'])->get();
+        $justificationPoints = array();
+        foreach($points as $point){
+            $key = "A".$point->id_point;
+            $justificationPoints[$key] = "";
+        }
+        $justificationA = array("A1" => "", "A2" => "", "A3" => "", "A4" => "", "A5" => "", "A6" => "", "A7" => "", "A8" => "", "A9" => "", "A10" => "", "A11" => "", "A12" => "", "A13" => "");
+        $justificationA = array_merge($justificationA, $justificationPoints);
+        
+        
+        $justificationB = array("B1" => "", "B2" => "", "B3" => "", "B4" => "", "B5" => "", "B6" => "", "B7" => "", "B8" => "", "B9" => "", "B10" => "");
+        $justificationC = array("C1" => "", "C2" => "", "C3" => "", "C4" => "", "C5" => "", "C6" => "", "C7" => "", "C8" => "", "C9" => "", "C10" => "");
+
+        $count = 11;
+        foreach($contains as $item){
+            $justification = Justification::find($item->id_justification);
+             
+            if(substr($justification->id_point, 0, 1) === "A"){
+                $justificationA[$justification->id_point] .= $justification->text . "<br>";
+            }else if(substr($justification->id_point, 0, 1) === "B"){
+                $justificationB[$justification->id_point] .= $justification->text . "<br>";
+            }else if(substr($justification->id_point, 0, 1) === "C"){
+                $justificationC[$justification->id_point] .= $justification->text . "<br>";
+            }else{
+                $justificationA["A".$justification->id_point] .= $justification->text . "<br>";
+                $count++;
+            }
+        }
+        $mom = 14;
+        foreach($justificationPoints as $key => $item){
+            $justificationA["A".$mom] = strval($justificationA[$key]);
+            unset($justificationA[$key]);
+            $mom++;
+        }
+        
+        $justifications = array();
+        if(count($justificationA) > 0){
+            $justifications['A'] = $justificationA;
+        }
+        if(count($justificationB) > 0){
+            $justifications['B'] = $justificationB;
+        }
+        if(count($justificationC) > 0){
+            $justifications['C'] = $justificationC;
+        }
+
+        //Ritorno la risposta di successo.
+        return $justifications;
+    }
+
+    public function getResults(){
+        $query = "select * from contains inner join justification on contains.id_justification = justification.id where justification.id_point like 'A%' and contains.id_form = " . $this->form['id'];
+        $resultA = DB::select($query);
+        $query = "select * from contains inner join justification on contains.id_justification = justification.id where justification.id_point like 'B%' and contains.id_form = " . $this->form['id'];
+        $resultB = DB::select($query);
+        $query = "select * from contains inner join justification on contains.id_justification = justification.id where justification.id_point like 'C%' and contains.id_form = " . $this->form['id'];
+        $resultC = DB::select($query);
+        $query = "select * from contains inner join justification on contains.id_justification = justification.id where justification.id_point NOT REGEXP '[a-zA-Z]' and contains.id_form = " . $this->form['id'];
+        $resultPoints = DB::select($query);
+        $result = array("A" => $resultA, "B" => $resultB, "C" => $resultC, "points" => $resultPoints);
+        return $result;
     }
 }
 
@@ -67,24 +141,29 @@ $pdf->SetMargins("20", "15", "20");
 $pdf->getForm();
 
 $student = $pdf->getStudent();
-$student_name = $student['name'];
-$student_phone = $student['phone'];
-$student_email = $student['email'];
 
 $teacher = $pdf->getTeacher();
-$teacher_name = $teacher['name'];
-$teacher_phone = $teacher['phone'];
-$teacher_email = $teacher['email'];
 
 $expert1 = $pdf->getExpert1();
-$expert1_name = $expert1['name'];
-$expert1_phone = $expert1['phone'];
-$expert1_email = $expert1['email'];
 
 $expert2 = $pdf->getExpert1();
-$expert2_name = $expert2['name'];
-$expert2_phone = $expert2['phone'];
-$expert2_email = $expert2['email'];
+
+$result = $pdf->getResults();
+$resultPoints = $result['points'];
+$pointsA = 60-count($result['A'])+count($resultPoints);
+$resultA = round($pointsA/60*5+1,1);
+$pointsB = 30-count($result['B']);
+$resultB = round($pointsB/30*5+1,1);
+$pointsC = 30-count($result['C']);
+$resultC = round($pointsC/30*5+1,1);
+$finalResult = round($resultA*0.5 + $resultB *0.25 + $resultC * 0.25,1);
+
+$justifications = $pdf->getFormJustifications();
+
+$justificationA = (object)$justifications['A'];
+$justificationB = (object)$justifications['B'];
+$justificationC = (object)$justifications['C'];
+
 
 // add a page
 $pdf->AddPage('P', 'A4');
@@ -117,24 +196,24 @@ td {
         <th><b> Candidata/o</b></th>
     </tr>
     <tr>
-        <td>$teacher_name</td>
-        <td>$student_name</td>
+        <td>$teacher->name</td>
+        <td>$student->name</td>
     </tr>
     <tr>
         <td><b> Telefono</b></td>
         <td><b> Telefono</b></td>
     </tr>
     <tr>
-        <td>$teacher_phone</td>
-        <td>$student_phone</td>
+        <td>$teacher->phone</td>
+        <td>$student->phone</td>
     </tr>
     <tr>
         <td><b> Email</b></td>
         <td><b> Email</b></td>
     </tr>
     <tr>
-        <td>$teacher_email</td>
-        <td>$student_email</td>
+        <td>$teacher->email</td>
+        <td>$student->email</td>
     </tr>
 </table>
 <br><br>
@@ -144,24 +223,24 @@ td {
         <th><b> Perito 2</b></th>
     </tr>
     <tr>
-        <td>$expert1_name</td>
-        <td>$expert2_name</td>
+        <td>$expert1->name</td>
+        <td>$expert2->name</td>
     </tr>
     <tr>
         <td><b> Telefono</b></td>
         <td><b> Telefono</b></td>
     </tr>
     <tr>
-        <td>$expert1_phone</td>
-        <td>$expert2_phone</td>
+        <td>$expert1->phone</td>
+        <td>$expert2->phone</td>
     </tr>
     <tr>
         <td><b> Email</b></td>
         <td><b> Email</b></td>
     </tr>
     <tr>
-        <td>$expert1_email</td>
-        <td>$expert2_email</td>
+        <td>$expert1->email</td>
+        <td>$expert2->email</td>
     </tr>
 </table><br>
 <hr>
@@ -213,10 +292,10 @@ td {
 <table border="0.3" cellspacing="0" cellpadding="1">
     <tr> 
         <th width="35"></th>
-        <th width="145"><b>Domanda</b></th>
-        <th width="30"><b>Pt.</b></th>
-        <th width="240"><b>Motivazione</b></th>
-        <th width="30"><b>Pt. Pe</b></th>  
+        <th width="145"><b>  Domanda</b></th>
+        <th width="30"><b>  Pt.</b></th>
+        <th width="240"><b>  Motivazione</b></th>
+        <th width="30"><b>  Pt. Pe</b></th>  
     </tr>
 </table>
 <table border="0.3" cellspacing="0" cellpadding="9">
@@ -224,70 +303,70 @@ td {
         <td width="35"><b>A1</b></td>
         <td width="145">Gestione progetto e pianificazione</td>
         <td width="30"></td>
-        <td width="240"></td>
+        <td width="240">$justificationA->A1</td>
         <td width="30"></td>    
     </tr>
     <tr>
         <td width="35"><b>A2</b></td>
         <td width="145">Acquisizione del sapere</td>
         <td width="30"></td>
-        <td width="240"></td>
+        <td width="240">$justificationA->A2</td>
         <td width="30"></td>    
     </tr>
     <tr>
         <td><b>A3</b></td>
         <td>Pianificazione</td>
         <td></td>
-        <td></td>
+        <td>$justificationA->A3</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>A4</b></td>
         <td>Comprensione concettuale</td>
         <td></td>
-        <td></td>
+        <td>$justificationA->A4</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>A5</b></td>
         <td>Ambiente di progetto: limiti del sistema / interfacce con l’esterno</td>
         <td></td>
-        <td></td>
+        <td>$justificationA->A5</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>A6</b></td>
         <td>Test della soluzione (pianificazione ed esecuzione)</td>
         <td></td>
-        <td></td>
+        <td>$justificationA->A6</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>A7</b></td>
         <td>Motivazione / Impegno / Attitudine al lavoro / Esecuzione</td>
         <td></td>
-        <td></td>
+        <td>$justificationA->A7</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>A8</b></td>
         <td>Lavoro autonomo</td>
         <td></td>
-        <td></td>
+        <td>$justificationA->A8</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>A9</b></td>
         <td>Conoscenze professionali e competenze pratiche</td>
         <td></td>
-        <td></td>
+        <td>$justificationA->A9</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>A10</b></td>
         <td>Utilizzo dei termini tecnici</td>
         <td></td>
-        <td></td>
+        <td>$justificationA->A10</td>
         <td></td>    
     </tr>
 </table>
@@ -318,10 +397,10 @@ td {
 <table border="0.3" cellspacing="0" cellpadding="1">
     <tr> 
         <th width="35"></th>
-        <th width="145"><b>Domanda</b></th>
-        <th width="30"><b>Pt.</b></th>
-        <th width="240"><b>Motivazione</b></th>
-        <th width="30"><b>Pt. Pe</b></th>  
+        <th width="145"><b>  Domanda</b></th>
+        <th width="30"><b>  Pt.</b></th>
+        <th width="240"><b>  Motivazione</b></th>
+        <th width="30"><b>  Pt. Pe</b></th>  
     </tr>
 </table>
 <table border="0.3" cellspacing="0" cellpadding="9">
@@ -329,75 +408,75 @@ td {
         <td width="35"><b>A11</b></td>
         <td width="145">Metodologia di lavoro e professionale</td>
         <td width="30"></td>
-        <td width="240"></td>
+        <td width="240">$justificationA->A11</td>
         <td width="30"></td>    
     </tr>
     <tr>
         <td width="35"><b>A12</b></td>
         <td width="145">Organizzazione dei risultati del lavoro</td>
         <td width="30"></td>
-        <td width="240"></td>
+        <td width="240">$justificationA->A12</td>
         <td width="30"></td>    
     </tr>
     <tr>
         <td><b>A13</b></td>
         <td>Prestazione</td>
         <td></td>
-        <td></td>
+        <td>$justificationA->A13</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>A14</b></td>
         <td>Punti tecnici valutati specifici per il progetto. <small>(punto 8.1 del QdC)</small></td>
         <td></td>
-        <td></td>
+        <td>$justificationA->A14</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>A15</b></td>
         <td>Punti tecnici valutati specifici per il progetto. <small>(punto 8.2 del QdC)</small></td>
         <td></td>
-        <td></td>
+        <td>$justificationA->A15</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>A16</b></td>
         <td>Punti tecnici valutati specifici per il progetto. <small>(punto 8.3 del QdC)</small></td>
         <td></td>
-        <td></td>
+        <td>$justificationA->A16</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>A17</b></td>
         <td>Punti tecnici valutati specifici per il progetto. <small>(punto 8.4 del QdC)</small></td>
         <td></td>
-        <td></td>
+        <td>$justificationA->A17</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>A18</b></td>
         <td>Punti tecnici valutati specifici per il progetto. <small>(punto 8.5 del QdC)</small></td>
         <td></td>
-        <td></td>
+        <td>$justificationA->A18</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>A19</b></td>
         <td>Punti tecnici valutati specifici per il progetto. <small>(punto 8.6 del QdC)</small></td>
         <td></td>
-        <td></td>
+        <td>$justificationA->A19</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>A20</b></td>
         <td>Punti tecnici valutati specifici per il progetto. <small>(punto 8.7 del QdC)</small></td>
         <td></td>
-        <td></td>
+        <td>$justificationA->A20</td>
         <td></td>    
     </tr>
     <tr>
         <td colspan="2"><b>Totale parte A (60 punti massimi)</b></td>
-        <td></td>
+        <td>$pointsA</td>
         <td></td>
         <td></td>    
     </tr>
@@ -433,10 +512,10 @@ td {
 <table border="0.3" cellspacing="0" cellpadding="1">
     <tr> 
         <th width="35"></th>
-        <th width="145"><b>Domanda</b></th>
-        <th width="30"><b>Pt.</b></th>
-        <th width="240"><b>Motivazione</b></th>
-        <th width="30"><b>Pt. Pe</b></th>  
+        <th width="145"><b>  Domanda</b></th>
+        <th width="30"><b>  Pt.</b></th>
+        <th width="240"><b>  Motivazione</b></th>
+        <th width="30"><b>  Pt. Pe</b></th>  
     </tr>
 </table>
 <table border="0.3" cellspacing="0" cellpadding="9">
@@ -512,7 +591,7 @@ td {
     </tr>
     <tr>
         <td colspan="2"><b>Totale parte B (30 punti massimi)</b></td>
-        <td></td>
+        <td>$pointsB</td>
         <td></td>
         <td></td>    
     </tr>
@@ -548,10 +627,10 @@ td {
 <table border="0.3" cellspacing="0" cellpadding="1">
     <tr> 
         <th width="35"></th>
-        <th width="145"><b>Domanda</b></th>
-        <th width="30"><b>Pt.</b></th>
-        <th width="240"><b>Motivazione</b></th>
-        <th width="30"><b>Pt. Pe</b></th>  
+        <th width="145"><b>  Domanda</b></th>
+        <th width="30"><b>  Pt.</b></th>
+        <th width="240"><b>  Motivazione</b></th>
+        <th width="30"><b>  Pt. Pe</b></th>  
     </tr>
 </table>
 <table border="0.3" cellspacing="0" cellpadding="9">
@@ -627,7 +706,7 @@ td {
     </tr>
     <tr>
         <td colspan="2"><b>Totale parte C (30 punti massimi)</b></td>
-        <td></td>
+        <td>$pointsC</td>
         <td></td>
         <td></td>    
     </tr>
@@ -662,7 +741,7 @@ td {
 <h1>        6 SCHEMA RIASSUNTIVO</h1>
 <table border="0.3" cellspacing="0" cellpadding="4">
     <tr> 
-        <th width="160"></th>
+        <th width="170"></th>
         <th width="60"><b>Punti massimi</b></th>
         <th width="60"><b>Punti ottenuti</b></th>
         <th width="60"><b>Punti ottenuti Pe</b></th>
@@ -672,30 +751,30 @@ td {
     <tr>
         <td><b>A. Competenze professionali</b></td>
         <td><b>60</b></td>
+        <td>$pointsC</td>
         <td></td>
-        <td></td>
-        <td></td>
+        <td>$resultA</td>
         <td></td>
     </tr>
     <tr>
         <td><b>B. Documentazione LPI</b></td>
         <td><b>30</b></td>
+        <td>$pointsB</td>
         <td></td>
-        <td></td>
-        <td></td>
+        <td>$resultB</td>
         <td></td>
     </tr>
     <tr>
         <td><b>C. Presentazione e colloquio professionale</b></td>
         <td><b>30</b></td>
+        <td>$pointsC</td>
         <td></td>
-        <td></td>
-        <td></td>
+        <td>$resultC</td>
         <td></td>
     </tr>
     <tr>
         <td colspan="4"><b>Valutazione (arrotondata al decimo) (A * 0.5 + B * 0.25 + C * 0.25)</b></td>
-        <td></td>
+        <td>$finalResult</td>
         <td></td>
     </tr>
 </table>
@@ -788,11 +867,11 @@ Calcolo della nota finale = Nota A x 0.5 + Nota B x 0.25 + Nota C x 0.25 (nota a
 <h1>        8 FIRME</h1>
 <table cellspacing="0" cellpadding="7">
     <tr>
-        <th width="150" style="border: 0.5px dotted black;"><b>Superiore Professionale</b></th>
-        <th width="30" style="border: 0.5px dotted black;"><b></b></th>
-        <th width="150" style="border: 0.5px dotted black;"><b>Perito 1</b></th>
-        <th width="30" style="border: 0.5px dotted black;"><b></b></th>
-        <th width="150" style="border: 0.5px dotted black;"><b>Perito 2</b></th>
+        <th width="140" style="border: 0.5px dotted black;"><b>Superiore Professionale</b></th>
+        <th width="32" style="border: 0.5px dotted black;"><b></b></th>
+        <th width="140" style="border: 0.5px dotted black;"><b>Perito 1</b></th>
+        <th width="32" style="border: 0.5px dotted black;"><b></b></th>
+        <th width="140" style="border: 0.5px dotted black;"><b>Perito 2</b></th>
     </tr>
     <tr>
         <td style="border: 0.5px dotted black;"><small>(luogo e data)</small></td>

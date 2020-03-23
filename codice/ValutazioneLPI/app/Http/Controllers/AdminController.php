@@ -114,7 +114,7 @@ class AdminController extends Controller
                 'email' => "Il campo :attribute deve essere un indirizzo email valido",
                 'numeric' => "Il campo :attribute deve essere di tipo numerico",
                 'same' => "Il campo :attribute deve valere 0",
-                'unique' => "L':attribute inserita è già in utilizzo",
+                'unique' => "L'email inserita è già in utilizzo",
             ];
 
             //Eseguo la validazione dei dati.
@@ -208,7 +208,6 @@ class AdminController extends Controller
                 'email' => "Il campo :attribute deve essere un indirizzo email valido",
                 'numeric' => "Il campo :attribute deve essere di tipo numerico",
                 'same' => "Il campo :attribute deve valere 0",
-                'unique' => "L':attribute inserita è già in utilizzo",
             ];
 
             //Eseguo la validazione dei dati.
@@ -266,13 +265,13 @@ class AdminController extends Controller
             //Personalizzo i messaggi di errore.
             $messages = [
                 'required' => "Il campo :attribute deve essere specificato",
-                'unique' => "L':attribute inserita è già in utilizzo",
+                'unique' => "Il testo inserito è già in utilizzo",
                 'exists' => "Il campo :attribute deve già esistere",
             ];
 
             //Eseguo la validazione dei dati.
             $validation = Validator::make($request->all(), [
-                'text' => 'required',
+                'text' => 'required|unique:justification',
                 'id_point' => 'required|exists:point,code',
             ], $messages);
             
@@ -322,12 +321,13 @@ class AdminController extends Controller
             //Personalizzo i messaggi di errore.
             $messages = [
                 'required' => "Il campo :attribute deve essere specificato",
+                'unique' => "Il testo inserito è già in utilizzo",
                 'exists' => "Il punto scelto non esiste"
             ];
 
             //Eseguo la validazione dei dati.
             $validation = Validator::make($request->all(), [
-                'text' => 'required',
+                'text' => 'required|unique:justification',
                 'id_point' => 'required|exists:point,code'
             ], $messages);
             

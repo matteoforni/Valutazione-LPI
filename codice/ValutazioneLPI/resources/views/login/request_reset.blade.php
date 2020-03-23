@@ -1,32 +1,20 @@
 @extends('_templates/login_header')
 
-@section('title', 'Login')
+@section('title', 'Reset password')
 
 @section('content')
 <div class="row">
     <div class="col-md-6 offset-md-3">
-        <form id="loginForm" class="text-center border border-light p-5 mt-5 md-form">
-            <p class="h4 mb-4">Accedi al tuo account</p>
-
-            <!-- Email -->
+        <form id="requestForm" class="text-center border border-light p-5 mt-5 md-form">
+            <p class="h4 mb-4">Inserisci la tua email</p>
             <input type="email" id="email" name="email" class="form-control mb-4" placeholder="E-mail" required>
+            <button class="btn btn-info btn-block my-4">Invia email</button>
 
-            <!-- Password -->
-            <input type="password" id="password" name="password" class="form-control mb-4" placeholder="Password" minlength="8" required>
-
-            <div class="d-flex justify-content-end">
-                <div>
-                    <!-- Forgot password -->
-                    <a href="{{ url("login/reset") }}">Hai dimenticato la password?</a>
-                </div>
-            </div>
-
-            <!-- Sign in button -->
-            <button class="btn btn-info btn-block my-4">Accedi</button>
-
-            <!-- Register -->
             <p>Non possiedi un account?
                 <a href="{{ url("register") }}">Registrati</a>
+            </p>
+            <p>Vuoi accedere al tuo account?
+                <a href="{{ url("") }}">Accedi</a>
             </p>
         </form>
     </div>
@@ -38,7 +26,7 @@
 </div>
 <script>
     //All'evento di submit del form eseguo la richiesta al server con AJAX
-    $("#loginForm").submit(function( event ) {
+    $("#requestForm").submit(function( event ) {
         //Blocco l'evento di default del form (aggiunta del URL get)
         event.preventDefault();
         //Ottengo i dati dal form
@@ -49,18 +37,16 @@
             var json = jsonData[index];
             form[json.name] = json.value;
         }
-        //Eseguo la richiesta post al controller login con metodo authenticate
         $.ajax({
             type: "post",
-            url: "{{ url('login/authenticate') }}",
+            url: "{{ url('login/reset/token') }}",
             data: JSON.stringify(form),
             contentType: "application/json; charset=utf-8",
             dataType: "json",            
             complete: function(response){
-                //Se il server ritorna il codice di successo salvo il token JWT ritornato nei cookies
+                //Se il server ritorna il codice di successo mostro il messaggio di successi
                 if(response["status"] == 200){
-                    Cookies.set('token', response["responseJSON"]["token"], { expires: 1 });
-                    window.location = "{{ url('login/login') }}?token=" + Cookies.get('token');
+                    toastr.success("Email inviata con successo");
                 //Se il server ritorna un errore stampo gli errori    
                 }else{
                     //Formatto gli errori
@@ -83,20 +69,12 @@
         $("#email")[0].oninvalid = function () {
             this.setCustomValidity("Inserire un'email valida");
         };
-        //Messaggio per il campo password
-        $("#password")[0].oninvalid = function () {
-            this.setCustomValidity("Inserire una password valida");
-        };
     });
 
     //Funzione che rimuove i messaggi di errore dai campi
     $(function(){
         //Rimozione del messaggio per il campo email
         $("#email")[0].oninput= function () {
-            this.setCustomValidity("");
-        };
-        //Rimozione del messaggio per il campo password
-        $("#password")[0].oninput= function () {
             this.setCustomValidity("");
         };
     });

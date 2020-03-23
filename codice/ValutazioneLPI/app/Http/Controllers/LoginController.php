@@ -3,12 +3,12 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Illuminate\Http\Request;
-use Firebase\JWT\ExpiredException;
 use Illuminate\Support\Facades\Validator;
 use Firebase\JWT\JWT;
-use Config\Config;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Crypt;
+use App\Mailer;
+use Illuminate\Support\Facades\URL;
+
 
 class LoginController extends Controller
 {
@@ -92,11 +92,34 @@ class LoginController extends Controller
     }
 
     /**
+     * Funzione che mostra la pagina di modifica della password
+     * @param string Token il token di reset
+     * @return La pagina
+     */
+    public function showReset($token){
+        $user = User::where('reset_token', Crypt::decrypt($token))->firstOrFail();;
+        if(isset($user) && !empty($user)){
+            return view('login/reset');
+        }else{
+            return response()->json(['error' => "Utente inesistente"], 400);
+        } 
+    }
+
+    /**
+     * Funzione che mostra la pagina di inserimento dell'email per la modifica della password
+     * @return La pagina
+     */
+    public function showRequestReset(){    
+        return view('login/request_reset');
+    }
+
+    /**
      * Funzione che conferma l'email dell'utente
      * @param L'id dell'utente criptato
      * @return se va a buon fine la pagina di login altrimenti il messaggio d'errore
      */
     public function confirmation($token){
+        //Carico tutti gli utenti
         $users = User::all();
 
         //Decripto l'id dell'utente
@@ -104,6 +127,7 @@ class LoginController extends Controller
 
         foreach($users as $user){
             if($user->confirmation_token == $token){
+                //Tolgo il token e salvo l'utente rimandandolo al login
                 $user->confirmed = 1;
                 $user->confirmation_token = null;
                 $user->save();
@@ -111,6 +135,90 @@ class LoginController extends Controller
             }
         }
         return response()->json('Utente non trovato', 401);
+    }
+
+    /**
+     * Funzione che consente di impostare il token di reset della password
+     * @param string email L'email dell'account da modificare
+     * @return La risposta JSON
+     */
+    public function setToken(Request $request){
+        //Carico l'utente dall'email
+        $email = $request->input('email');
+        $user = User::where('email', $email)->firstOrFail();
+
+        if(isset($user) && !empty($user)){
+            //Imposto il token
+            $user->reset_token = md5(uniqid(rand(), true));
+            $user->save();
+
+            //Creo l'email di modifica
+            $link = URL::to('/login/reset/show');
+            $link .= "/" . Crypt::encrypt($user->reset_token);
+            $body = "<h3>Richiesta di modifica della password</h3>Ci risulta che hai richiesto una modifica della tua password. <br>Se lo hai richiesto te premi il seguente link: <a href='" . $link . "'>Premi qui per cambiare la password</a>";
+            $subject = "Modifica la password di 'Valutazione LPI'";
+
+            //Invio l'email
+            $mailer = new Mailer();
+            if(!$mailer->sendMail($user->email, $body, $subject)){
+                response()->json(["Bad Gateway" => "Impossibile inviare l'email"], 502);
+            }
+            
+            response()->json(["Success" => "Token impostato correttamente"], 200);
+        }else{
+            return response()->json(['error' => "Utente inesistente"], 400);
+        } 
+    }
+          
+
+    /**
+     * Funzione che consente di modificare la password di un utente
+     * @param string token Il token di reset dell'utente
+     * @param Request request La richiesta eseguita
+     * @return La risposta in JSON 
+     */
+    public function changePassword($token, Request $request){
+        //Personalizzo i messaggi di errore.
+        $messages = [
+            'required' => "Il campo :attribute deve essere specificato",
+            'min' => "Il campo :attribute deve essere di almeno :min caratteri",
+            'max' => "Il campo :attribute deve essere di massimo :max caratteri",
+        ];
+
+        //Eseguo la validazione dei dati.
+        $validation = Validator::make($request->all(), [
+            'password' => 'required|min:8',
+            'repassword' => 'required|min:8'
+        ], $messages);
+        
+        //Verifico che la valutazione sia andata a buon fine.
+        if($validation->fails()){
+            //Se fallisce ritorno gli errori.
+            return response()->json($validation->errors(), '422');
+        }
+        
+        $user = User::where('reset_token', Crypt::decrypt($token))->firstOrFail();;
+        if(isset($user) && !empty($user)){
+            //Verifico che le password siano uguali
+            if(!($request->input('password') == $request->input('repassword'))){
+                //Se sono diverse ritorno l'errori
+                return response()->json(['error' => "Inserire due password corrispondenti"], 400);
+            }else{
+                //Rimuovo la ripetizione della password per non inserirla nel database
+                unset($request['repassword']);
+            }
+            //Cambio la password
+            $options = array(
+                'cost' => env('COST'),
+            );
+            $user->password = password_hash($request['password'],PASSWORD_BCRYPT, $options);
+            $user->reset_token = null;
+
+            $user->save();
+            return response()->json($user, 200);
+        }else{
+            return response()->json(['error' => "Utente inesistente"], 400);
+        }        
     }
 }
 ?>

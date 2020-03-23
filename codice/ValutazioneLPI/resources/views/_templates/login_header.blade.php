@@ -9,6 +9,7 @@
         <link href="/resources/MDB/css/bootstrap.min.css" rel="stylesheet">
         <link href="/resources/MDB/css/mdb.min.css" rel="stylesheet">
         <link href="/resources/style.css" rel="stylesheet">
+        <link href="/resources/toastr/toastr.css" rel="stylesheet">
 
         <!-- jQuery -->
         <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -16,7 +17,8 @@
         <script src="/resources/CookieJS/js.cookie.min.js"></script>
         <!-- Validazione Frontend -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.79/jquery.form-validator.min.js" integrity="sha256-H7bYoAw738qgns17P+7wWt77AfnEh7yCJMQGUCNcxQA=" crossorigin="anonymous"></script>
-
+        <!-- Toastr notification library -->
+        <script type="text/javascript" src="/resources/toastr/toastr.js"></script>
 </head>
     </head>
     <body>

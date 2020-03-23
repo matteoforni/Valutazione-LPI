@@ -333,18 +333,29 @@ class TeacherController extends Controller
             $validation = Validator::make($request->all(), [
                 'id_justification' => 'required|numeric|exists:justification,id',
                 'id_form' => 'required|numeric|exists:form,id',
-            ]);
+            ], $messages);
 
             //Verifico che la valutazione sia andata a buon fine.
             if($validation->fails()){
                 //Se fallisce ritorno gli errori.
                 return response()->json($validation->errors(), '422');
             }
-            //Se la validazione va a buon fine genero l'errore.
-            $contains = Contains::create($request->all());
 
-            //Ritorno la risposta di successo.
-            return response()->json($contains, 201);
+            //Verifico che ci siano meno di tre motivazioni per il punto point del form id_form
+            $point = Justification::where("id", $request->get('id_justification'))->get('id_point');
+            $query = "select contains.* from contains inner join justification on justification.id = contains.id_justification where justification.id_point = '" . $point[0]->id_point . "' and contains.id_form = " . $request->get('id_form');
+            $count = count(DB::select($query));
+
+            if($count < 3){
+                //Se la validazione va a buon fine genero l'errore.
+                $contains = Contains::create($request->all());
+
+                //Ritorno la risposta di successo.
+                return response()->json($contains, 201);
+            }else{
+                //Se non lo è ritorno l'errore
+                return response()->json(['Conflict' => 'Vi sono già tre motivazioni per questo punto'], 409);
+            }
         }else{
             //Se non lo è ritorno l'errore
             return response()->json(['Unauthorized' => 'Non hai i permessi necessari per accedere'], 401);

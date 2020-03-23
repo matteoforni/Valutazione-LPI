@@ -176,6 +176,10 @@
             //La aggiungo alla select
             $(".point-select").append(option);
         }
+
+        $(function () {
+            $("#pointSelect").select2();
+        });
     });
     //All'evento di submit del form eseguo la richiesta al server con AJAX
     $("#addFormForm").submit(function( event ) {

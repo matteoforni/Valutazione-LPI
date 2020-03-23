@@ -11,6 +11,8 @@
         <link href="/resources/style.css" rel="stylesheet">
         <link href="/resources/MDB/css/addons/datatables.min.css" rel="stylesheet">
         <link href="/resources/toastr/toastr.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+
 
         <!-- jQuery -->
         <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -28,6 +30,8 @@
         <script type="text/javascript" src="/resources/toastr/toastr.js"></script>
         <!-- Fontawesome -->
         <script src="https://kit.fontawesome.com/56cb13ebcf.js" crossorigin="anonymous"></script>
+        <!-- Select2 select library -->
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
 
 </head>
     </head>

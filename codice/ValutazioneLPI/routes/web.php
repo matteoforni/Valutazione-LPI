@@ -13,7 +13,19 @@ $router->get('/', function () use ($router) {
 $router->group(['prefix' => 'login'], function () use ($router) {
     //route che richiama il metodo authenticate quando si chiama URL/login/authenticate
     $router->post('/authenticate', 'LoginController@authenticate');
+
+    //route che consente di confermare l'email dell'account
     $router->get('/confirmation/{param}', 'LoginController@confirmation');
+
+    //route che consente di impostare il token di reset
+    $router->post('/reset/token', 'LoginController@setToken');
+
+    $router->get('/reset/show/{token}', 'LoginController@showReset');
+
+    //route che mostra la pagina di inserimento dell'email per il reset
+    $router->get('/reset', 'LoginController@showRequestReset');
+
+    $router->put('/reset/changePassword/{token}', 'LoginController@changePassword');
 });
 
 /**

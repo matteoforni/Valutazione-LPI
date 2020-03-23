@@ -12,6 +12,11 @@
     </div>
 </div>
 <div class="row">
+    <div class="col-md-12 text-center mt-3">
+        <a id="btnPDF" class="btn btn-success">Visualizza PDF</a>
+    </div>
+</div>
+<div class="row">
     <div class="col-md-4 text-center mt-5">
         <h5 class="h5 text-center mb-5">Risultati sezione A</h5>
         <p id="resultsA" class="p text-center mb-5"></p>
@@ -95,6 +100,15 @@
         $('.justifications-a-table').hide();
         $('.justifications-b-table').hide();
         $('.justifications-c-table').hide();
+
+        //Al click apro il PDF
+        $('#btnPDF').click(function(){
+            //Genero il link per la richiesta
+            var link = "{{ url('teacher/pdf') }}";
+            link += "/" + form["id"];
+
+            window.open(link, '_blank');
+        });
     });
 
     /**

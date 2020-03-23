@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Point;
 use Illuminate\Support\Facades\DB;
+use PDFController;
 
 class TeacherController extends Controller
 {
@@ -320,6 +321,7 @@ class TeacherController extends Controller
      * @return La risposta in JSON
      */
     public function addJustificationToForm(Request $request){
+        //Verifico che l'utente sia un docente
         if($request->all()['user_id_role'] == env('TEACHER')){
             //Personalizzo i messaggi di errore.
             $messages = [
@@ -355,6 +357,7 @@ class TeacherController extends Controller
      * @return La risposta in JSON
      */
     public function removeJustificationFromForm($id_form, $id_justification, Request $request){
+        //Verifico che l'utente sia un docente
         if($request->all()['user_id_role'] == env('TEACHER')){
             Contains::where('id_form', $id_form)->where('id_justification', $id_justification)->delete();
             return response('Deleted Successfully', 200);
@@ -371,6 +374,7 @@ class TeacherController extends Controller
      * @return La risposta in JSON
      */
     public function getFormJustifications($id, Request $request){
+        //Verifico che l'utente sia un docente
         if($request->all()['user_id_role'] == env('TEACHER')){
 
             $justifications = Contains::where('id_form', $id)->get();
@@ -388,8 +392,16 @@ class TeacherController extends Controller
         }
     }
 
+    /**
+     * Funzione che ritorna le motivazioni per ogni sezione del formulario
+     * @param Request request La richiesta eseguita 
+     * @param id L'id del formulario
+     * @return La risposta in JSON 
+     */
     public function getResults($id, Request $request){
+        //Verifico che l'utente sia un docente
         if($request->all()['user_id_role'] == env('TEACHER')){
+            //Ritorno le motivazioni per ogni sezione
             $query = "select * from contains inner join justification on contains.id_justification = justification.id where justification.id_point like 'A%' and contains.id_form = " . $id;
             $resultA = DB::select($query);
             $query = "select * from contains inner join justification on contains.id_justification = justification.id where justification.id_point like 'B%' and contains.id_form = " . $id;
@@ -398,7 +410,9 @@ class TeacherController extends Controller
             $resultC = DB::select($query);
             $query = "select * from contains inner join justification on contains.id_justification = justification.id where justification.id_point NOT REGEXP '[a-zA-Z]' and contains.id_form = " . $id;
             $resultPoints = DB::select($query);
+            //Creo un array unico
             $result = array("A" => $resultA, "B" => $resultB, "C" => $resultC, "points" => $resultPoints);
+            //Ritorno l'array
             return response()->json($result, 200);
         }else{
             //Se non lo è ritorno l'errore

@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use App\Form;
 use App\Justification;
 use App\Contains;

@@ -51,7 +51,8 @@ $router->group(['prefix' => 'teacher'], function() use ($router) {
     //route che consente di mostrare la pagina con i risultati
     $router->get('/form/result/{id}', 'TeacherController@showResultPage');
 
-    $router->get('/pdftest/{id}', 'PDFController@getForm');
+    //Route che consente la visualizzazione del PDF
+    $router->get('/pdf/{id}', 'PDFController');
 });
 
 /**
@@ -82,6 +83,7 @@ $router->group(['middleware' => 'jwt.auth', 'prefix' => 'teacher'], function() u
     //route chce consente di aggiornare un formulario
     $router->put('/form/update/{id}', 'TeacherController@updateForm');
 
+    //route che ritorna i punti fatti per ogni sezione del form
     $router->get('/form/results/{id}', 'TeacherController@getResults');
 });
 

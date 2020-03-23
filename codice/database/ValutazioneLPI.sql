@@ -147,3 +147,5 @@ select * from contains inner join justification on contains.id_justification = j
 select * from contains inner join justification on contains.id_justification = justification.id where justification.id_point like "B%" and contains.id_form = 7;
 select * from contains inner join justification on contains.id_justification = justification.id where justification.id_point like "C%" and contains.id_form = 7;
 select * from contains inner join justification on contains.id_justification = justification.id where justification.id_point NOT REGEXP '[a-zA-Z]' and contains.id_form = 7;
+
+select contains.* from contains inner join has on contains.id_form = 7

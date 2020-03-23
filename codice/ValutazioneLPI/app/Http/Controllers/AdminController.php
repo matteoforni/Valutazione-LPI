@@ -55,9 +55,11 @@ class AdminController extends Controller
         //Verifico che l'utente sia un admin
         if($request->all()['user_id_role'] == env('ADMIN')){
             $user = User::find($id);
-            //Imposto il nome del ruolo e non il suo id
-            $user['role'] = Role::find($user['id_role'])['name'];
-            //Se è amministratore ritorno tutti gli utenti
+            if(isset($user) && !empty($user)){
+                //Imposto il nome del ruolo e non il suo id
+                $user['role'] = Role::find($user['id_role'])['name'];
+            }
+            //Se è amministratore ritorno l'utente
             return response()->json($user);
         }else{
             //Se non lo è ritorno l'errore

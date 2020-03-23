@@ -197,7 +197,7 @@ class LoginController extends Controller
             return response()->json($validation->errors(), '422');
         }
         
-        $user = User::where('reset_token', Crypt::decrypt($token))->firstOrFail();;
+        $user = User::where('reset_token', Crypt::decrypt($token))->firstOrFail();
         if(isset($user) && !empty($user)){
             //Verifico che le password siano uguali
             if(!($request->input('password') == $request->input('repassword'))){

@@ -20,12 +20,20 @@ $router->group(['prefix' => 'login'], function () use ($router) {
     //route che consente di impostare il token di reset
     $router->post('/reset/token', 'LoginController@setToken');
 
+    //route che mostra la pagina di reset della password
     $router->get('/reset/show/{token}', 'LoginController@showReset');
 
     //route che mostra la pagina di inserimento dell'email per il reset
     $router->get('/reset', 'LoginController@showRequestReset');
 
+    //route che consente di cambiare la password
     $router->put('/reset/changePassword/{token}', 'LoginController@changePassword');
+
+    //route che mostra la pagina di reset della password
+    $router->get('/reset/show/first/{id}', 'LoginController@showDefaultPasswordReset');
+
+    //route che consente di cambiare la password
+    $router->put('/reset/first/{id}', 'LoginController@changeDefaultPassword');
 });
 
 /**

@@ -81,14 +81,19 @@ class LoginController extends Controller
      */
     public function login(Request $request){
         $user = User::find($request->all()['id']);
-        //Verifico che l'utente sia un admin
-        if($request->all()['user_id_role'] == env('ADMIN')){
-            //Se è ammministratore gli mostro la pagina
-            return redirect('admin');
-        }elseif($request->all()['user_id_role'] == env('TEACHER')){
-            //Se non lo è ritorno la pagina per i docenti
-            return redirect('teacher');
+        if($user->first_login == true){
+            return redirect('/login/reset/show/first/' . $user->id);
+        }else{
+            //Verifico che l'utente sia un admin
+            if($user->id_role == env('ADMIN')){
+                //Se è ammministratore gli mostro la pagina
+                return redirect('admin');
+            }elseif($user->id_role == env('TEACHER')){
+                //Se non lo è ritorno la pagina per i docenti
+                return redirect('teacher');
+            }
         }
+        
     }
 
     /**
@@ -111,6 +116,15 @@ class LoginController extends Controller
      */
     public function showRequestReset(){    
         return view('login/request_reset');
+    }
+
+    /**
+     * Funzione che mostra la pagina di modifica della password al primo login
+     * @return La pagina
+     */
+    public function showDefaultPasswordReset($id){
+        $id = User::find($id)->id;
+        return view('login/first')->with('id', $id);
     }
 
     /**
@@ -219,6 +233,56 @@ class LoginController extends Controller
         }else{
             return response()->json(['error' => "Utente inesistente"], 400);
         }        
+    }
+
+    /**
+     * Funzione che consente di modificare la password di un utente al suo primo login
+     * @param int id L'id dell'utente
+     * @param Request request La richiesta eseguita
+     * @return La risposta in JSON 
+     */
+    public function changeDefaultPassword($id, Request $request){
+        //Personalizzo i messaggi di errore.
+        $messages = [
+            'required' => "Il campo :attribute deve essere specificato",
+            'min' => "Il campo :attribute deve essere di almeno :min caratteri",
+            'max' => "Il campo :attribute deve essere di massimo :max caratteri",
+        ];
+
+        //Eseguo la validazione dei dati.
+        $validation = Validator::make($request->all(), [
+            'password' => 'required|min:8',
+            'repassword' => 'required|min:8'
+        ], $messages);
+        
+        //Verifico che la valutazione sia andata a buon fine.
+        if($validation->fails()){
+            //Se fallisce ritorno gli errori.
+            return response()->json($validation->errors(), '422');
+        }
+        
+        $user = User::find($id);
+        if(isset($user) && !empty($user)){
+            //Verifico che le password siano uguali
+            if(!($request->input('password') == $request->input('repassword'))){
+                //Se sono diverse ritorno l'errori
+                return response()->json(['error' => "Inserire due password corrispondenti"], 400);
+            }else{
+                //Rimuovo la ripetizione della password per non inserirla nel database
+                unset($request['repassword']);
+            }
+            //Cambio la password
+            $options = array(
+                'cost' => env('COST'),
+            );
+            $user->password = password_hash($request['password'],PASSWORD_BCRYPT, $options);
+            $user->first_login = false;
+
+            $user->save();
+            return response()->json($user, 200);
+        }else{
+            return response()->json(['error' => "Utente inesistente"], 400);
+        }    
     }
 }
 ?>

@@ -1,3 +1,2 @@
 # TODO
 * Aggiungere messaggio (conferma la tua email) dopo login
-* Cambio della password al primo login dopo creazione da parte di admin

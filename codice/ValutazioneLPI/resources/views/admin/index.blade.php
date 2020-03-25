@@ -313,6 +313,7 @@
             $(".role-select").append(option);
         }
 
+        //Imposto la libreria select2 a i select della pagina
         $(function () {
             $("#roleSelect").select2();
         });
@@ -373,6 +374,8 @@
                 //Se il server ritorna un errore stampo gli errori     
                 }else if(response["status"] == 502){
                     toastr.success("Impossibile inviare l'email");
+                }else if(response["status"] = 401){
+                    window.location = "{{ url('') }}";
                 }else{
                     //Formatto gli errori
                     var errors = [];
@@ -417,6 +420,8 @@
                     createJustificationTable();
                     toastr.success('Motivazione aggiunta con successo');
                 //Se il server ritorna un errore stampo gli errori     
+                }else if(response["status"] = 401){
+                    window.location = "{{ url('') }}";
                 }else{
                     //Formatto gli errori
                     var errors = [];
@@ -463,6 +468,8 @@
                     createUserTable();
                     toastr.success('Utente modificato con successo');
                 //Se il server ritorna un errore stampo gli errori     
+                }else if(response["status"] = 401){
+                    window.location = "{{ url('') }}";
                 }else{
                     //Formatto gli errori
                     var errors = [];
@@ -509,6 +516,8 @@
                     createJustificationTable();
                     toastr.success('Motivazione modificata con successo');
                 //Se il server ritorna un errore stampo gli errori     
+                }else if(response["status"] = 401){
+                    window.location = "{{ url('') }}";
                 }else{
                     //Formatto gli errori
                     var errors = [];
@@ -702,6 +711,8 @@
                 if(response["status"] == 200){
                     createJustificationTable();
                     toastr.success('Motivazione eliminata con successo');
+                }else if(response["status"] = 401){
+                    window.location = "{{ url('') }}";
                 }else{
                     toastr.error('Impossibile eliminare la motivazione');
                 }
@@ -731,6 +742,8 @@
                 if(response["status"] == 200){
                     createUserTable();
                     toastr.success('Utente eliminato con successo');
+                }else if(response["status"] = 401){
+                    window.location = "{{ url('') }}";
                 }else{
                     toastr.error("Impossibile eliminare l'utente");
                 }
@@ -761,6 +774,8 @@
                     $('#pointUpdateSelect').val(response['responseJSON']['id_point']);
                     $('#updateJustificationTitle').html("Modifica motivazione con id: " + response['responseJSON']['id']);  
                     lastUpdatedJustification = response['responseJSON']['id'];
+                }else if(response["status"] = 401){
+                    window.location = "{{ url('') }}";
                 }else{
                     //Chiudo il modale e mostro l'errore
                     $('#updateJustificationModal').modal('hide');
@@ -796,6 +811,8 @@
                     $('#roleUpdateSelect').val(response['responseJSON']['id_role']);
                     $('#updateJustificationTitle').html("Modifica motivazione con id: " + response['responseJSON']['id']);  
                     lastUpdatedUser = response['responseJSON']['id'];
+                }else if(response["status"] = 401){
+                    window.location = "{{ url('') }}";
                 }else{
                     //Chiudo il modale e ritorno l'errore
                     $('#updateJustificationModal').modal('hide');

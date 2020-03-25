@@ -10,7 +10,11 @@ use Illuminate\Support\Facades\DB;
  * Classe che genera i PDF di valutazione
  */
 class PDFController extends TCPDF{
-    private $form;    
+    /**
+    * il formulario da visualizzare
+    */
+    public $form;    
+    
     /**
      * Funzione che consente di generare l'header del PDF
      */

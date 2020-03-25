@@ -136,6 +136,8 @@
                 if(response["status"] == 200){
                     createFormsTable();
                     toastr.success('Formulario eliminato con successo');
+                }else if(response["status"] = 401){
+                    window.location = "{{ url('') }}";
                 }else{
                     toastr.error("Impossibile eliminare il formulario");
                 }

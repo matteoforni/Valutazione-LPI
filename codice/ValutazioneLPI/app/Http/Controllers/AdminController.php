@@ -323,13 +323,12 @@ class AdminController extends Controller
             //Personalizzo i messaggi di errore.
             $messages = [
                 'required' => "Il campo :attribute deve essere specificato",
-                'unique' => "Il testo inserito è già in utilizzo",
                 'exists' => "Il punto scelto non esiste"
             ];
 
             //Eseguo la validazione dei dati.
             $validation = Validator::make($request->all(), [
-                'text' => 'required|unique:justification',
+                'text' => 'required',
                 'id_point' => 'required|exists:point,code'
             ], $messages);
             

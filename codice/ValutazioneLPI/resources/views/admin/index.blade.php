@@ -58,14 +58,14 @@
             <!-- Phone number -->
             <input type="text" id="phone" name="phone" class="form-control mb-4" placeholder="Numero di telefono" pattern="^(0|0041|\+41)?[1-9\s][0-9\s]{1,12}$" required>
 
-            <select id="roleSelect" name="id_role" class="role-select mb-4 browser-default custom-select">
+            <select id="roleSelect" name="id_role" class="role-select mb-3 browser-default custom-select">
                 <option selected disabled>Seleziona un ruolo</option>
             </select>
 
             <input type="number" hidden name="confirmed" value="0">
 
             <div class="text-center">
-                <button class="btn btn-info btn-block">Registra l'utente</button>
+                <button class="mt-3 btn btn-info btn-block">Registra l'utente</button>
             </div>
         </form>
       </div>
@@ -189,7 +189,7 @@
             </select>
 
             <div class="text-center">
-                <button class="btn btn-info btn-block">Modifica l'utente</button>
+                <button class="mt-3 btn btn-info btn-block">Modifica l'utente</button>
             </div>
         </form>
       </div>
@@ -288,6 +288,10 @@
             $(".point-select").append(option);
         }
 
+        $(function () {
+            $("#pointSelect").select2();
+        });
+
         //Ottengo dal controller i punti di valutazione
         var roles = <?php echo $roles ?>;
         //Alla selezione di un ruolo
@@ -308,6 +312,18 @@
             //La aggiungo alla select
             $(".role-select").append(option);
         }
+
+        $(function () {
+            $("#roleSelect").select2();
+        });
+
+        $(function () {
+            $("#pointUpdateSelect").select2();
+        });
+
+        $(function () {
+            $("#roleUpdateSelect").select2();
+        });
 
         //Alla chiusura dei modali di aggiunta cancello i dati
         $('#addUserModal').on('hidden.bs.modal', function () {

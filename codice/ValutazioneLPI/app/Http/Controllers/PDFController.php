@@ -175,48 +175,69 @@ $pdf->SetMargins("20", "15", "20");
 //Ottengo il formulario
 $pdf->getForm();
 
-//Ottengo l'allievo
-$student = $pdf->getStudent();
+//Verifico che il form esista
+if(isset($pdf->form) && !empty($pdf->form)){
 
-//Imposto il titolo
-$title = "Griglia_Di_Valutazione_" . $student->name;
-$pdf->SetTitle($title);
+    //Ottengo l'allievo
+    $student = $pdf->getStudent();
 
-//Ottengo il docente
-$teacher = $pdf->getTeacher();
+    //Imposto il titolo
+    $title = "Griglia_Di_Valutazione_" . $student->name;
+    $pdf->SetTitle($title);
 
-//Ottengo il primo perito
-$expert1 = $pdf->getExpert1();
+    //Ottengo il docente
+    $teacher = $pdf->getTeacher();
 
-//Ottegno il secondo perito
-$expert2 = $pdf->getExpert2();
+    //Ottengo il primo perito
+    $expert1 = $pdf->getExpert1();
 
-//Ottengo i punti
-$points = $pdf->getPoints();
+    //Ottegno il secondo perito
+    $expert2 = $pdf->getExpert2();
 
-//Salvo i punti della prima sezione e ne calcolo la nota
-$pointsA = $points['A'];
-$resultA = round($pointsA/60*5+1,1);
+    //Ottengo i punti
+    $points = $pdf->getPoints();
 
-//Salvo i punti della seconda sezione e ne calcolo la nota
-$pointsB = $points['B'];
-$resultB = round($pointsB/30*5+1,1);
+    //Salvo i punti della prima sezione e ne calcolo la nota
+    $pointsA = $points['A'];
+    $resultA = round($pointsA/60*5+1,1);
 
-//Salvo i punti della terza sezione e ne calcolo la nota
-$pointsC = $points['C'];
-$resultC = round($pointsC/30*5+1,1);
+    //Salvo i punti della seconda sezione e ne calcolo la nota
+    $pointsB = $points['B'];
+    $resultB = round($pointsB/30*5+1,1);
 
-//Calcolo la nota finale
-$finalResult = round($resultA*0.5 + $resultB *0.25 + $resultC * 0.25,1);
+    //Salvo i punti della terza sezione e ne calcolo la nota
+    $pointsC = $points['C'];
+    $resultC = round($pointsC/30*5+1,1);
 
-//Carico tutte le motivazioni
-$justifications = $pdf->getFormJustifications();
+    //Calcolo la nota finale
+    $finalResult = round($resultA*0.5 + $resultB *0.25 + $resultC * 0.25,1);
 
-//Divido le sezioni e le salvo come oggetti
-$justificationA = (object)$justifications['A'];
-$justificationB = (object)$justifications['B'];
-$justificationC = (object)$justifications['C'];
+    //Carico tutte le motivazioni
+    $justifications = $pdf->getFormJustifications();
 
+    //Divido le sezioni e le salvo come oggetti
+    $justificationA = (object)$justifications['A'];
+    $justificationB = (object)$justifications['B'];
+    $justificationC = (object)$justifications['C'];
+}else{
+    //Se il form non esiste imposto a vuote tutte le variabili così da mostrare il form vuoto
+    $teacher = (object)array('name' => '', 'surname' => '', 'phone' => '', 'email' => '');
+    $student = (object)array('name' => '', 'surname' => '', 'phone' => '', 'email' => '');
+    $expert1 = (object)array('name' => '', 'surname' => '', 'phone' => '', 'email' => '');
+    $expert2 = (object)array('name' => '', 'surname' => '', 'phone' => '', 'email' => '');
+    $justificationA = (object)array('A1' => '', 'A2' => '', 'A3' => '', 'A4' => '', 'A5' => '', 'A6' => '', 'A7' => '', 'A8' => '', 'A9' => '', 'A10' => '', 'A11' => '', 'A12' => '','A13' => '', 'A14' => '', 'A15' => '', 'A16' => '', 'A17' => '', 'A18' => '', 'A19' => '', 'A20' => '');
+    $justificationB = (object)array('B1' => '', 'B2' => '', 'B3' => '', 'B4' => '', 'B5' => '', 'B6' => '', 'B7' => '', 'B8' => '', 'B9' => '', 'B10' => '');
+    $justificationC = (object)array('C1' => '', 'C2' => '', 'C3' => '', 'C4' => '', 'C5' => '', 'C6' => '', 'C7' => '', 'C8' => '', 'C9' => '', 'C10' => '');
+    $pointsA = "";
+    $pointsB = "";
+    $pointsC = "";
+    $resultA = "";
+    $resultB = "";
+    $resultC = "";
+    $finalResult = "";
+    $title = "Griglia_Di_Valutazione_Template";
+    $pdf->SetTitle($title);
+}
 
 //Aggiungo una pagina
 $pdf->AddPage('P', 'A4');

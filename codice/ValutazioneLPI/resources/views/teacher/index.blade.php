@@ -11,7 +11,9 @@
         </div>
         <div class="forms-table table-responsive mb-5">
         </div>
+
         <button type="button" class="btn btn-primary mb-5" onclick="addForm()">Aggiungi formulario</button>
+        <button id="btnPDF" type="button" class="btn btn-success mb-5">Visualizza template</button>
     </div>
 </div>
 
@@ -19,7 +21,7 @@
 <div class="modal fade" id="deleteFormModal" tabindex="-1" role="dialog" aria-labelledby="deleteTitle"
   aria-hidden="true">
 
-  <div class="modal-dialog modal-md .modal-dialog-centered" role="document">
+<div class="modal-dialog modal-md .modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title w-100" id="deleteTitle">Conferma eliminazione</h4>
@@ -42,6 +44,15 @@
 <script>
     $(document).ready(function(){
         createFormsTable();
+
+        //Al click apro il PDF vuoto
+        $('#btnPDF').click(function(){
+            //Genero il link per la richiesta
+            var link = "{{ url('teacher/pdf') }}";
+            link += "/" + "empty";
+
+            window.open(link, '_blank');
+        });
     });
 
     /**

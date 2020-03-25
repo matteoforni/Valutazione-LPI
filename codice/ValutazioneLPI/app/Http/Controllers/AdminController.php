@@ -18,8 +18,28 @@ class AdminController extends Controller
         //Carico i punti e ruoli che avrò bisogno nella pagina admin
         $points = Point::all();
         $roles = Role::all();
+        
         //Se è ammministratore gli mostro la pagina
         return view('admin/index')->with('points', $points)->with('roles', $roles);
+    }
+
+    /**
+     * Funzione che ritorna l'utente corrente
+     * @param Request request La richiesta eseguita
+     * @return La risposta JSON
+     */
+    public function getCurrentUser(Request $request){
+        //Verifico che l'utente sia un admin
+        if($request->all()['user_id_role'] == env('ADMIN')){
+            //Carico l'id dal token bearer
+            $id = $request->all()['id'];
+            //Trovo l'utente
+            $user = User::find($id);
+            return response()->json($user, 200);
+        }else{
+            //Se non lo è ritorno l'errore
+            return response()->json(['Unauthorized' => 'Non hai i permessi necessari per accedere'], 401);
+        }
     }
 
     /**
@@ -177,16 +197,16 @@ class AdminController extends Controller
     public function deleteUser($id, Request $request){
         //Verifico che l'utente sia un admin
         if($request->all()['user_id_role'] == env('ADMIN')){
-            $users = User::all();
-            //Verifico che vi sia sempre almeno un'admin
-            foreach($users as $user){
-                if(Role::find($user['id_role'])['name'] == 'admin' && $user['id'] != $id){
-                    //Se è amministratore cerco l'utente e lo elimino
-                    User::findOrFail($id)->delete();
-                    return response('Deleted Successfully', 200);
-                }
-            }
-            return response("Non puoi eliminare l'ultimo admin del sistema", 403);
+            $user = User::find($id);
+            if($user->id_role == env('TEACHER')){
+                User::findOrFail($id)->delete();
+                return response()->json(['Deleted Successfully'],200);
+            }elseif($user->id == $request->all()['id']){
+                return response()->json(['Non puoi eliminare il tuo account'],403);
+            }else{
+                User::findOrFail($id)->delete();
+                return response()->json(['Deleted Successfully'],200);
+            }            
         }else{
             //Se non lo è ritorno l'errore
             return response()->json(['Unauthorized' => 'Non hai i permessi necessari per accedere'], 401);

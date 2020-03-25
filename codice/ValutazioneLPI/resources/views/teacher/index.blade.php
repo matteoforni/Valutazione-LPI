@@ -53,6 +53,9 @@
 
             window.open(link, '_blank');
         });
+
+        //Verifico che l'email sia stata confermata
+        checkEmailConfirmation();
     });
 
     /**
@@ -107,7 +110,7 @@
                     $('#Form').on('page.dt', function () {
                         setFormLinks();
                     });
-                }else if(response["status"] = 401){
+                }else if(response["status"] == 401){
                     window.location = "{{ url('') }}";
                 }    
             }
@@ -136,7 +139,7 @@
                 if(response["status"] == 200){
                     createFormsTable();
                     toastr.success('Formulario eliminato con successo');
-                }else if(response["status"] = 401){
+                }else if(response["status"] == 401){
                     window.location = "{{ url('') }}";
                 }else{
                     toastr.error("Impossibile eliminare il formulario");
@@ -204,6 +207,31 @@
     */
     function addForm(){
         window.location = "{{url('teacher/form/show/add')}}";
+    }
+
+    /**
+    * Funzione che consente di verificare se l'email è stata confermata e se non lo è viene mostrata una notifica 
+    */
+    function checkEmailConfirmation(){
+        $.ajax({
+            type: "get", 
+            url: "{{ url('teacher/user/get/current') }}",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",   
+            headers: {
+                'Authorization':'Bearer ' + Cookies.get('token'),
+            },
+            //Se non è stata confermata mostro una notifica
+            complete: function(response) {
+                if(response["status"] == 200){
+                    if(!response["responseJSON"]["confirmed"]){
+                        toastr.warning("Conferma la tua email");
+                    }
+                }else if(response["status"] == 401){
+                    window.location = "{{ url('') }}";
+                }
+            }
+        });
     }
 </script>
 @endsection

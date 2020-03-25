@@ -32,14 +32,14 @@ class RegisterController extends Controller
             'email' => "Il campo :attribute deve essere un indirizzo email valido",
             'numeric' => "Il campo :attribute deve essere di tipo numerico",
             'same' => "Il campo :attribute deve valere 0",
-            'unique' => "L':attribute inserita è già in utilizzo",
+            'unique' => "Il campo :attribute inserito è già in utilizzo",
         ];
 
         //Eseguo la validazione dei dati.
         $validation = Validator::make($request->all(), [
             'name' => ['required','min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/'],
             'surname' => ['required','min:2','max:100','regex:/[ A-Za-zÀ-ÖØ-öø-ÿ]+/'],
-            'phone' => ['required','min:9','regex:/^(0|0041|\+41)?[1-9\s][0-9\s]{1,12}$/'],
+            'phone' => ['required','min:9','regex:/^(0|0041|\+41)?[1-9\s][0-9\s]{1,12}$/','unique:user'],
             'email' => 'required|email|unique:user',
             'password' => 'required|min:8',
             'repassword' => 'required|min:8',

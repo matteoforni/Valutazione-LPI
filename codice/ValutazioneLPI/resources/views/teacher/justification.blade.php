@@ -144,7 +144,7 @@
                         });
                     });
 
-                }else if(response["status"] = 401){
+                }else if(response["status"] == 401){
                     //Se non si è autorizzati si ritorna al login
                     window.location = "{{ url('') }}";
                 }       
@@ -216,7 +216,7 @@
                         });
                     });     
 
-                }else if(response["status"] = 401){
+                }else if(response["status"] == 401){
                     //Se non si è autorizzati si ritorna al login
                     window.location = "{{ url('') }}";
                 }       
@@ -305,7 +305,7 @@
                 if(response["status"] == 201){
                     createJustificationTable();
                     toastr.success('Motivazione aggiunta con successo');
-                }else if(response["status"] = 401){
+                }else if(response["status"] == 401){
                     window.location = "{{ url('') }}";
                 }else{
                     toastr.error("Impossibile aggiungere la motivazione");
@@ -347,7 +347,7 @@
                     createJustificationTable();
                     
                     toastr.success('Motivazione rimossa con successo');
-                }else if(response["status"] = 401){
+                }else if(response["status"] == 401){
                     window.location = "{{ url('') }}";
                 }else{
                     toastr.error("Impossibile rimuovere la motivazione");

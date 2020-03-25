@@ -72,6 +72,25 @@ class TeacherController extends Controller
     }
 
     /**
+     * Funzione che ritorna l'utente corrente
+     * @param Request request La richiesta eseguita
+     * @return La risposta JSON
+     */
+    public function getCurrentUser(Request $request){
+        //Verifico che l'utente sia un admin
+        if($request->all()['user_id_role'] == env('TEACHER')){
+            //Carico l'id dal token bearer
+            $id = $request->all()['id'];
+            //Trovo l'utente
+            $user = User::find($id);
+            return response()->json($user, 200);
+        }else{
+            //Se non lo è ritorno l'errore
+            return response()->json(['Unauthorized' => 'Non hai i permessi necessari per accedere'], 401);
+        }
+    }
+
+    /**
      * Funzione che ritorna tutte le motivazioni
      * @param Request request La richiesta eseguita
      * @return La risposta in JSON

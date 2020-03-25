@@ -279,7 +279,7 @@
 
                     $('#finalResults').text("Il candidato " + form['student_name'] + " " + form['student_surname'] + " ha completato il suo LPI (" + form['title'] + ") con un punteggio totale di " + totalPoints + " punti su un massimo di 120. \nOttiene quindi una nota finale di " + finalMark);
 
-                }else if(response["status"] = 401){
+                }else if(response["status"] == 401){
                     //Se non si è autorizzati si ritorna al login
                     window.location = "{{ url('') }}";
                 }     

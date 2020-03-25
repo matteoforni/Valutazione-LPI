@@ -340,6 +340,9 @@
             $('#pointText').text('');
             $("#pointSelect").val($("#pointSelect option:first").val());
         });
+
+        //Verifico che l'email sia stata confermata
+        checkEmailConfirmation();
     });
 
     //Quando viene eseguito il submit nel form di aggiunta di un utente 
@@ -374,7 +377,7 @@
                 //Se il server ritorna un errore stampo gli errori     
                 }else if(response["status"] == 502){
                     toastr.success("Impossibile inviare l'email");
-                }else if(response["status"] = 401){
+                }else if(response["status"] == 401){
                     window.location = "{{ url('') }}";
                 }else{
                     //Formatto gli errori
@@ -420,7 +423,7 @@
                     createJustificationTable();
                     toastr.success('Motivazione aggiunta con successo');
                 //Se il server ritorna un errore stampo gli errori     
-                }else if(response["status"] = 401){
+                }else if(response["status"] == 401){
                     window.location = "{{ url('') }}";
                 }else{
                     //Formatto gli errori
@@ -468,7 +471,7 @@
                     createUserTable();
                     toastr.success('Utente modificato con successo');
                 //Se il server ritorna un errore stampo gli errori     
-                }else if(response["status"] = 401){
+                }else if(response["status"] == 401){
                     window.location = "{{ url('') }}";
                 }else{
                     //Formatto gli errori
@@ -516,7 +519,7 @@
                     createJustificationTable();
                     toastr.success('Motivazione modificata con successo');
                 //Se il server ritorna un errore stampo gli errori     
-                }else if(response["status"] = 401){
+                }else if(response["status"] == 401){
                     window.location = "{{ url('') }}";
                 }else{
                     //Formatto gli errori
@@ -625,7 +628,7 @@
                             setJustificationLinks();
                         });
                     });
-                }else if(response["status"] = 401){
+                }else if(response["status"] == 401){
                     window.location = "{{ url('') }}";
                 }       
             }
@@ -682,7 +685,7 @@
                             setUserLinks();
                         });
                     });
-                }else if(response["status"] = 401){
+                }else if(response["status"] == 401){
                     window.location = "{{ url('') }}";
                 }            
             }
@@ -711,7 +714,7 @@
                 if(response["status"] == 200){
                     createJustificationTable();
                     toastr.success('Motivazione eliminata con successo');
-                }else if(response["status"] = 401){
+                }else if(response["status"] == 401){
                     window.location = "{{ url('') }}";
                 }else{
                     toastr.error('Impossibile eliminare la motivazione');
@@ -742,7 +745,7 @@
                 if(response["status"] == 200){
                     createUserTable();
                     toastr.success('Utente eliminato con successo');
-                }else if(response["status"] = 401){
+                }else if(response["status"] == 401){
                     window.location = "{{ url('') }}";
                 }else{
                     toastr.error("Impossibile eliminare l'utente");
@@ -774,7 +777,7 @@
                     $('#pointUpdateSelect').val(response['responseJSON']['id_point']);
                     $('#updateJustificationTitle').html("Modifica motivazione con id: " + response['responseJSON']['id']);  
                     lastUpdatedJustification = response['responseJSON']['id'];
-                }else if(response["status"] = 401){
+                }else if(response["status"] == 401){
                     window.location = "{{ url('') }}";
                 }else{
                     //Chiudo il modale e mostro l'errore
@@ -811,7 +814,7 @@
                     $('#roleUpdateSelect').val(response['responseJSON']['id_role']);
                     $('#updateJustificationTitle').html("Modifica motivazione con id: " + response['responseJSON']['id']);  
                     lastUpdatedUser = response['responseJSON']['id'];
-                }else if(response["status"] = 401){
+                }else if(response["status"] == 401){
                     window.location = "{{ url('') }}";
                 }else{
                     //Chiudo il modale e ritorno l'errore
@@ -889,6 +892,31 @@
             });
         });
         
+    }
+
+    /**
+    * Funzione che consente di verificare se l'email è stata confermata e se non lo è viene mostrata una notifica 
+    */
+    function checkEmailConfirmation(){
+        $.ajax({
+            type: "get", 
+            url: "{{ url('admin/user/get/current') }}",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",   
+            headers: {
+                'Authorization':'Bearer ' + Cookies.get('token'),
+            },
+            //Se non è stata confermata mostro una notifica
+            complete: function(response) {
+                if(response["status"] == 200){
+                    if(!response["responseJSON"]["confirmed"]){
+                        toastr.warning("Conferma la tua email");
+                    }
+                }else if(response["status"] == 401){
+                    window.location = "{{ url('') }}";
+                }
+            }
+        });
     }
 </script>
 @endsection

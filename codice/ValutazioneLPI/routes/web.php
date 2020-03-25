@@ -105,6 +105,9 @@ $router->group(['middleware' => 'jwt.auth', 'prefix' => 'teacher'], function() u
 
     //route che ritorna i punti fatti per ogni sezione del form
     $router->get('/form/results/{id}', 'TeacherController@getResults');
+
+    //route che consente di ottenere l'utente corrente
+    $router->get('/user/get/current', 'TeacherController@getCurrentUser');
 });
 
 /**
@@ -149,4 +152,7 @@ $router->group(['middleware' => 'jwt.auth', 'prefix' => 'admin'], function() use
 
     //route che consente di aggiornare una motivazione
     $router->put('/justification/update/{id}', 'AdminController@updateJustification');
+
+    //route che consente di ottenere l'utente corrente
+    $router->get('/user/get/current', 'AdminController@getCurrentUser');
 });

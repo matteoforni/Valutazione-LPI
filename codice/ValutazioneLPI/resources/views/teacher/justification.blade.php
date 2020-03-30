@@ -18,6 +18,11 @@
         </div>
     </div>
 </div>
+<div class="row">
+    <div class="col-md-12 text-center">
+        <button type="button" class="btn btn-success text-center" onclick="showResults()">Risultati</button>
+    </div>
+</div>
 
 <div class="modal fade" id="addJustificationModal" tabindex="-1" role="dialog" aria-labelledby="addTitle"
   aria-hidden="true">
@@ -354,6 +359,15 @@
                 }
             }
         });
+    }
+
+    /**
+    * Funzione che rimanda l'utente alla pagina con i risultati
+    */
+    function showResults(){
+        var link = "{{ url('teacher/form/result') }}";
+        link += "/" + form['id'];
+        window.location = link;
     }
 </script>
 @endsection

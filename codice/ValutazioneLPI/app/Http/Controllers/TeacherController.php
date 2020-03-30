@@ -34,7 +34,6 @@ class TeacherController extends Controller
         }else{
             return view('teacher/add')->with('points', $points->get())->with('form', 0)->with('has', 0);
         }
-        
     }
 
     /**
@@ -116,9 +115,14 @@ class TeacherController extends Controller
     public function getForms(Request $request){
         //Verifico che l'utente sia un admin
         if($request->all()['user_id_role'] == env('TEACHER')){
-            //Se è amministratore ritorno tutti i formulari
-            $forms = response()->json(Form::all());
-            return $forms;
+            //Se è amministratore ritorno tutti i formulari creati da lui
+            $id = $request->all()['id'];
+            $user = User::find($id);
+            if(isset($user) && !empty($user)){
+                $forms = Form::where('id_user', $id)->get();
+                return response()->json($forms, 200);
+            }
+            return null;
         }else{
             //Se non lo è ritorno l'errore
             return response()->json(['Unauthorized' => 'Non hai i permessi necessari per accedere'], 401);

@@ -8,7 +8,7 @@
         <form id="requestForm" class="text-center border border-light p-5 mt-5 md-form">
             <p class="h4 mb-4">Modifica la tua password</p>
             <input type="password" id="password" name="password" class="form-control mb-4" placeholder="Password" minlength="8" required>
-            <input type="password" id="repassword" name="repassword" class="form-control mb-4" placeholder="Riptei la Password" minlength="8" required>
+            <input type="password" id="repassword" name="repassword" class="form-control mb-4" placeholder="Ripeti la Password" minlength="8" required>
             <button class="btn btn-info btn-block my-4">Cambia la password</button>
 
             <p>Non possiedi un account?

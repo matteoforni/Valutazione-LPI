@@ -223,6 +223,56 @@ if(isset($pdf->form) && !empty($pdf->form)){
     $justificationA = (object)$justifications['A'];
     $justificationB = (object)$justifications['B'];
     $justificationC = (object)$justifications['C'];
+
+    $partialPointsA = (object)array(
+        'A1' => 3-(count(explode("<br>", $justificationA->A1))-1), 
+        'A2' => 3-(count(explode("<br>", $justificationA->A2))-1), 
+        'A3' => 3-(count(explode("<br>", $justificationA->A3))-1), 
+        'A4' => 3-(count(explode("<br>", $justificationA->A4))-1), 
+        'A5' => 3-(count(explode("<br>", $justificationA->A5))-1), 
+        'A6' => 3-(count(explode("<br>", $justificationA->A6))-1), 
+        'A7' => 3-(count(explode("<br>", $justificationA->A7))-1), 
+        'A8' => 3-(count(explode("<br>", $justificationA->A8))-1), 
+        'A9' => 3-(count(explode("<br>", $justificationA->A9))-1), 
+        'A10' => 3-(count(explode("<br>", $justificationA->A10))-1), 
+        'A11' => 3-(count(explode("<br>", $justificationA->A11))-1), 
+        'A12' => 3-(count(explode("<br>", $justificationA->A12))-1),
+        'A13' => 3-(count(explode("<br>", $justificationA->A13))-1), 
+        'A14' => 3-(count(explode("<br>", $justificationA->A14))-1), 
+        'A15' => 3-(count(explode("<br>", $justificationA->A15))-1), 
+        'A16' => 3-(count(explode("<br>", $justificationA->A16))-1), 
+        'A17' => 3-(count(explode("<br>", $justificationA->A17))-1), 
+        'A18' => 3-(count(explode("<br>", $justificationA->A18))-1), 
+        'A19' => 3-(count(explode("<br>", $justificationA->A19))-1), 
+        'A20' => 3-(count(explode("<br>", $justificationA->A20))-1)
+    );
+
+    $partialPointsB = (object)array(
+        'B1' => 3-(count(explode("<br>", $justificationB->B1))-1), 
+        'B2' => 3-(count(explode("<br>", $justificationB->B2))-1), 
+        'B3' => 3-(count(explode("<br>", $justificationB->B3))-1), 
+        'B4' => 3-(count(explode("<br>", $justificationB->B4))-1), 
+        'B5' => 3-(count(explode("<br>", $justificationB->B5))-1), 
+        'B6' => 3-(count(explode("<br>", $justificationB->B6))-1), 
+        'B7' => 3-(count(explode("<br>", $justificationB->B7))-1), 
+        'B8' => 3-(count(explode("<br>", $justificationB->B8))-1), 
+        'B9' => 3-(count(explode("<br>", $justificationB->B9))-1), 
+        'B10' => 3-(count(explode("<br>", $justificationB->B10))-1)
+    );
+
+    $partialPointsC = (object)array(
+        'C1' => 3-(count(explode("<br>", $justificationC->C1))-1), 
+        'C2' => 3-(count(explode("<br>", $justificationC->C2))-1), 
+        'C3' => 3-(count(explode("<br>", $justificationC->C3))-1), 
+        'C4' => 3-(count(explode("<br>", $justificationC->C4))-1), 
+        'C5' => 3-(count(explode("<br>", $justificationC->C5))-1), 
+        'C6' => 3-(count(explode("<br>", $justificationC->C6))-1), 
+        'C7' => 3-(count(explode("<br>", $justificationC->C7))-1), 
+        'C8' => 3-(count(explode("<br>", $justificationC->C8))-1), 
+        'C9' => 3-(count(explode("<br>", $justificationC->C9))-1), 
+        'C10' => 3-(count(explode("<br>", $justificationC->C10))-1)
+    );
+
 }else{
     //Se il form non esiste imposto a vuote tutte le variabili così da mostrare il form vuoto
     $teacher = (object)array('name' => '', 'surname' => '', 'phone' => '', 'email' => '');
@@ -230,8 +280,14 @@ if(isset($pdf->form) && !empty($pdf->form)){
     $expert1 = (object)array('name' => '', 'surname' => '', 'phone' => '', 'email' => '');
     $expert2 = (object)array('name' => '', 'surname' => '', 'phone' => '', 'email' => '');
     $justificationA = (object)array('A1' => '', 'A2' => '', 'A3' => '', 'A4' => '', 'A5' => '', 'A6' => '', 'A7' => '', 'A8' => '', 'A9' => '', 'A10' => '', 'A11' => '', 'A12' => '','A13' => '', 'A14' => '', 'A15' => '', 'A16' => '', 'A17' => '', 'A18' => '', 'A19' => '', 'A20' => '');
+    $partialPointsA = (object)array('A1' => 3, 'A2' => 3, 'A3' => 3, 'A4' => 3, 'A5' => 3, 'A6' => 3, 'A7' => 3, 'A8' => 3, 'A9' => 3, 'A10' => 3, 'A11' => 3, 'A12' => 3,'A13' => 3, 'A14' => 3, 'A15' => 3, 'A16' => 3, 'A17' => 3, 'A18' => 3, 'A19' => 3, 'A20' => 3);
+
     $justificationB = (object)array('B1' => '', 'B2' => '', 'B3' => '', 'B4' => '', 'B5' => '', 'B6' => '', 'B7' => '', 'B8' => '', 'B9' => '', 'B10' => '');
+    $partialPointsB = (object)array('B1' => 3, 'B2' => 3, 'B3' => 3, 'B4' => 3, 'B5' => 3, 'B6' => 3, 'B7' => 3, 'B8' => 3, 'B9' => 3, 'B10' => 3);
+
     $justificationC = (object)array('C1' => '', 'C2' => '', 'C3' => '', 'C4' => '', 'C5' => '', 'C6' => '', 'C7' => '', 'C8' => '', 'C9' => '', 'C10' => '');
+    $partialPointsC = (object)array('C1' => 3, 'C2' => 3, 'C3' => 3, 'C4' => 3, 'C5' => 3, 'C6' => 3, 'C7' => 3, 'C8' => 3, 'C9' => 3, 'C10' => 3);
+
     $pointsA = "";
     $pointsB = "";
     $pointsC = "";
@@ -384,70 +440,70 @@ td {
     <tr>
         <td width="35"><b>A1</b></td>
         <td width="145">Gestione progetto e pianificazione</td>
-        <td width="30"></td>
+        <td width="30">$partialPointsA->A1</td>
         <td width="240">$justificationA->A1</td>
         <td width="30"></td>    
     </tr>
     <tr>
         <td width="35"><b>A2</b></td>
         <td width="145">Acquisizione del sapere</td>
-        <td width="30"></td>
+        <td width="30">$partialPointsA->A2</td>
         <td width="240">$justificationA->A2</td>
         <td width="30"></td>    
     </tr>
     <tr>
         <td><b>A3</b></td>
         <td>Pianificazione</td>
-        <td></td>
+        <td>$partialPointsA->A3</td>
         <td>$justificationA->A3</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>A4</b></td>
         <td>Comprensione concettuale</td>
-        <td></td>
+        <td>$partialPointsA->A4</td>
         <td>$justificationA->A4</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>A5</b></td>
         <td>Ambiente di progetto: limiti del sistema / interfacce con l’esterno</td>
-        <td></td>
+        <td>$partialPointsA->A5</td>
         <td>$justificationA->A5</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>A6</b></td>
         <td>Test della soluzione (pianificazione ed esecuzione)</td>
-        <td></td>
+        <td>$partialPointsA->A6</td>
         <td>$justificationA->A6</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>A7</b></td>
         <td>Motivazione / Impegno / Attitudine al lavoro / Esecuzione</td>
-        <td></td>
+        <td>$partialPointsA->A7</td>
         <td>$justificationA->A7</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>A8</b></td>
         <td>Lavoro autonomo</td>
-        <td></td>
+        <td>$partialPointsA->A8</td>
         <td>$justificationA->A8</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>A9</b></td>
         <td>Conoscenze professionali e competenze pratiche</td>
-        <td></td>
+        <td>$partialPointsA->A9</td>
         <td>$justificationA->A9</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>A10</b></td>
         <td>Utilizzo dei termini tecnici</td>
-        <td></td>
+        <td>$partialPointsA->A10</td>
         <td>$justificationA->A10</td>
         <td></td>    
     </tr>
@@ -491,70 +547,70 @@ td {
     <tr>
         <td width="35"><b>A11</b></td>
         <td width="145">Metodologia di lavoro e professionale</td>
-        <td width="30"></td>
+        <td width="30">$partialPointsA->A11</td>
         <td width="240">$justificationA->A11</td>
         <td width="30"></td>    
     </tr>
     <tr>
         <td width="35"><b>A12</b></td>
         <td width="145">Organizzazione dei risultati del lavoro</td>
-        <td width="30"></td>
+        <td width="30">$partialPointsA->A12</td>
         <td width="240">$justificationA->A12</td>
         <td width="30"></td>    
     </tr>
     <tr>
         <td><b>A13</b></td>
         <td>Prestazione</td>
-        <td></td>
+        <td>$partialPointsA->A13</td>
         <td>$justificationA->A13</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>A14</b></td>
         <td>Punti tecnici valutati specifici per il progetto. <small>(punto 8.1 del QdC)</small></td>
-        <td></td>
+        <td>$partialPointsA->A14</td>
         <td>$justificationA->A14</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>A15</b></td>
         <td>Punti tecnici valutati specifici per il progetto. <small>(punto 8.2 del QdC)</small></td>
-        <td></td>
+        <td>$partialPointsA->A15</td>
         <td>$justificationA->A15</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>A16</b></td>
         <td>Punti tecnici valutati specifici per il progetto. <small>(punto 8.3 del QdC)</small></td>
-        <td></td>
+        <td>$partialPointsA->A16</td>
         <td>$justificationA->A16</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>A17</b></td>
         <td>Punti tecnici valutati specifici per il progetto. <small>(punto 8.4 del QdC)</small></td>
-        <td></td>
+        <td>$partialPointsA->A17</td>
         <td>$justificationA->A17</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>A18</b></td>
         <td>Punti tecnici valutati specifici per il progetto. <small>(punto 8.5 del QdC)</small></td>
-        <td></td>
+        <td>$partialPointsA->A18</td>
         <td>$justificationA->A18</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>A19</b></td>
         <td>Punti tecnici valutati specifici per il progetto. <small>(punto 8.6 del QdC)</small></td>
-        <td></td>
+        <td>$partialPointsA->A19</td>
         <td>$justificationA->A19</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>A20</b></td>
         <td>Punti tecnici valutati specifici per il progetto. <small>(punto 8.7 del QdC)</small></td>
-        <td></td>
+        <td>$partialPointsA->A20</td>
         <td>$justificationA->A20</td>
         <td></td>    
     </tr>
@@ -608,70 +664,70 @@ td {
     <tr>
         <td width="35"><b>B1</b></td>
         <td width="145">Riassunto della documentazione</td>
-        <td width="30"></td>
+        <td width="30">$partialPointsB->B1</td>
         <td width="240">$justificationB->B1</td>
         <td width="30"></td>    
     </tr>
     <tr>
         <td width="35"><b>B2</b></td>
         <td width="145">Tenuta del diario di lavoro</td>
-        <td width="30"></td>
+        <td width="30">$partialPointsB->B2</td>
         <td width="240">$justificationB->B2</td>
         <td width="30"></td>    
     </tr>
     <tr>
         <td><b>B3</b></td>
         <td>Capacità di riflessione</td>
-        <td></td>
+        <td>$partialPointsB->B3</td>
         <td>$justificationB->B3</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>B4</b></td>
         <td>Struttura</td>
-        <td></td>
+        <td>$partialPointsB->B4</td>
         <td>$justificationB->B4</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>B5</b></td>
         <td>Concisione</td>
-        <td></td>
+        <td>$partialPointsB->B5</td>
         <td>$justificationB->B5</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>B6</b></td>
         <td>Completezza formale della documentazione</td>
-        <td></td>
+        <td>$partialPointsB->B6</td>
         <td>$justificationB->B6</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>B7</b></td>
         <td>Espressione scritta e stile / ortografia e grammatica</td>
-        <td></td>
+        <td>$partialPointsB->B7</td>
         <td>$justificationB->B7</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>B8</b></td>
         <td>Rappresentazione</td>
-        <td></td>
+        <td>$partialPointsB->B8</td>
         <td>$justificationB->B8</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>B9</b></td>
         <td>Grafica, immagini, diagrammi e tabelle</td>
-        <td></td>
+        <td>$partialPointsB->B9</td>
         <td>$justificationB->B9</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>B10</b></td>
         <td>Documentazione della procedura di test e dei rispettivi risultati</td>
-        <td></td>
+        <td>$partialPointsB->B10</td>
         <td>$justificationB->B10</td>
         <td></td>    
     </tr>
@@ -725,70 +781,70 @@ td {
     <tr>
         <td width="35"><b>C1</b></td>
         <td width="145">Gestione del tempo, struttura</td>
-        <td width="30"></td>
+        <td width="30">$partialPointsC->C1</td>
         <td width="240">$justificationC->C1</td>
         <td width="30"></td>    
     </tr>
     <tr>
         <td width="35"><b>C2</b></td>
         <td width="145">Utilizzo dei media, aspetti tecnici</td>
-        <td width="30"></td>
+        <td width="30">$partialPointsC->C2</td>
         <td width="240">$justificationC->C2</td>
         <td width="30"></td>    
     </tr>
     <tr>
         <td><b>C3</b></td>
         <td>Tecnica di presentazione</td>
-        <td></td>
+        <td>$partialPointsC->C3</td>
         <td>$justificationC->C3</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>C4</b></td>
         <td>Dimostrazione / presentazione del prodotto realizzato</td>
-        <td></td>
+        <td>$partialPointsC->C4</td>
         <td>$justificationC->C4</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>C5</b></td>
         <td>Domanda esperti 1</td>
-        <td></td>
+        <td>$partialPointsC->C5</td>
         <td>$justificationC->C5</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>C6</b></td>
         <td>Domanda esperti 2</td>
-        <td></td>
+        <td>$partialPointsC->C6</td>
         <td>$justificationC->C6</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>C7</b></td>
         <td>Domanda esperti 3</td>
-        <td></td>
+        <td>$partialPointsC->C7</td>
         <td>$justificationC->C7</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>C8</b></td>
         <td>Domanda esperti 4</td>
-        <td></td>
+        <td>$partialPointsC->C8</td>
         <td>$justificationC->C8</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>C9</b></td>
         <td>Domanda esperti 5</td>
-        <td></td>
+        <td>$partialPointsC->C9</td>
         <td>$justificationC->C9</td>
         <td></td>    
     </tr>
     <tr>
         <td><b>C10</b></td>
         <td>Domanda esperti 6</td>
-        <td></td>
+        <td>$partialPointsC->C10</td>
         <td>$justificationC->C10</td>
         <td></td>    
     </tr>

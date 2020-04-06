@@ -136,9 +136,9 @@ create user 'valutazionelpi'@'localhost' identified by 'ValutazioneLPI&2020';
 GRANT SELECT, INSERT, UPDATE, DELETE ON valutazionelpi.* TO 'valutazionelpi'@'localhost';
 flush privileges;
 
-select * from justification;
-select * from contains;
-update user set id_role=2 where id = 1;
+select * from justification where id_point = "A1";
+select * from role;
+update form set id_user=10 where id = 8;
 select * from `point` where `type` = 1;
 delete from contains where id_form=3 and id_justification=7;
 
@@ -148,4 +148,5 @@ select * from contains inner join justification on contains.id_justification = j
 select * from contains inner join justification on contains.id_justification = justification.id where justification.id_point like "C%" and contains.id_form = 7;
 select * from contains inner join justification on contains.id_justification = justification.id where justification.id_point NOT REGEXP '[a-zA-Z]' and contains.id_form = 7;
 
-select contains.* from contains inner join has on contains.id_form = 7
+select contains.* from contains inner join justification on justification.id = contains.id_justification where justification.id_point = "A2" and contains.id_form = 7;
+insert into user(name, surname, email, phone, password, confirmed, id_role, first_login) values ("admin", "admin", "admin@valutazionelpi.ch", "+41110002233", "$2y$12$0bZ5MYhZDavXt74wEGP./uXFb58zhKVMTh0n163rmlE3qUmClX5KO", 1, 2, 0);
